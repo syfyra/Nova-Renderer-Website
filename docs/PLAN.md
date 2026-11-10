@@ -444,11 +444,18 @@ phases 5-6 one week after assets arrive.
 
 ---
 
-## 10. Decisions needed
+## 10. Decisions
 
-1. **Renders:** who produces the shot list in section 7.1, and which scenes are available? This sets the launch date.
-2. **Download:** is `NovaSetup-0.1.0.exe` published on the GitHub release, or is build-from-source the only path?
-3. **Hosting and domain:** Cloudflare Pages (recommended) or GitHub Pages; which domain?
-4. **Typeface:** Inter (free, recommended) or a licensed face such as Söhne?
-5. **Docs depth for version 1:** the compact pages described in 3.3 (recommended), or a full mirror of the
-   repository's documentation?
+Taken on 2026-11-10.
+
+1. **Renders:** only hero shots exist for now. The site therefore works without pictures: every slot is optional,
+   empty slots are left out of production builds, and the sections adapt (`src/content/renders.ts`).
+2. **Download:** the installer `NovaSetup-0.1.0.exe` is attached to the `v0.1.0` GitHub release. The download
+   buttons resolve it from the GitHub API at build time and fall back to the releases page.
+3. **Hosting:** decided after the build. The site is fully static and base-path aware, so every free static host
+   remains an option.
+4. **Typeface:** free resources only: Inter and JetBrains Mono, self-hosted.
+5. **Logo:** supplied as an image; the wordmark was redrawn as vector paths from it
+   (`src/components/brand/wordmark.json`).
+
+Status: phases 0 to 4 are implemented. Phase 5 (assets) waits for renders; the README says how to add them.

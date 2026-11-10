@@ -1,0 +1,172 @@
+---
+// A showcase slot. With an image in src/assets/renders/<id>.* it renders the
+// picture with its metadata caption; without one it renders a labelled frame
+// that says what belongs there.
+import { Picture } from 'astro:assets';
+import { SHOW_PENDING, captionOf, getRender, type SlotId } from '../../content/renders';
+
+interface Props {
+  id: SlotId;
+  class?: string;
+  /** Hide the caption (used inside comparison sliders, which carry labels). */
+  bare?: boolean;
+  /** Fill the parent instead of taking the image's own aspect ratio. */
+  fill?: boolean;
+  ratio?: string;
+  sizes?: string;
+  eager?: boolean;
+  align?: 'start' | 'end';
+}
+const {
+  id,
+  class: className,
+  bare = false,
+  fill = false,
+  ratio = '16 / 9',
+  sizes = '(min-width: 1500px) 1400px, 100vw',
+  eager = false,
+  align = 'start',
+} = Astro.props;
+const { meta, image } = getRender(id);
+const show = Boolean(image) || SHOW_PENDING;
+---
+
+{show && (
+<figure class:list={['frame', className, { 'frame--fill': fill, 'frame--empty': !image }]} style={fill ? undefined : `aspect-ratio:${ratio}`} data-frame={id}>
+  {
+    image ? (
+      <>
+        <Picture
+          src={image}
+          alt={meta.alt ?? `${meta.title}, rendered with ${meta.renderer}`}
+          formats={['avif', 'webp']}
+          widths={[640, 960, 1440, 1920, 2560, image.width].filter((w, i, a) => w <= image.width && a.indexOf(w) === i)}
+          sizes={sizes}
+          loading={eager ? 'eager' : 'lazy'}
+          fetchpriority={eager ? 'high' : undefined}
+          decoding="async"
+          class="frame__img"
+        />
+        {!bare && (
+          <figcaption class="caption frame__caption">
+            {captionOf(meta)}
+            {meta.credit && <span> · {meta.credit}</span>}
+          </figcaption>
+        )}
+      </>
+    ) : (
+      <div class:list={['frame__slot', `frame__slot--${align}`]}>
+        <i class="frame__tick frame__tick--tl" />
+        <i class="frame__tick frame__tick--tr" />
+        <i class="frame__tick frame__tick--bl" />
+        <i class="frame__tick frame__tick--br" />
+        <p class="caption frame__shot">{meta.shot} · render pending</p>
+        <p class="frame__title">{meta.title}</p>
+        <p class="caption frame__brief">{meta.brief}</p>
+      </div>
+    )
+  }
+</figure>
+)}
+
+<style>
+  .frame {
+    position: relative;
+    width: 100%;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--stage);
+  }
+  .frame--fill {
+    position: absolute;
+    inset: 0;
+    border-radius: 0;
+    height: 100%;
+  }
+  .frame :global(picture) {
+    display: contents;
+  }
+  .frame :global(.frame__img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .frame__caption {
+    position: absolute;
+    left: 1rem;
+    bottom: 0.85rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    background: rgb(10 10 10 / 0.55);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: var(--paper-dim);
+  }
+
+  /* The empty slot: a quiet frame with crop ticks. */
+  .frame--empty {
+    background:
+      radial-gradient(120% 90% at 50% 110%, rgb(254 72 25 / 0.05), transparent 60%),
+      var(--stage);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .frame__slot {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+  }
+  .frame__slot--end {
+    align-items: flex-end;
+    text-align: right;
+  }
+  .frame__shot {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+  }
+  .frame__title {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--paper-dim);
+  }
+  .frame__brief {
+    color: var(--faint);
+    max-width: 30em;
+  }
+  .frame__tick {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 0 solid var(--line-strong);
+  }
+  .frame__tick--tl {
+    top: 14px;
+    left: 14px;
+    border-top-width: 1px;
+    border-left-width: 1px;
+  }
+  .frame__tick--tr {
+    top: 14px;
+    right: 14px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+  }
+  .frame__tick--bl {
+    bottom: 14px;
+    left: 14px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+  }
+  .frame__tick--br {
+    bottom: 14px;
+    right: 14px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
+  }
+</style>

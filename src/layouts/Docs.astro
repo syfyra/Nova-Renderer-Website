@@ -1,0 +1,190 @@
+---
+import Base from './Base.astro';
+import { docsFlat, docsNav } from '../content/docs-nav';
+import { SOURCE_TAG, href, source } from '../lib/site';
+
+interface Props {
+  frontmatter: { title: string; description?: string; lede?: string; source?: string; sourceAnchor?: string };
+}
+const { frontmatter: fm } = Astro.props;
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const rel = Astro.url.pathname.slice(base.length).replace(/^\/docs\/?/, '').replace(/\/$/, '');
+const index = docsFlat.findIndex((i) => i.slug === rel);
+const prev = index > 0 ? docsFlat[index - 1] : undefined;
+const next = index >= 0 && index < docsFlat.length - 1 ? docsFlat[index + 1] : undefined;
+const link = (slug: string) => href(slug ? `/docs/${slug}` : '/docs');
+const src = fm.source ?? 'docs/reference.md';
+---
+
+<Base title={`${fm.title} · Docs`} description={fm.description}>
+  <div class="wrap docs">
+    <aside class="docs__side">
+      <details class="docs__menu" open>
+        <summary class="caption">Documentation</summary>
+        <nav aria-label="Documentation">
+          {
+            docsNav.map((group) => (
+              <div class="docs__group">
+                <p class="caption">{group.title}</p>
+                <ul>
+                  {group.items.map((item) => (
+                    <li>
+                      <a href={link(item.slug)} aria-current={item.slug === rel ? 'page' : undefined}>
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          }
+        </nav>
+      </details>
+    </aside>
+
+    <article class="docs__article">
+      <header class="docs__head">
+        <p class="eyebrow"><b>Docs</b> Nova {SOURCE_TAG}</p>
+        <h1 class="display-2">{fm.title}</h1>
+        {fm.lede && <p class="lede">{fm.lede}</p>}
+      </header>
+
+      <div class="prose">
+        <slot />
+      </div>
+
+      <footer class="docs__foot">
+        <p class="caption">
+          Written from
+          <a class="link" href={source(src, fm.sourceAnchor)} rel="noopener">{src} ↗</a>
+          at {SOURCE_TAG}. The repository is the reference.
+        </p>
+        <nav class="docs__pager" aria-label="Pages">
+          {prev ? (<a href={link(prev.slug)} class="docs__prev"><span class="caption">Previous</span>{prev.label}</a>) : <span />}
+          {next && (<a href={link(next.slug)} class="docs__next"><span class="caption">Next</span>{next.label}</a>)}
+        </nav>
+      </footer>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .docs {
+    display: grid;
+    grid-template-columns: 13rem minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    padding-top: calc(var(--nav-h) + clamp(3rem, 7vw, 6rem));
+    padding-bottom: var(--section);
+    align-items: start;
+  }
+  .docs__side {
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+  }
+  .docs__menu summary {
+    display: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-s);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--paper);
+  }
+  .docs__group + .docs__group {
+    margin-top: 1.75rem;
+  }
+  .docs__group > .caption {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+    margin-bottom: 0.6rem;
+  }
+  .docs__group ul {
+    display: grid;
+    border-left: 1px solid var(--line);
+  }
+  .docs__group a {
+    display: block;
+    padding: 0.35rem 0 0.35rem 0.9rem;
+    margin-left: -1px;
+    border-left: 1px solid transparent;
+    font-size: var(--text-sm);
+    color: var(--muted);
+    transition:
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .docs__group a:hover {
+    color: var(--paper);
+  }
+  .docs__group a[aria-current='page'] {
+    color: var(--paper);
+    border-left-color: var(--nova);
+  }
+  .docs__article {
+    min-width: 0;
+  }
+  .docs__head {
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .docs__head .display-2 {
+    font-size: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
+  }
+  .docs__foot {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    max-width: 46rem;
+  }
+  .docs__pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .docs__pager a {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
+    box-shadow: inset 0 0 0 1px var(--line);
+    font-weight: 550;
+    letter-spacing: -0.01em;
+    transition: box-shadow 0.25s;
+  }
+  .docs__pager a:hover {
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+  .docs__pager .caption {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+  }
+  .docs__next {
+    text-align: right;
+  }
+  @media (max-width: 860px) {
+    .docs {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .docs__side {
+      position: static;
+    }
+    .docs__menu summary {
+      display: block;
+    }
+    .docs__menu nav {
+      padding-top: 1.25rem;
+    }
+  }
+</style>
+
+<script>
+  // On small screens the sidebar starts collapsed.
+  const menu = document.querySelector<HTMLDetailsElement>('.docs__menu');
+  if (menu && window.matchMedia('(max-width: 860px)').matches) menu.open = false;
+</script>

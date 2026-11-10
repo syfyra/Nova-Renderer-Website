@@ -1,0 +1,149 @@
+---
+// Paired horizontal bars: a baseline and the measured value, per row.
+// A real table for assistive technology sits underneath the picture.
+export interface BarRow {
+  label: string;
+  sub?: string;
+  a: number;
+  b: number;
+  ratio?: string;
+}
+interface Props {
+  rows: BarRow[];
+  nameA: string;
+  nameB: string;
+  unit: string;
+  decimalsA?: number;
+  decimalsB?: number;
+  caption: string;
+  /** Which side carries the accent. */
+  accent?: 'a' | 'b';
+}
+const { rows, nameA, nameB, unit, decimalsA = 1, decimalsB = 2, caption, accent = 'b' } = Astro.props;
+const max = Math.max(...rows.flatMap((r) => [r.a, r.b]));
+---
+
+<figure class="bench" data-bars>
+  <div class="bench__rows" aria-hidden="true">
+    {
+      rows.map((r) => (
+        <div class="bench__row">
+          <div class="bench__head">
+            <p>
+              <span class="mono bench__scene">{r.label}</span>
+              {r.sub && <span class="bench__sub">{r.sub}</span>}
+            </p>
+            {r.ratio && <p class="bench__ratio num">{r.ratio}</p>}
+          </div>
+          <div class="bench__line">
+            <span class="caption bench__name">{nameA}</span>
+            <span class:list={['bench__bar', { 'bench__bar--accent': accent === 'a' }]}>
+              <i data-bar style={`--w:${(r.a / max).toFixed(4)}`} />
+            </span>
+            <span class="caption num bench__val">
+              {r.a.toFixed(decimalsA)} {unit}
+            </span>
+          </div>
+          <div class="bench__line">
+            <span class="caption bench__name">{nameB}</span>
+            <span class:list={['bench__bar', { 'bench__bar--accent': accent === 'b' }]}>
+              <i data-bar style={`--w:${(r.b / max).toFixed(4)}`} />
+            </span>
+            <span class="caption num bench__val">
+              {r.b.toFixed(decimalsB)} {unit}
+            </span>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+  <div class="sr-only">
+  <table>
+    <caption>{caption}</caption>
+    <thead>
+      <tr><th>Scene</th><th>{nameA} ({unit})</th><th>{nameB} ({unit})</th><th>Ratio</th></tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (<tr><th>{r.label}{r.sub ? `, ${r.sub}` : ''}</th><td>{r.a}</td><td>{r.b}</td><td>{r.ratio}</td></tr>))}
+    </tbody>
+  </table>
+  </div>
+  <figcaption class="caption"><slot>{caption}</slot></figcaption>
+</figure>
+
+<style>
+  .bench__rows {
+    display: grid;
+  }
+  .bench__row {
+    display: grid;
+    gap: 0.45rem;
+    padding-block: 1.15rem;
+    border-top: 1px solid var(--line);
+  }
+  .bench__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.2rem;
+  }
+  .bench__scene {
+    color: var(--paper);
+    font-size: var(--text-sm);
+  }
+  .bench__sub {
+    margin-left: 0.75rem;
+    font-size: var(--text-sm);
+    color: var(--muted);
+  }
+  .bench__ratio {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+  }
+  .bench__line {
+    display: grid;
+    grid-template-columns: 2.4rem minmax(0, 1fr) 5.2rem;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .bench__name {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+  }
+  .bench__val {
+    text-align: right;
+    color: var(--paper-dim);
+  }
+  .bench__bar {
+    position: relative;
+    height: 5px;
+  }
+  .bench__bar i {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 100%;
+    border-radius: 3px;
+    background: rgb(249 247 243 / 0.32);
+    transform-origin: 0 50%;
+    transform: scaleX(calc(var(--w) * var(--p, 1)));
+  }
+  .bench__bar--accent i {
+    background: var(--nova);
+    box-shadow: 0 0 14px rgb(254 72 25 / 0.5);
+  }
+  figcaption {
+    margin-top: 1.1rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--line);
+    max-width: 44em;
+  }
+  @media (max-width: 560px) {
+    .bench__sub {
+      display: block;
+      margin: 0.15rem 0 0;
+    }
+  }
+</style>

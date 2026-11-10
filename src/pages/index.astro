@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import Footnotes from '../components/layout/Footnotes.astro';
+import Hero from '../components/sections/Hero.astro';
+import Devices from '../components/sections/Devices.astro';
+import Xpu from '../components/sections/Xpu.astro';
+import Cpu from '../components/sections/Cpu.astro';
+import Karma from '../components/sections/Karma.astro';
+import Materials from '../components/sections/Materials.astro';
+import Worlds from '../components/sections/Worlds.astro';
+import Output from '../components/sections/Output.astro';
+import Interactive from '../components/sections/Interactive.astro';
+import Measured from '../components/sections/Measured.astro';
+import NotYet from '../components/sections/NotYet.astro';
+import GetStarted from '../components/sections/GetStarted.astro';
+import OpenSource from '../components/sections/OpenSource.astro';
+---
+
+<Base overlayNav>
+  <Hero />
+  <Devices />
+  <Xpu />
+  <Cpu />
+  <Karma />
+  <Materials />
+  <Worlds />
+  <Output />
+  <Interactive />
+  <Measured />
+  <NotYet />
+  <GetStarted />
+  <OpenSource />
+  <Footnotes />
+</Base>
+
+<script>
+  import '../motion/home';
+</script>

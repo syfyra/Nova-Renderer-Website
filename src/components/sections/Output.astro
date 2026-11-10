@@ -1,0 +1,182 @@
+---
+import RenderFrame from '../media/RenderFrame.astro';
+import Fn from '../primitives/Fn.astro';
+
+// Karma's render var names (tests/husk/check_aovs.py); expressions only where
+// the repository states them.
+const layers = [
+  { name: 'C', lpe: 'beauty' },
+  { name: 'directdiffuse', lpe: 'C<RD>L' },
+  { name: 'indirectdiffuse', lpe: '' },
+  { name: 'directglossyreflection', lpe: 'C<RG>L' },
+  { name: 'glossytransmission', lpe: '' },
+  { name: 'sss', lpe: '' },
+  { name: 'directemission', lpe: '' },
+  { name: 'Cryptomatte', lpe: 'objects · materials · primvars' },
+];
+---
+
+<section class="section output" id="output" aria-labelledby="output-title">
+  <div class="wrap">
+    <div class="output__grid">
+      <div class="output__lead">
+        <p class="eyebrow" data-reveal="fade"><b>07</b> Output</p>
+        <h2 id="output-title" class="display-2" data-reveal="lines">Every pass Karma writes, under the same names.</h2>
+        <p class="lede" data-reveal="fade">
+          One Solaris setup renders in both renderers. The components sum to the beauty per sample, and every component
+          is unbiased.
+        </p>
+        <ul class="output__list" data-reveal="stagger">
+          <li>
+            <h3>Light path expressions</h3>
+            <p>Karma’s dialect, with tags on lights, objects and materials, and the <span class="mono">unoccluded;</span> and <span class="mono">shadow;</span> prefixes.</p>
+          </li>
+          <li>
+            <h3>Utility AOVs</h3>
+            <p>Position, normals, depth, motion vectors, ids, any primvar, material AOVs and ambient occlusion.</p>
+          </li>
+          <li>
+            <h3>Cryptomatte</h3>
+            <p>For objects, materials and any string or int primvar. The manifests match Karma’s entry for entry.</p>
+          </li>
+          <li>
+            <h3>EXR</h3>
+            <p>Multi-part and deep EXR, per-var sample filters, checkpoints with resume.</p>
+          </li>
+        </ul>
+        <p class="caption output__cost" data-reveal="fade">
+          No cost with the beauty only. Karma’s standard set of light path expressions costs 6–13&nbsp;% of the render
+          time.<Fn id="lpe-cost" />
+        </p>
+      </div>
+
+      <div class="output__stage">
+        <div class="stack" data-stack aria-hidden="true">
+          <div class="stack__scene" data-stack-scene>
+            {
+              layers.map((l, i) => (
+                <div class="stack__layer" style={`--i:${i}`} data-stack-layer>
+                  {i === 0 && <RenderFrame id="aov-beauty" fill bare />}
+                  <p class="stack__label">
+                    <span class="mono">{l.name}</span>
+                    {l.lpe && <span class="mono stack__lpe">{l.lpe}</span>}
+                  </p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .output__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(2.5rem, 5vw, 6rem);
+    align-items: center;
+  }
+  .output__lead {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .output__list {
+    margin-top: 1rem;
+    display: grid;
+  }
+  .output__list li {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 1rem;
+    padding-block: 1rem;
+    border-top: 1px solid var(--line);
+  }
+  .output__list h3 {
+    font-size: var(--text-base);
+    font-weight: 550;
+    letter-spacing: -0.01em;
+  }
+  .output__list p {
+    font-size: var(--text-sm);
+    color: var(--muted);
+  }
+  .output__list .mono {
+    color: var(--paper-dim);
+  }
+  .output__cost {
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    max-width: 40em;
+  }
+
+  /* The layer stack: flat at first, pulled apart along z by --k (0..1). */
+  .output__stage {
+    position: relative;
+  }
+  .stack {
+    --k: 1;
+    position: relative;
+    aspect-ratio: 1 / 1.08;
+    perspective: 2600px;
+    perspective-origin: 50% 40%;
+  }
+  .stack__scene {
+    position: absolute;
+    left: 6%;
+    right: 6%;
+    top: 50%;
+    aspect-ratio: 16 / 9;
+    transform-style: preserve-3d;
+    transform: translateY(calc(-50% + var(--k) * 22%)) rotateX(calc(var(--k) * 60deg)) rotateZ(calc(var(--k) * -40deg))
+      scale(calc(1 - var(--k) * 0.22));
+  }
+  .stack__layer {
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background: rgb(249 247 243 / 0.035);
+    box-shadow: inset 0 0 0 1px rgb(249 247 243 / calc(0.1 + var(--k) * 0.16));
+    transform: translateZ(calc(var(--i) * var(--k) * clamp(34px, 4.6vw, 70px)));
+    opacity: calc(min(1, var(--k) * 4 + (1 - min(1, var(--i)))));
+    overflow: hidden;
+  }
+  .stack__layer:first-child {
+    background: var(--stage);
+  }
+  .stack__layer:last-child {
+    box-shadow:
+      inset 0 0 0 1px rgb(254 72 25 / 0.55),
+      0 0 40px rgb(254 72 25 / 0.12);
+  }
+  .stack__label {
+    position: absolute;
+    left: 0.9rem;
+    bottom: 0.7rem;
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    font-size: clamp(0.75rem, 0.6rem + 0.5vw, 1rem);
+    color: var(--paper);
+    opacity: calc(var(--k) * 1.5 - 0.3);
+  }
+  .stack__layer:first-child .stack__label {
+    opacity: 1;
+  }
+  .stack__lpe {
+    color: var(--muted);
+  }
+  .stack :global(.frame__slot) {
+    display: none;
+  }
+  @media (max-width: 900px) {
+    .output__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .output__list li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.25rem;
+    }
+  }
+</style>

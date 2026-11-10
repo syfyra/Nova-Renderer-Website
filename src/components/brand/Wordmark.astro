@@ -1,0 +1,54 @@
+---
+// The Nova wordmark, redrawn from the logo: N, V and A as straight-edged
+// polygons, the O as the two superellipses of NOVA_logo.svg (handle factors
+// 0.600 and 0.630), the dot and its glow in the logo's orange.
+// Letters take `currentColor`; the dot is always #fe4819.
+import wm from './wordmark.json';
+
+interface Props {
+  id?: string;
+  class?: string;
+  label?: string;
+  glow?: boolean;
+}
+const { id = 'wm', class: className, label = 'Nova', glow = true } = Astro.props;
+---
+
+<svg
+  class:list={['wordmark', className]}
+  viewBox={`0 0 ${wm.w} ${wm.h}`}
+  role="img"
+  aria-label={label}
+  xmlns="http://www.w3.org/2000/svg"
+>
+  {
+    glow && (
+      <defs>
+        <radialGradient id={`${id}-glow`} cx={wm.dot.cx} cy={wm.dot.cy} r={wm.dot.glow} gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#fe4819" stop-opacity="0.5" />
+          <stop offset="0.34" stop-color="#fe4819" stop-opacity="0.42" />
+          <stop offset="0.43" stop-color="#fe4819" stop-opacity="0.26" />
+          <stop offset="0.57" stop-color="#fe4819" stop-opacity="0.12" />
+          <stop offset="0.76" stop-color="#fe4819" stop-opacity="0.04" />
+          <stop offset="1" stop-color="#fe4819" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+    )
+  }
+  <g fill="currentColor" fill-rule="evenodd">
+    <path class="wm-letter wm-n" d={wm.N}></path>
+    <path class="wm-letter wm-o" d={wm.O}></path>
+    <path class="wm-letter wm-v" d={wm.V}></path>
+    <path class="wm-letter wm-a" d={wm.A}></path>
+  </g>
+  {glow && <circle class="wm-glow" cx={wm.dot.cx} cy={wm.dot.cy} r={wm.dot.glow} fill={`url(#${id}-glow)`} />}
+  <circle class="wm-dot" cx={wm.dot.cx} cy={wm.dot.cy} r={wm.dot.r} fill="#fe4819"></circle>
+</svg>
+
+<style>
+  .wordmark {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+</style>

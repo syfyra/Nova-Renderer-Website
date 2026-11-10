@@ -1,0 +1,153 @@
+---
+import CodeBlock from '../primitives/CodeBlock.astro';
+import Requirements from '../data/Requirements.astro';
+import { getGitHub } from '../../lib/github';
+import { href } from '../../lib/site';
+
+const gh = await getGitHub();
+---
+
+<section class="section start" id="get-started" aria-labelledby="start-title">
+  <div class="start__light" aria-hidden="true" data-start-light></div>
+  <div class="wrap">
+    <div class="start__panel glass" data-reveal="frame">
+      <div class="start__lead">
+        <p class="eyebrow"><b>11</b> Get started</p>
+        <h2 id="start-title" class="display-2">Get Nova.</h2>
+        <p class="lede">Free and open source. One installer, per user, without administrator rights.</p>
+        <div class="start__cta">
+          <a class="btn btn--primary" href={gh.installerUrl ?? gh.releaseUrl} rel="noopener">
+            <span class="btn__dot" aria-hidden="true"></span>
+            Download {gh.installerName}
+          </a>
+          <a class="btn" href={href('/docs/build')}>Build from source</a>
+        </div>
+        <p class="caption start__meta">
+          Version {gh.version}{gh.installerSize && ` · ${gh.installerSize}`} · MIT License ·
+          <a class="link" href={href('/download')}>All download options</a>
+        </p>
+        <Requirements />
+      </div>
+
+      <ol class="start__steps">
+        <li>
+          <span class="mono start__n">1</span>
+          <div>
+            <h3>Install</h3>
+            <p>Close Houdini and run the installer. It registers Nova with Houdini 22.0 and adds an uninstaller to Apps &amp; features.</p>
+          </div>
+        </li>
+        <li>
+          <span class="mono start__n">2</span>
+          <div>
+            <h3>Choose the renderer</h3>
+            <p>In Solaris, pick <strong>Nova CPU</strong> or <strong>Nova XPU</strong> in the viewport’s renderer menu.</p>
+          </div>
+        </li>
+        <li>
+          <span class="mono start__n">3</span>
+          <div>
+            <h3>Set up a render</h3>
+            <p>
+              TAB → Rendering → <strong>Nova (Setup)</strong> builds render settings, a render pass and a USD Render ROP,
+              as Karma (Setup) does. Existing Karma setups render as they are.
+            </p>
+          </div>
+        </li>
+        <li>
+          <span class="mono start__n">4</span>
+          <div>
+            <h3>Or render with husk</h3>
+            <CodeBlock
+              label="husk"
+              lines={['husk --renderer Nova scene.usda -o out.exr', 'husk --renderer "Nova XPU" scene.usda -o out.exr']}
+            />
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .start {
+    overflow: hidden;
+  }
+  /* The light behind the glass: the dot of the mark, out of focus. */
+  .start__light {
+    position: absolute;
+    left: 62%;
+    top: 46%;
+    width: clamp(20rem, 46vw, 46rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgb(254 72 25 / 0.9), rgb(254 72 25 / 0.35) 45%, transparent 72%);
+    filter: blur(40px);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .start__panel {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
+    gap: clamp(2rem, 5vw, 6rem);
+    padding: clamp(1.5rem, 5vw, 5rem);
+    border-radius: var(--radius-l);
+  }
+  .start__lead {
+    display: grid;
+    gap: 1.5rem;
+    align-content: start;
+  }
+  .start__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .start__meta {
+    color: var(--paper-dim);
+  }
+  .start__steps {
+    display: grid;
+    align-content: start;
+  }
+  .start__steps li {
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding-block: 1.25rem;
+    border-top: 1px solid var(--line);
+  }
+  .start__steps li:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .start__n {
+    color: var(--nova);
+    padding-top: 0.2em;
+  }
+  .start__steps h3 {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35rem;
+  }
+  .start__steps p {
+    font-size: var(--text-sm);
+    color: var(--paper-dim);
+  }
+  .start__steps strong {
+    color: var(--paper);
+    font-weight: 550;
+  }
+  .start__steps :global(.code) {
+    margin-top: 0.6rem;
+  }
+  @media (max-width: 900px) {
+    .start__panel {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

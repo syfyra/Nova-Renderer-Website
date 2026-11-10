@@ -1,0 +1,51 @@
+---
+// The compatibility checklist. Shown beside every download action.
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+const items = [
+  { k: 'System', v: 'Windows 10 or 11, x64' },
+  { k: 'Host', v: 'Houdini 22.0' },
+  { k: 'CPU', v: 'Any processor with AVX2' },
+  { k: 'Nova XPU', v: 'NVIDIA RTX 50 series with a current driver. Other machines render on the CPU.' },
+];
+---
+
+<dl class:list={['req', { 'req--compact': compact }]}>
+  {
+    items.map((i) => (
+      <div>
+        <dt class="caption">{i.k}</dt>
+        <dd>{i.v}</dd>
+      </div>
+    ))
+  }
+</dl>
+
+<style>
+  .req {
+    margin: 0;
+    display: grid;
+  }
+  .req > div {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 1rem;
+    align-items: baseline;
+    padding-block: 0.85rem;
+    border-top: 1px solid var(--line);
+  }
+  .req > div:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  dt {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  dd {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--paper);
+  }
+</style>

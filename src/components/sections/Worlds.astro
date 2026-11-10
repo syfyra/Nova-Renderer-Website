@@ -1,0 +1,207 @@
+---
+// Five full-height panels that stack: each slides over the one before it.
+import WorldMedia from '../media/WorldMedia.astro';
+import Fn from '../primitives/Fn.astro';
+import { slotVisible, type SlotId } from '../../content/renders';
+
+const ids: SlotId[] = ['world-lights', 'world-volumes', 'world-hair', 'world-sss', 'world-sky'];
+const total = String(ids.length).padStart(2, '0');
+// A panel without a picture (and without its placeholder) is a compact block.
+const cls = (i: number) => ['world', { 'world--plain': !slotVisible(ids[i]) }];
+---
+
+<section class="worlds" id="light" data-worlds aria-labelledby="worlds-title">
+  <h2 id="worlds-title" class="sr-only">Light and matter</h2>
+
+  <article class:list={cls(0)} data-world>
+    <div class="world__inner" data-world-inner>
+      <WorldMedia id={ids[0]} />
+      <div class="wrap world__body">
+        <p class="eyebrow"><b>06</b> Light and matter <span class="world__step">01 / {total}</span></p>
+        <h3 class="display-1">Many lights.</h3>
+        <div class="world__foot">
+          <p class="lede">
+            A light tree over every bounded light, with lights at infinity chosen by importance. Every UsdLux light with
+            Karma’s conventions, light and shadow linking, portals, and emissive meshes as lights.
+          </p>
+          <p class="world__fact">
+            <span class="fact__value">100<small>×</small></span>
+            <span class="fact__label">less variance than selection by power on a street of 2000 lights.<Fn id="light-tree" /></span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class:list={cls(1)} data-world>
+    <div class="world__inner" data-world-inner>
+      <WorldMedia id={ids[1]} />
+      <div class="wrap world__body">
+        <p class="eyebrow"><b>06</b> Light and matter <span class="world__step">02 / {total}</span></p>
+        <h3 class="display-1">Volumes.</h3>
+        <div class="world__foot">
+          <p class="lede">
+            VDB and native Houdini volumes through NanoVDB, with the Karma Pyro Material. Unbiased spectral tracking on
+            majorants derived from the volume shader. There is no step rate to tune.
+          </p>
+          <p class="world__fact">
+            <span class="fact__value">2.3–4.2<small>×</small></span>
+            <span class="fact__label">
+              faster than Karma CPU on one pyro simulation at equal accuracy,<Fn id="pyro" /> and within 0.1–1.8&nbsp;% of
+              its image.<Fn id="volumes-match" />
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class:list={cls(2)} data-world>
+    <div class="world__inner" data-world-inner>
+      <WorldMedia id={ids[2]} />
+      <div class="wrap world__body">
+        <p class="eyebrow"><b>06</b> Light and matter <span class="world__step">03 / {total}</span></p>
+        <h3 class="display-1">Hair.</h3>
+        <div class="world__foot">
+          <p class="lede">
+            Karma Hair, Karma Fur and MaterialX <span class="mono">chiang_hair_bsdf</span> on the Chiang fibre model,
+            with Karma’s conventions for melanin, absorption, tilt and roughness.
+          </p>
+          <p class="world__fact">
+            <span class="fact__value">4</span>
+            <span class="fact__label">curve bases, linear to Catmull-Rom, as ribbons or round tubes, with motion blur and instancing.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class:list={cls(3)} data-world>
+    <div class="world__inner" data-world-inner>
+      <WorldMedia id={ids[3]} />
+      <div class="wrap world__body">
+        <p class="eyebrow"><b>06</b> Light and matter <span class="world__step">04 / {total}</span></p>
+        <h3 class="display-1">Subsurface.</h3>
+        <div class="world__foot">
+          <p class="lede">
+            Random-walk subsurface scattering for Standard Surface, OpenPBR and the Principled Shader, with Karma’s
+            parameterization.
+          </p>
+          <p class="world__fact">
+            <span class="fact__value">0.7<small>%</small></span>
+            <span class="fact__label">the most it differs from Karma across Karma’s 47 calibration scenes.<Fn id="sss" /></span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class:list={cls(4)} data-world>
+    <div class="world__inner" data-world-inner>
+      <WorldMedia id={ids[4]} />
+      <div class="wrap world__body">
+        <p class="eyebrow"><b>06</b> Light and matter <span class="world__step">05 / {total}</span></p>
+        <h3 class="display-1">Sky.</h3>
+        <div class="world__foot">
+          <p class="lede">
+            Karma’s sky model as a textured dome, the sun, and a planetary atmosphere with Rayleigh, Mie and ozone
+            scattering as a medium in the path tracer.
+          </p>
+          <p class="world__fact">
+            <span class="fact__value">3</span>
+            <span class="fact__label">Karma nodes behind it: Sky Dome Light, Physical Sky and Sky Atmosphere.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </article>
+</section>
+
+<style>
+  .worlds {
+    position: relative;
+  }
+  .world {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    min-height: 36rem;
+    overflow: hidden;
+    background: var(--ink);
+  }
+  .world__inner {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-items: end;
+    background: var(--stage);
+    border-top: 1px solid var(--line);
+    transform-origin: 50% 0;
+    will-change: transform;
+  }
+  .world:nth-child(odd) .world__inner {
+    background: var(--ink);
+  }
+  .world__body {
+    position: relative;
+    z-index: 2;
+    padding-block: calc(var(--nav-h) + 2rem) clamp(2.5rem, 6vh, 5rem);
+    display: grid;
+    gap: clamp(1.25rem, 3vh, 2.5rem);
+  }
+  .world__step {
+    margin-left: 0.75rem;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+  .world__foot {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+    gap: clamp(1.5rem, 5vw, 6rem);
+    align-items: end;
+    padding-top: clamp(1.25rem, 3vh, 2.5rem);
+    border-top: 1px solid var(--line);
+  }
+  .world__foot .lede .mono {
+    font-size: 0.8em;
+  }
+  .world__fact {
+    display: grid;
+    gap: 0.6rem;
+  }
+  /* Compact panels: no picture and no placeholder. */
+  .world--plain {
+    position: relative;
+    height: auto;
+    min-height: 0;
+  }
+  .world--plain .world__inner {
+    position: relative;
+  }
+  .world--plain .world__body {
+    padding-block: clamp(3.5rem, 8vw, 7rem);
+  }
+  .world--plain .display-1 {
+    font-size: var(--display-2);
+  }
+  /* On phones the panels are ordinary blocks: their text does not fit one screen. */
+  @media (max-width: 760px) {
+    .world {
+      position: relative;
+      height: auto;
+      min-height: 0;
+    }
+    .world__inner {
+      position: relative;
+    }
+    .world__body {
+      padding-block: 5.5rem 3rem;
+    }
+  }
+  @media (max-width: 860px) {
+    .world__foot {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

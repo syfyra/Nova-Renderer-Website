@@ -1,0 +1,369 @@
+---
+import Base from '../layouts/Base.astro';
+import BenchBars from '../components/data/BenchBars.astro';
+import { MACHINE } from '../content/claims';
+import { adaptive, denoise, denoiseTime, ipr, lpe, pyro, xpu } from '../content/benchmarks';
+import { SOURCE_TAG, source } from '../lib/site';
+
+const bars = [...xpu]
+  .sort((a, b) => b.perSample - a.perSample)
+  .map((r) => ({ label: r.scene, sub: r.what, a: r.cpuMs, b: r.xpuMs, ratio: `${r.perSample.toFixed(1)}×` }));
+const pyroBars = pyro.map((r) => ({ label: r.scene, sub: r.what, a: r.karma, b: r.nova, ratio: r.factor }));
+const toc = [
+  ['method', 'Machine and method'],
+  ['xpu', 'CPU and GPU'],
+  ['ipr', 'Interactivity'],
+  ['sampling', 'Sampling and denoising'],
+  ['karma', 'Nova and Karma CPU'],
+  ['aovs', 'Cost of AOVs'],
+  ['comparison', 'How images are compared'],
+];
+---
+
+<Base title="Benchmarks" description="Every performance measurement of Nova, with the machine, the command and the method. CPU and GPU, interactivity, sampling, denoising, and Nova against Karma CPU.">
+  <div class="wrap">
+    <header class="page-head">
+      <p class="eyebrow" data-reveal="fade"><b>Benchmarks</b> Nova {SOURCE_TAG}</p>
+      <h1 class="display-2" data-reveal="lines">Every measurement, with its method.</h1>
+      <p class="lede" data-reveal="fade">
+        These numbers come from Nova’s own benchmark log. They were measured on one machine, on Nova’s reference
+        scenes, and they say what was measured and nothing more.
+      </p>
+    </header>
+
+    <div class="bm">
+      <nav class="bm__toc" aria-label="On this page">
+        <p class="caption">On this page</p>
+        <ul>
+          {toc.map(([id, label]) => (<li><a href={`#${id}`}>{label}</a></li>))}
+        </ul>
+        <a class="bm__src caption" href={source('docs/benchmarks.md')} rel="noopener">docs/benchmarks.md ↗</a>
+      </nav>
+
+      <div class="bm__body">
+        <section id="method" class="bm__section">
+          <h2 class="display-3">Machine and method</h2>
+          <dl class="bm__machine">
+            <div><dt class="caption">CPU</dt><dd>{MACHINE.cpu}, all threads used</dd></div>
+            <div><dt class="caption">GPU</dt><dd>{MACHINE.gpu}</dd></div>
+            <div><dt class="caption">System</dt><dd>{MACHINE.os}, {MACHINE.build}</dd></div>
+            <div><dt class="caption">Scenes</dt><dd>The Karma reference scenes of the repository, with their own path lengths and lights</dd></div>
+            <div><dt class="caption">Command</dt><dd><code class="mono">nova_cli tests/reference/scenes/&lt;scene&gt;.usda -o out.exr --res 960x540 --spp 64</code></dd></div>
+          </dl>
+          <p class="body">
+            Unless a section says otherwise, times are the render time <span class="mono">nova_cli</span> reports on an
+            idle machine. “Rays” counts every ray that is traced: camera rays, continuation rays and shadow rays.
+          </p>
+        </section>
+
+        <section id="xpu" class="bm__section">
+          <h2 class="display-3">CPU and GPU</h2>
+          <p class="body">
+            Nova on 16 CPU threads against Nova XPU on the RTX 5080. Every image agrees with the CPU’s: every pixel within
+            1&nbsp;%, except <span class="mono">mtl_textured</span>, where 80.5&nbsp;% of the pixels do, because hardware
+            trilinear texture filtering differs from OpenImageIO’s stochastic filtering.
+          </p>
+
+          <h3 class="bm__h3">Per sample, without setup</h3>
+          <BenchBars rows={bars} nameA="CPU" nameB="XPU" unit="ms" caption="Time per sample at 960×540. Lower is better. The XPU time is the difference between renders at 64 and 1024 samples, so the setup is excluded." />
+
+          <h3 class="bm__h3">End to end at 64 samples</h3>
+          <p class="body">
+            The XPU time includes the GPU’s setup (driver context, OptiX pipelines, the scene’s upload), not the process
+            start. The faster of two runs.
+          </p>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>Scene</th><th class="n">CPU</th><th class="n">Mrays/s</th><th class="n">XPU</th><th class="n">Mrays/s</th><th class="n">XPU setup</th><th class="n">Speed-up</th></tr>
+              </thead>
+              <tbody>
+                {xpu.map((r) => (
+                  <tr>
+                    <th><span class="mono">{r.scene}</span></th>
+                    <td class="n">{r.cpuS.toFixed(2)} s</td>
+                    <td class="n">{r.cpuMrays.toFixed(1)}</td>
+                    <td class="n">{r.xpuS.toFixed(2)} s</td>
+                    <td class="n">{r.xpuMrays}</td>
+                    <td class="n">{r.setupS.toFixed(2)} s</td>
+                    <td class="n hi">{r.endToEnd.toFixed(1)}×</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <ul class="bm__notes">
+            <li>Volumes (<span class="mono">pyro_bare</span>) and many layered materials (<span class="mono">furnace_materials</span>) gain least: the majorant traversal and the material programs run per thread with divergent loops.</li>
+            <li>On <span class="mono">cornell_rect</span> the shade kernel takes 89.5&nbsp;% of the GPU time. Splitting it into material evaluation and scattering is later work.</li>
+            <li>An edit in a scene of 4.2 million triangles at 640×360: the first pass takes 183&nbsp;ms, a pass after an edit of a light, a material or a transform 7&nbsp;ms, a pass alone 2&nbsp;ms.</li>
+          </ul>
+        </section>
+
+        <section id="ipr" class="bm__section">
+          <h2 class="display-3">Interactivity</h2>
+          <p class="body">
+            Time from the USD edit to the first new image on the CPU, the median of six edits, at 1280×720 on a scene of
+            980 000 triangles with 20 000 instances. Before proxy passes and BVH refits every edit took 183–256&nbsp;ms.
+          </p>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>Edit</th><th class="n">Total</th><th class="n">Sync</th><th class="n">Restart</th><th class="n">First proxy pass</th></tr>
+              </thead>
+              <tbody>
+                {ipr.map((r) => (
+                  <tr>
+                    <th>{r.edit}</th>
+                    <td class="n hi">{r.total}</td>
+                    <td class="n">{r.sync}</td>
+                    <td class="n">{r.restart}</td>
+                    <td class="n">{r.first}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="caption bm__cap">Milliseconds. The refit of the deformed 1M-triangle mesh takes 25 ms in Embree, against 39 ms for a rebuild.</p>
+        </section>
+
+        <section id="sampling" class="bm__section">
+          <h2 class="display-3">Sampling and denoising</h2>
+
+          <h3 class="bm__h3">Adaptive sampling</h3>
+          <p class="body">
+            The variance oracle against uniform sampling at equal error. The error is the relMSE against Nova’s own
+            converged image, the mean of two 4096-sample renders with their noise subtracted.
+          </p>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>Scene</th><th class="n">Uniform, equal error</th><th class="n">Oracle</th><th class="n">relMSE</th><th class="n">Speed-up</th><th>Gate</th></tr>
+              </thead>
+              <tbody>
+                {adaptive.map((r) => (
+                  <tr><th><span class="mono">{r.scene}</span></th><td class="n">{r.uniform}</td><td class="n">{r.oracle}</td><td class="n">{r.relmse}</td><td class="n hi">{r.speedup}</td><td>{r.gate}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="caption bm__cap">Adaptive sampling pays off on scenes with mixed noise, such as glass, and is about even on uniformly noisy ones.</p>
+
+          <h3 class="bm__h3">OptiX denoiser</h3>
+          <p class="body">Error at 16 samples per pixel before and after denoising, against the same converged images. Alpha stays exact.</p>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>Scene</th><th class="n">Noisy, 16 spp</th><th class="n">Denoised</th><th class="n">Error</th></tr>
+              </thead>
+              <tbody>
+                {denoise.map((r) => (
+                  <tr><th><span class="mono">{r.scene}</span></th><td class="n">{r.noisy}</td><td class="n">{r.denoised}</td><td class="n hi">{r.factor}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div class="facts bm__facts">
+            {denoiseTime.map((d) => (
+              <div class="fact">
+                <p class="fact__value">{d.ms}<small>ms</small></p>
+                <p class="fact__label">for one denoise at {d.res} on the RTX 5080.</p>
+              </div>
+            ))}
+          </div>
+          <p class="caption bm__cap">The first denoise in a process adds the OptiX context, about 0.1–0.3 s.</p>
+        </section>
+
+        <section id="karma" class="bm__section">
+          <h2 class="display-3">Nova and Karma CPU</h2>
+          <p class="body">
+            Two comparisons with Karma CPU exist. Both are single scenes on one machine, and neither is a general
+            statement about either renderer. There is no comparison with Karma XPU.
+          </p>
+
+          <h3 class="bm__h3">A pyro simulation</h3>
+          <BenchBars rows={pyroBars} nameA="Karma" nameB="Nova" unit="s" decimalsA={2} decimalsB={2} caption="husk wall time at 400×600 and 256 samples per pixel for both renderers (Karma path traced, uniform), including about 1.5 s of startup. Lower is better." />
+          <ul class="bm__notes">
+            <li>
+              With fire, Karma was run at step rate 4 for equal accuracy. At its default step rate of 0.25 Karma renders
+              <span class="mono">pyro_fire</span> in 14.83&nbsp;s, faster than Nova’s 46.98&nbsp;s, and 6–10&nbsp;% bright
+              on absorbing emitters.
+            </li>
+            <li>Fire is the expensive case for Nova: the Pyro Material is evaluated about once per voxel across the hot plume.</li>
+            <li>Scenes without volumes are unchanged by volume support (within ±2&nbsp;%).</li>
+          </ul>
+
+          <h3 class="bm__h3">Hair, subsurface and many lights</h3>
+          <div class="facts bm__facts">
+            <div class="fact"><p class="fact__value">21.9<small>s</small></p><p class="fact__label">Nova</p></div>
+            <div class="fact"><p class="fact__value">102.0<small>s</small></p><p class="fact__label">Karma CPU</p></div>
+            <div class="fact"><p class="fact__value">4.7<small>×</small></p><p class="fact__label">on this scene</p></div>
+          </div>
+          <p class="caption bm__cap">
+            600 hair fibres with Karma Hair, a subsurface sphere, 40 sphere lights and an emissive quad treated as a light.
+            1280×720, 128 samples per pixel for both renderers, husk wall time.
+          </p>
+        </section>
+
+        <section id="aovs" class="bm__section">
+          <h2 class="display-3">Cost of AOVs</h2>
+          <p class="body">
+            Render time with 0, 1, 20 and 74 light path expressions bound, at 960×540 and 64 samples with each scene’s
+            own settings. Twenty is Karma’s standard set: the beauty and 19 render vars. With the beauty only, no
+            light-path-expression code runs.
+          </p>
+          <div class="table-wrap">
+            <table class="table">
+              <thead>
+                <tr><th>Scene</th><th class="n">Beauty only</th><th class="n">1</th><th class="n">20, Karma’s set</th><th class="n">74</th></tr>
+              </thead>
+              <tbody>
+                {lpe.map((r) => (
+                  <tr><th><span class="mono">{r.scene}</span></th><td class="n">{r.s0}</td><td class="n">{r.s1}</td><td class="n hi">{r.s20}</td><td class="n">{r.s74}</td></tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="caption bm__cap">The design’s gate of at most 5 % for Karma’s standard set is not met. The cost is bookkeeping per path event.</p>
+        </section>
+
+        <section id="comparison" class="bm__section">
+          <h2 class="display-3">How images are compared</h2>
+          <p class="body">
+            Noisy renders cannot be compared pixel by pixel. Nova’s reference tests render each scene twice and compare
+            it statistically with a Karma CPU reference or an analytic value, using the repository’s
+            <span class="mono">nova_imgcmp</span>:
+          </p>
+          <ul class="bm__notes">
+            <li>z-tests on 8×8 pixel blocks, with a Šidák-corrected error rate;</li>
+            <li>a test of the global mean;</li>
+            <li>HDR-FLIP and relMSE as diagnostics.</li>
+          </ul>
+          <p class="body">
+            Measured differences to Karma are recorded per reference scene in the test manifest, and described in the
+            <a class="link" href={source('docs/reference.md', 'features-by-milestone')} rel="noopener">reference</a>.
+          </p>
+        </section>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .bm {
+    display: grid;
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    padding-bottom: var(--section);
+    align-items: start;
+  }
+  .bm__toc {
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+    display: grid;
+    gap: 1rem;
+  }
+  .bm__toc .caption {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+  }
+  .bm__toc ul {
+    display: grid;
+    gap: 0.55rem;
+    padding-block: 0.25rem 0.75rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .bm__toc li a {
+    font-size: var(--text-sm);
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+  .bm__toc li a:hover {
+    color: var(--paper);
+  }
+  .bm__toc .bm__src {
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--paper-dim);
+  }
+  .bm__body {
+    display: grid;
+    gap: clamp(4rem, 8vw, 7rem);
+    min-width: 0;
+  }
+  .bm__section {
+    display: grid;
+    gap: 1.5rem;
+    scroll-margin-top: 6rem;
+    min-width: 0;
+  }
+  .bm__section > .display-3 {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line-strong);
+  }
+  .bm__h3 {
+    margin-top: 1.5rem;
+    font-size: var(--text-lg);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .bm__machine {
+    margin: 0;
+    display: grid;
+  }
+  .bm__machine > div {
+    display: grid;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 0.8rem;
+    border-bottom: 1px solid var(--line);
+    align-items: baseline;
+  }
+  .bm__machine dt {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .bm__machine dd {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--paper);
+    overflow-wrap: anywhere;
+  }
+  .bm__notes {
+    display: grid;
+    gap: 0.6rem;
+    max-width: var(--measure);
+    font-size: var(--text-sm);
+    color: var(--muted);
+  }
+  .bm__notes li {
+    padding-left: 1.1rem;
+    position: relative;
+  }
+  .bm__notes li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.72em;
+    width: 0.4rem;
+    height: 1px;
+    background: var(--faint);
+  }
+  .bm__notes .mono {
+    color: var(--paper-dim);
+  }
+  .bm__cap {
+    max-width: 46em;
+  }
+  .bm__facts {
+    margin-top: 0.5rem;
+  }
+  @media (max-width: 900px) {
+    .bm {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .bm__toc {
+      position: static;
+    }
+  }
+</style>

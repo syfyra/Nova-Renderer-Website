@@ -1,0 +1,78 @@
+---
+// A command block with a copy button. `lines` are shown one per row; the
+// button copies them joined by newlines.
+interface Props {
+  lines: string[];
+  label?: string;
+  prompt?: string;
+}
+const { lines, label = 'Command', prompt = '>' } = Astro.props;
+---
+
+<figure class="code" data-code>
+  <figcaption>
+    <span class="caption">{label}</span>
+    <button type="button" class="code__copy caption" data-copy={lines.join('\n')}>
+      <span data-copy-label>Copy</span>
+      <span class="sr-only" aria-live="polite" data-copy-status></span>
+    </button>
+  </figcaption>
+  <pre tabindex="0"><code>{lines.map((l) => (<span class="code__line"><span class="code__prompt" aria-hidden="true">{prompt}</span>{l}{'\n'}</span>))}</code></pre>
+</figure>
+
+<style>
+  .code {
+    border-radius: var(--radius);
+    background: rgb(0 0 0 / 0.35);
+    box-shadow: inset 0 0 0 1px var(--line);
+    overflow: hidden;
+  }
+  figcaption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.6rem 0.6rem 1.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  figcaption > .caption {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+  }
+  .code__copy {
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    color: var(--paper-dim);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition:
+      color 0.2s,
+      box-shadow 0.2s;
+  }
+  .code__copy:hover {
+    color: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+  .code__copy[data-done] {
+    color: var(--nova);
+  }
+  pre {
+    margin: 0;
+    padding: 1rem 1.1rem 1.1rem;
+    overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: clamp(0.78rem, 0.74rem + 0.2vw, 0.875rem);
+    line-height: 1.75;
+    color: var(--paper);
+    font-variant-ligatures: none;
+  }
+  .code__line {
+    display: block;
+    white-space: pre;
+  }
+  .code__prompt {
+    display: inline-block;
+    width: 1.4em;
+    color: var(--faint);
+    user-select: none;
+  }
+</style>

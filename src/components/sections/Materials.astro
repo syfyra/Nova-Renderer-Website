@@ -1,0 +1,214 @@
+---
+import RenderFrame from '../media/RenderFrame.astro';
+import Fn from '../primitives/Fn.astro';
+import { slotVisible, type SlotId } from '../../content/renders';
+
+const cards: { slot: SlotId; kicker: string; title: string; tags: string[] }[] = [
+  { slot: 'mat-materialx', kicker: 'MaterialX 1.39', title: 'Standard Surface, OpenPBR, any pbrlib graph.', tags: ['OpenPBR 1.1', 'Standard Surface', 'UsdPreviewSurface', 'glTF PBR'] },
+  { slot: 'mat-kma', kicker: 'Karma Material Builder', title: 'Karma’s own shading nodes.', tags: ['kma_*', 'ray switch', 'hex tiling', 'rounded edges'] },
+  { slot: 'mat-principled', kicker: 'Principled Shader', title: 'Houdini’s Principled Shader, natively.', tags: ['principledshader::2.0', 'sheen', 'clearcoat'] },
+  { slot: 'mat-vex', kicker: 'VEX', title: 'VEX Material Builders through a CVEX bridge.', tags: ['CVEX', '256 points per batch', 'CPU'] },
+  { slot: 'mat-displacement', kicker: 'Displacement and textures', title: 'Diced from the camera. UDIMs through OpenImageIO.', tags: ['vector displacement', 'UDIM', 'ray cones'] },
+];
+// Without any pictures the gallery is a plain grid instead of a pinned strip.
+const plain = !cards.some((c) => slotVisible(c.slot));
+---
+
+<section class="materials" id="materials" data-materials data-plain={plain ? '' : undefined} aria-labelledby="materials-title">
+  <div class="materials__pin" data-materials-pin>
+    <div class="wrap materials__head">
+      <div>
+        <p class="eyebrow" data-reveal="fade"><b>05</b> Materials</p>
+        <h2 id="materials-title" class="display-2" data-reveal="lines">Materials render as authored.</h2>
+      </div>
+      <p class="caption materials__hint" aria-hidden="true">
+        <span data-materials-index>01</span> / {String(cards.length).padStart(2, '0')}
+      </p>
+    </div>
+
+    <div class="materials__viewport">
+      <ul class="materials__track" data-materials-track>
+        <li class="mat">
+          <RenderFrame id={cards[0].slot} ratio="4 / 5" sizes="(min-width: 900px) 30vw, 80vw" />
+          <p class="caption mat__kicker">{cards[0].kicker}</p>
+          <h3 class="mat__title">{cards[0].title}</h3>
+          <p class="mat__text">
+            740 of the 746 MaterialX 1.39 node definitions run through Nova’s shading compiler, with Karma’s
+            semantics.<Fn id="materialx" /> Layering is exact per MaterialX and OpenPBR, with energy compensation.
+          </p>
+          <p class="mat__tags">{cards[0].tags.map((t) => <span class="tag">{t}</span>)}</p>
+        </li>
+        <li class="mat">
+          <RenderFrame id={cards[1].slot} ratio="4 / 5" sizes="(min-width: 900px) 30vw, 80vw" />
+          <p class="caption mat__kicker">{cards[1].kicker}</p>
+          <h3 class="mat__title">{cards[1].title}</h3>
+          <p class="mat__text">
+            35 of Karma’s 55 <span class="mono">kma_*</span> nodes: ray switches and ray imports, ramps, hex tiling,
+            Voronoi, curvature, ambient occlusion, rounded edges.<Fn id="kma" />
+          </p>
+          <p class="mat__tags">{cards[1].tags.map((t) => <span class="tag">{t}</span>)}</p>
+        </li>
+        <li class="mat">
+          <RenderFrame id={cards[2].slot} ratio="4 / 5" sizes="(min-width: 900px) 30vw, 80vw" />
+          <p class="caption mat__kicker">{cards[2].kicker}</p>
+          <h3 class="mat__title">{cards[2].title}</h3>
+          <p class="mat__text">
+            Parameters, textures, bump and normal maps, emission, opacity and displacement follow the Principled
+            Shader’s own rules: Disney sheen and clearcoat, Schlick metal, reflectivity as an effective IOR.
+          </p>
+          <p class="mat__tags">{cards[2].tags.map((t) => <span class="tag">{t}</span>)}</p>
+        </li>
+        <li class="mat">
+          <RenderFrame id={cards[3].slot} ratio="4 / 5" sizes="(min-width: 900px) 30vw, 80vw" />
+          <p class="caption mat__kicker">{cards[3].kicker}</p>
+          <h3 class="mat__title">{cards[3].title}</h3>
+          <p class="mat__text">
+            The surface function is compiled once and run in batches of 256 shading points. Its BSDF stays in VEX and is
+            evaluated and sampled there. On the GPU, VEX materials render as grey stand-ins.
+          </p>
+          <p class="mat__tags">{cards[3].tags.map((t) => <span class="tag">{t}</span>)}</p>
+        </li>
+        <li class="mat">
+          <RenderFrame id={cards[4].slot} ratio="4 / 5" sizes="(min-width: 900px) 30vw, 80vw" />
+          <p class="caption mat__kicker">{cards[4].kicker}</p>
+          <h3 class="mat__title">{cards[4].title}</h3>
+          <p class="mat__text">
+            Float and vector displacement at Karma’s dicing quality, watertight and motion-blurred. Textures with UDIMs,
+            ray-cone footprints and colour spaces decided as Karma decides them.
+          </p>
+          <p class="mat__tags">{cards[4].tags.map((t) => <span class="tag">{t}</span>)}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .materials {
+    position: relative;
+    padding-block: var(--section);
+  }
+  .materials__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+  .materials__head h2 {
+    margin-top: clamp(1.25rem, 2.2vw, 2rem);
+  }
+  .materials__hint {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .materials__hint span {
+    color: var(--paper);
+  }
+
+  /* Without the pinned sequence this is a native horizontal scroller. */
+  .materials__viewport {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .materials__viewport::-webkit-scrollbar {
+    display: none;
+  }
+  .materials__track {
+    display: flex;
+    gap: clamp(1rem, 2vw, 2rem);
+    width: max-content;
+    padding-inline: max(var(--gutter), calc((100vw - var(--max)) / 2 + var(--gutter)));
+  }
+  .mat {
+    width: clamp(17rem, 28vw, 26rem);
+    flex: none;
+    scroll-snap-align: center;
+    display: grid;
+    align-content: start;
+    gap: 0.75rem;
+  }
+  .mat :global(.frame) {
+    margin-bottom: 0.75rem;
+  }
+  .mat__kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .mat__title {
+    font-size: var(--text-xl);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+  .mat__text {
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  .mat__text .mono {
+    color: var(--paper-dim);
+  }
+  .mat__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.4rem;
+  }
+
+  /* Pinned mode (set by the motion script on wide screens). */
+  .materials[data-pinned] {
+    padding-block: 0;
+  }
+  .materials[data-pinned] .materials__pin {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-top: var(--nav-h);
+    overflow: hidden;
+  }
+  .materials[data-pinned] .materials__viewport {
+    overflow: visible;
+    scroll-snap-type: none;
+  }
+  .materials[data-pinned] .mat {
+    width: clamp(15rem, min(25vw, 37vh), 23rem);
+  }
+  .materials[data-pinned] .mat :global(.frame) {
+    aspect-ratio: 1 / 1 !important;
+  }
+
+  /* Plain mode: no pictures yet, so no gallery. */
+  .materials[data-plain] .materials__hint {
+    display: none;
+  }
+  .materials[data-plain] .materials__viewport {
+    overflow: visible;
+  }
+  .materials[data-plain] .materials__track {
+    width: auto;
+    max-width: var(--max);
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 2.5rem clamp(1.5rem, 3vw, 3rem);
+  }
+  .materials[data-plain] .mat {
+    width: auto;
+    border-top: 1px solid var(--line-strong);
+    padding-top: 1.5rem;
+  }
+  @media (max-height: 760px) {
+    .materials[data-pinned] .mat__text {
+      display: none;
+    }
+  }
+</style>

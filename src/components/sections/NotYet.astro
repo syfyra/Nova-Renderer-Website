@@ -1,0 +1,81 @@
+---
+import { limitations } from '../../content/limitations';
+import { VERSION, href } from '../../lib/site';
+---
+
+<section class="section notyet" id="not-yet" aria-labelledby="notyet-title">
+  <div class="wrap">
+    <div class="notyet__grid">
+      <header class="notyet__lead">
+        <p class="eyebrow" data-reveal="fade"><b>10</b> Limitations</p>
+        <h2 id="notyet-title" class="display-2" data-reveal="lines">Not yet.</h2>
+        <p class="body" data-reveal="fade">
+          Nova is at version {VERSION}. This is what it does not do today. Differences from Karma are documented with
+          the feature they belong to.
+        </p>
+        <p data-reveal="fade">
+          <a class="arrow" href={href('/docs/limitations')}>
+            The full list
+            <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
+          </a>
+        </p>
+      </header>
+      <div class="notyet__cols" data-reveal="stagger" data-stagger="0.08">
+        {
+          limitations.map((group) => (
+            <section>
+              <h3 class="caption">{group.title}</h3>
+              <ul>
+                {group.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .notyet {
+    background: var(--stage);
+    border-block: 1px solid var(--line);
+  }
+  .notyet__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: clamp(2.5rem, 6vw, 7rem);
+    align-items: start;
+  }
+  .notyet__lead {
+    display: grid;
+    gap: 1.5rem;
+  }
+  .notyet__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem clamp(1.5rem, 3vw, 3rem);
+  }
+  .notyet__cols h3 {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    padding-bottom: 0.75rem;
+  }
+  .notyet__cols li {
+    padding-block: 0.7rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--text-sm);
+    color: var(--paper-dim);
+  }
+  @media (max-width: 900px) {
+    .notyet__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .notyet__cols {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,16 @@
+---
+// A footnote marker for a claim from the ledger. The number is the claim's
+// position in the page's note order, so a claim that is not listed there
+// fails the build instead of appearing without its conditions.
+import { homeNotes } from '../../content/notes';
+import type { ClaimId } from '../../content/claims';
+
+interface Props {
+  id: ClaimId;
+}
+const { id } = Astro.props;
+const n = homeNotes.indexOf(id) + 1;
+if (!n) throw new Error(`Claim "${id}" is used on the page but missing from src/content/notes.ts`);
+---
+
+<sup class="fn"><a href={`#fn-${n}`} aria-label={`Footnote ${n}`}>{n}</a></sup>

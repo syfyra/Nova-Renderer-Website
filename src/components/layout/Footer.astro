@@ -1,0 +1,144 @@
+---
+import Wordmark from '../brand/Wordmark.astro';
+import { REPO_URL, RELEASES_URL, VERSION, href, source } from '../../lib/site';
+
+const columns = [
+  {
+    title: 'Product',
+    links: [
+      { label: 'Overview', url: href('/') },
+      { label: 'Benchmarks', url: href('/benchmarks') },
+      { label: 'Download', url: href('/download') },
+      { label: 'Limitations', url: href('/docs/limitations') },
+    ],
+  },
+  {
+    title: 'Documentation',
+    links: [
+      { label: 'Get started', url: href('/docs') },
+      { label: 'Use in Solaris', url: href('/docs/solaris') },
+      { label: 'Render settings', url: href('/docs/render-settings') },
+      { label: 'Karma compatibility', url: href('/docs/karma') },
+      { label: 'Build from source', url: href('/docs/build') },
+    ],
+  },
+  {
+    title: 'Source',
+    links: [
+      { label: 'GitHub', url: REPO_URL, ext: true },
+      { label: 'Releases', url: RELEASES_URL, ext: true },
+      { label: 'Design notes', url: source('docs/design/'), ext: true },
+      { label: 'Bug audit', url: source('docs/bug-audit-2026-11.md'), ext: true },
+      { label: 'MIT License', url: source('LICENSE'), ext: true },
+    ],
+  },
+];
+---
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a href={href('/')} class="footer__mark" aria-label="Nova, home">
+          <Wordmark id="footer-wm" />
+        </a>
+        <p class="caption">Production path tracing for Houdini Solaris.<br />Version {VERSION} · Windows x64 · Houdini 22.0</p>
+      </div>
+      {
+        columns.map((col) => (
+          <nav class="footer__col" aria-label={col.title}>
+            <h2 class="caption">{col.title}</h2>
+            <ul>
+              {col.links.map((l) => (
+                <li>
+                  <a href={l.url} rel={'ext' in l ? 'noopener' : undefined}>
+                    {l.label}
+                    {'ext' in l && <span aria-hidden="true"> ↗</span>}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ))
+      }
+    </div>
+
+    <div class="footer__legal">
+      <p>
+        Nova is released under the MIT License. Third-party code in the repository: NVIDIA FLIP and the Hošek–Wilkie sky
+        model data, both BSD-3-Clause. The build links Embree 4 (Apache-2.0) statically and loads Houdini’s USD, TBB,
+        OpenImageIO, OpenSubdiv and MaterialX from the Houdini installation; for Nova XPU, NVIDIA’s CUDA driver API and
+        OptiX are loaded at run time.
+      </p>
+      <p>
+        Houdini, Solaris and Karma are trademarks of Side Effects Software Inc. NVIDIA, CUDA and OptiX are trademarks of
+        NVIDIA Corporation. Nova is an independent project and is not affiliated with or endorsed by SideFX or NVIDIA.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--line);
+    padding-block: clamp(3.5rem, 7vw, 6rem) 2.5rem;
+    background: var(--ink);
+    position: relative;
+    z-index: 2;
+  }
+  .footer__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr));
+    gap: 2.5rem clamp(1.5rem, 3vw, 3rem);
+  }
+  .footer__mark {
+    display: block;
+    width: 8.5rem;
+    color: var(--paper);
+    margin-bottom: 1.25rem;
+  }
+  .footer__col h2 {
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+    color: var(--faint);
+  }
+  .footer__col ul {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .footer__col a {
+    font-size: var(--text-sm);
+    color: var(--paper-dim);
+    transition: color 0.2s;
+  }
+  .footer__col a:hover {
+    color: var(--paper);
+  }
+  .footer__col a span {
+    color: var(--faint);
+  }
+  .footer__legal {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem clamp(1.5rem, 3vw, 3rem);
+    font-size: var(--text-xs);
+    line-height: 1.6;
+    color: var(--faint);
+  }
+  @media (max-width: 860px) {
+    .footer__top {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .footer__brand {
+      grid-column: 1 / -1;
+    }
+    .footer__legal {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
