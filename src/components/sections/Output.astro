@@ -1,18 +1,18 @@
 ---
-import RenderFrame from '../media/RenderFrame.astro';
 import Fn from '../primitives/Fn.astro';
 
 // Karma's render var names (tests/husk/check_aovs.py); expressions only where
-// the repository states them.
+// the repository states them. `pass` names the live pass drawn on the layer
+// (src/motion/aov.ts).
 const layers = [
-  { name: 'C', lpe: 'beauty' },
-  { name: 'directdiffuse', lpe: 'C<RD>L' },
-  { name: 'indirectdiffuse', lpe: '' },
-  { name: 'directglossyreflection', lpe: 'C<RG>L' },
-  { name: 'glossytransmission', lpe: '' },
-  { name: 'sss', lpe: '' },
-  { name: 'directemission', lpe: '' },
-  { name: 'Cryptomatte', lpe: 'objects · materials · primvars' },
+  { name: 'C', lpe: 'beauty', pass: 'beauty' },
+  { name: 'directdiffuse', lpe: 'C<RD>L', pass: 'directdiffuse' },
+  { name: 'indirectdiffuse', lpe: '', pass: 'indirectdiffuse' },
+  { name: 'directglossyreflection', lpe: 'C<RG>L', pass: 'directglossy' },
+  { name: 'indirectglossyreflection', lpe: '', pass: 'indirectglossy' },
+  { name: 'visiblelights', lpe: '', pass: 'visiblelights' },
+  { name: 'N', lpe: 'normals', pass: 'normals' },
+  { name: 'Cryptomatte', lpe: 'objects', pass: 'ids' },
 ];
 ---
 
@@ -56,7 +56,7 @@ const layers = [
             {
               layers.map((l, i) => (
                 <div class="stack__layer" style={`--i:${i}`} data-stack-layer>
-                  {i === 0 && <RenderFrame id="aov-beauty" fill bare />}
+                  <canvas data-aov={l.pass} width="448" height="252" />
                   <p class="stack__label">
                     <span class="mono">{l.name}</span>
                     {l.lpe && <span class="mono stack__lpe">{l.lpe}</span>}
@@ -66,6 +66,9 @@ const layers = [
             }
           </div>
         </div>
+        <p class="caption output__live">
+          Passes of the hero’s scene, path traced in your browser. The five light components sum to the beauty. Not Nova.
+        </p>
       </div>
     </div>
   </div>
@@ -167,8 +170,29 @@ const layers = [
   .stack__lpe {
     color: var(--muted);
   }
-  .stack :global(.frame__slot) {
+  .stack canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.8s;
+  }
+  .stack canvas[data-ready] {
+    opacity: 1;
+  }
+  .stack[data-live] .stack__label {
+    padding: 0.15rem 0.45rem;
+    border-radius: 5px;
+    background: rgb(10 10 10 / 0.6);
+  }
+  .output__live {
     display: none;
+    margin-top: 1.25rem;
+    text-align: center;
+  }
+  .output__stage:has(.stack[data-live]) .output__live {
+    display: block;
   }
   @media (max-width: 900px) {
     .output__grid {

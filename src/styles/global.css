@@ -679,3 +679,39 @@ html.motion [data-reveal] {
   background: var(--line);
   margin-block: 2.5em;
 }
+
+/* --------------------------------------------------------- small pleasures */
+/* Reading progress: a hairline in the brand's orange at the top of the page. */
+.progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 2px;
+  z-index: 150;
+  background: var(--nova);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+html:not(.motion) .progress {
+  display: none;
+}
+
+/* A little light where the pointer is. */
+[data-spot] {
+  position: relative;
+}
+[data-spot]::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s;
+  background: radial-gradient(24rem circle at var(--sx, 50%) var(--sy, 50%), rgb(249 247 243 / 0.075), transparent 62%);
+}
+@media (hover: hover) {
+  [data-spot]:hover::after {
+    opacity: 1;
+  }
+}

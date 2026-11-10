@@ -3,6 +3,9 @@
 
 import { gsap, ScrollTrigger, SplitText, reduced } from './core';
 import { Accumulator, targetFromCanvas } from './accumulate';
+import { initHeroStage } from './hero-stage';
+import { initViewport } from './viewport';
+import { initAov } from './aov';
 import wm from '../components/brand/wordmark.json';
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -287,29 +290,100 @@ function initMaterials() {
 }
 
 // ---------------------------------------------------------------------- worlds
-// Sticky panels: the outgoing one recedes while the next slides over it.
+// Light and matter: on wide screens the section is pinned and its five
+// subjects follow one another in one frame. The word changes behind a mask,
+// the facts cross-fade and the light wanders to a new place.
 function initWorlds() {
-  if (reduced) return;
-  const panels = gsap.utils.toArray<HTMLElement>('[data-world]');
-  const stacked = window.matchMedia('(min-width: 761px)').matches;
-  panels.forEach((panel, i) => {
-    const inner = panel.querySelector<HTMLElement>('[data-world-inner]')!;
-    const next = panels[i + 1];
-    gsap.from(panel.querySelectorAll('.eyebrow, .display-1, .world__foot'), {
-      y: 56,
-      autoAlpha: 0,
-      duration: 1.3,
-      stagger: 0.1,
-      scrollTrigger: { trigger: panel, start: 'top 45%', once: true },
+  const section = document.querySelector<HTMLElement>('[data-worlds]');
+  if (!section || reduced) return;
+  const panels = gsap.utils.toArray<HTMLElement>('[data-world]', section);
+  const steps = section.querySelectorAll<HTMLElement>('[data-worlds-step]');
+  const glow = section.querySelector<HTMLElement>('[data-worlds-glow]');
+  if (panels.length < 2 || !glow) return;
+
+  const word = (p: HTMLElement) => p.querySelector<HTMLElement>('[data-world-word]')!;
+  const foot = (p: HTMLElement) => p.querySelector<HTMLElement>('[data-world-foot]')!;
+  const media = (p: HTMLElement) => p.querySelector<HTMLElement>('.wm-media, .wm-finder');
+  // Where the light rests for each subject, as fractions of the frame.
+  const spots = [
+    [0.72, 0.3],
+    [0.24, 0.6],
+    [0.6, 0.72],
+    [0.36, 0.28],
+    [0.8, 0.52],
+  ];
+  const place = (i: number) => ({
+    x: section.clientWidth * spots[i % spots.length][0],
+    y: section.clientHeight * spots[i % spots.length][1],
+  });
+  const setStep = (i: number) => steps.forEach((s, k) => s.toggleAttribute('data-on', k === i));
+
+  gsap.matchMedia().add('(min-width: 861px) and (min-height: 600px)', () => {
+    section.setAttribute('data-seq', '');
+    setStep(0);
+    gsap.set(glow, place(0));
+    panels.forEach((p, i) => {
+      if (i === 0) return;
+      gsap.set(word(p), { yPercent: 135 });
+      gsap.set(foot(p), { autoAlpha: 0, y: 24 });
+      gsap.set(p.querySelector('.eyebrow'), { autoAlpha: 0 });
+      const m = media(p);
+      if (m) gsap.set(m, { autoAlpha: 0 });
     });
-    if (next && stacked && !panel.classList.contains('world--plain')) {
-      gsap.to(inner, {
-        scale: 0.92,
-        opacity: 0.3,
-        ease: 'none',
-        scrollTrigger: { trigger: next, start: 'top bottom', end: 'top top', scrub: true },
+
+    const tl = gsap.timeline({
+      defaults: { ease: 'power2.inOut' },
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: () => `+=${window.innerHeight * 0.85 * (panels.length - 1)}`,
+        pin: true,
+        scrub: 0.6,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => setStep(Math.round(self.progress * (panels.length - 1))),
+      },
+    });
+    panels.forEach((p, i) => {
+      if (i === 0) return;
+      const prev = panels[i - 1];
+      const at = i - 1;
+      tl.to(word(prev), { yPercent: -135, duration: 0.5 }, at + 0.22)
+        .to(foot(prev), { autoAlpha: 0, y: -24, duration: 0.4 }, at + 0.22)
+        .to(word(p), { yPercent: 0, duration: 0.55 }, at + 0.42)
+        .to(foot(p), { autoAlpha: 1, y: 0, duration: 0.45 }, at + 0.52)
+        .to(glow, { x: () => place(i).x, y: () => place(i).y, duration: 0.9, ease: 'power1.inOut' }, at + 0.12);
+      const from = media(prev);
+      const to = media(p);
+      if (from) tl.to(from, { autoAlpha: 0, duration: 0.5 }, at + 0.3);
+      if (to) tl.to(to, { autoAlpha: 1, duration: 0.5 }, at + 0.3);
+    });
+    tl.to({}, { duration: 0.22 });
+
+    // The section arrives as a whole.
+    gsap.from(panels[0].querySelector('.world__body'), {
+      autoAlpha: 0,
+      y: 48,
+      duration: 1.3,
+      scrollTrigger: { trigger: section, start: 'top 55%', once: true },
+    });
+    gsap.from(glow, { autoAlpha: 0, duration: 2, scrollTrigger: { trigger: section, start: 'top 70%', once: true } });
+
+    return () => {
+      section.removeAttribute('data-seq');
+      steps.forEach((s) => s.removeAttribute('data-on'));
+    };
+  });
+
+  // Small screens: plain blocks that rise in.
+  gsap.matchMedia().add('(max-width: 860px), (max-height: 599px)', () => {
+    panels.forEach((p) => {
+      gsap.from(p.querySelector('.world__body'), {
+        autoAlpha: 0,
+        y: 40,
+        duration: 1.2,
+        scrollTrigger: { trigger: p, start: 'top 80%', once: true },
       });
-    }
+    });
   });
 }
 
@@ -491,12 +565,15 @@ function initStart() {
 
 // ------------------------------------------------------------------------ boot
 function boot() {
-  initHero();
+  // The hero is path traced live where WebGL 2 allows it, and 2D otherwise.
+  if (!initHeroStage()) initHero();
   initKarma();
   initMaterials();
   initWorlds();
   initStack();
-  initProxy();
+  initAov();
+  // The viewport is live where WebGL 2 allows it; otherwise the 2D illustration runs.
+  if (!initViewport()) initProxy();
   initStart();
   ScrollTrigger.sort();
   ScrollTrigger.refresh();

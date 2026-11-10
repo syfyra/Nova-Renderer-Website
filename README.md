@@ -99,16 +99,50 @@ src/
   content/            claims, benchmarks, limitations, render registry, docs navigation
   layouts/            Base and Docs
   lib/                site constants, GitHub build-time data
-  motion/             GSAP and Lenis: core.ts (all pages), home.ts (home page), accumulate.ts (the noise illustrations)
+  motion/             GSAP and Lenis: core.ts (all pages), home.ts (home page)
+    tracer/           the live path tracer: scene.ts (geometry), shader.ts (GLSL), tracer.ts (accumulation)
+    hero-stage.ts     the live hero and its flight
+    viewport.ts       the interactive viewport
+    aov.ts            the live passes of the layer stack
+    accumulate.ts     the 2D fallback illustrations
   pages/
   styles/global.css   tokens and shared styles
 ```
 
+## Live illustrations
+
+Until real renders fill the slots, the site's pictures are made in the visitor's browser by a small path tracer
+(`src/motion/tracer/`, WebGL 2). It renders one scene: the Nova wordmark as solid letters on a black floor, with the
+dot of the O as a light. The letters come from the same paths as the 2D wordmark.
+
+It is used in three places, each labelled on the page as an illustration and not as Nova's output:
+
+- **The hero** (`hero-stage.ts`): the wordmark resolves out of noise; scrolling flies the camera through the O into
+  the opening statement.
+- **The viewport** (`viewport.ts`): the visitor moves the light, and the picture returns in 4×4 and 2×2 proxy passes
+  before it accumulates, which is how Nova's viewport behaves after an edit. The passes are held longer than a renderer
+  would hold them, and the page says so.
+- **The layer stack** (`aov.ts`): the scene rendered into Karma's component names. The five light components sum to
+  the beauty.
+
+The tracer shares ideas with Nova (progressive accumulation, components per path type, a clamp on indirect light)
+and none of its code. It makes no statement about Nova's speed or image quality, and nothing on the site presents
+its output as a Nova render.
+
+Behaviour to know:
+
+- It measures the GPU first and sizes the picture so a frame takes about 9 ms. It stops rendering once the sample
+  target is reached, when its section is off screen, and when the tab is hidden.
+- Without WebGL 2, or on a machine that can only render in software, the 2D versions run instead: the wordmark
+  resolves through a Monte Carlo accumulator (`accumulate.ts`) and the page zooms through the O in two dimensions.
+- `?rtpx=<pixels>` in the address forces the number of pixels traced per frame. It is a testing aid.
+
 ## Motion
 
-- `prefers-reduced-motion` disables all choreography; the content is then simply visible.
-- The hero's "resolve" and the proxy-pass demonstration are illustrations drawn in the browser by a small Monte Carlo
-  accumulator (`src/motion/accumulate.ts`). They are labelled as such and are not Nova renders.
+- `prefers-reduced-motion` disables all choreography: no pinned sequences, no flight. The content is simply
+  visible, and the live hero appears once it is calm.
+- Three sequences are pinned on wide screens: the hero, the materials gallery when it has pictures, and
+  "Light and matter". On small screens they are ordinary blocks.
 
 ## Licence
 

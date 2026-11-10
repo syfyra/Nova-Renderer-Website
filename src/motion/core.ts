@@ -236,11 +236,70 @@ function initCopy() {
   });
 }
 
+// ------------------------------------------------------------ small pleasures
+// A hairline at the top of the page shows how far the reader has come.
+function initProgress() {
+  const bar = document.querySelector<HTMLElement>('[data-progress]');
+  if (!bar) return;
+  gsap.to(bar, {
+    scaleX: 1,
+    ease: 'none',
+    scrollTrigger: { trigger: document.documentElement, start: 0, end: 'max', scrub: 0.3 },
+  });
+}
+
+// Panels catch a little light where the pointer is.
+function initSpot() {
+  if (coarse) return;
+  document.querySelectorAll<HTMLElement>('[data-spot]').forEach((el) => {
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      el.style.setProperty('--sx', `${e.clientX - r.left}px`);
+      el.style.setProperty('--sy', `${e.clientY - r.top}px`);
+    });
+  });
+}
+
+// Primary actions lean towards the pointer.
+function initMagnetic() {
+  if (coarse || reduced) return;
+  document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
+    const x = gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3.out' });
+    const y = gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3.out' });
+    el.addEventListener('pointermove', (e) => {
+      const r = el.getBoundingClientRect();
+      x((e.clientX - (r.left + r.width / 2)) * 0.16);
+      y((e.clientY - (r.top + r.height / 2)) * 0.28);
+    });
+    el.addEventListener('pointerleave', () => {
+      x(0);
+      y(0);
+    });
+  });
+}
+
+// The wordmark that signs the page off rises letter by letter.
+function initSignOff() {
+  const sign = document.querySelector<HTMLElement>('[data-sign]');
+  if (!sign || reduced) return;
+  gsap.from(sign.querySelectorAll('.wm-letter, .wm-dot, .wm-glow'), {
+    yPercent: 16,
+    opacity: 0,
+    stagger: 0.05,
+    ease: 'none',
+    scrollTrigger: { trigger: sign, start: 'top 98%', end: 'top 58%', scrub: 0.5 },
+  });
+}
+
 // ------------------------------------------------------------------------ boot
 function boot() {
   window.__novaMotion = true;
   initCopy();
   initCompare();
+  initSpot();
+  initMagnetic();
+  initProgress();
+  initSignOff();
   initReveals();
   initCounters();
   initBars();

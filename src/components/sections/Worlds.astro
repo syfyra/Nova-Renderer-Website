@@ -1,25 +1,34 @@
 ---
-// Five full-height panels that stack: each slides over the one before it.
+// Light and matter: five subjects in one place.
+//
+// On wide screens the section is pinned and the subjects follow one another
+// in the same frame: the word changes, the light moves, the facts cross-fade.
+// A subject with a render shows it full-bleed; one without stays typographic.
+// On small screens, and without motion, the subjects are ordinary blocks.
 import WorldMedia from '../media/WorldMedia.astro';
 import Fn from '../primitives/Fn.astro';
-import { slotVisible, type SlotId } from '../../content/renders';
+import { hasRender, type SlotId } from '../../content/renders';
 
 const ids: SlotId[] = ['world-lights', 'world-volumes', 'world-hair', 'world-sss', 'world-sky'];
+const names = ['Many lights', 'Volumes', 'Hair', 'Subsurface', 'Sky'];
 const total = String(ids.length).padStart(2, '0');
-// A panel without a picture (and without its placeholder) is a compact block.
-const cls = (i: number) => ['world', { 'world--plain': !slotVisible(ids[i]) }];
 ---
 
 <section class="worlds" id="light" data-worlds aria-labelledby="worlds-title">
   <h2 id="worlds-title" class="sr-only">Light and matter</h2>
+  <div class="worlds__glow" data-worlds-glow aria-hidden="true"></div>
 
-  <article class:list={cls(0)} data-world>
+  <ol class="worlds__rail caption" data-worlds-rail aria-hidden="true">
+    {names.map((n, i) => (<li data-worlds-step><span>{String(i + 1).padStart(2, '0')}</span>{n}</li>))}
+  </ol>
+
+  <article class="world" data-world data-pictured={hasRender(ids[0]) ? '' : undefined}>
     <div class="world__inner" data-world-inner>
       <WorldMedia id={ids[0]} />
       <div class="wrap world__body">
         <p class="eyebrow"><b>06</b> Light and matter <span class="world__step">01 / {total}</span></p>
-        <h3 class="display-1">Many lights.</h3>
-        <div class="world__foot">
+        <h3 class="world__word"><span data-world-word>Many lights.</span></h3>
+        <div class="world__foot" data-world-foot>
           <p class="lede">
             A light tree over every bounded light, with lights at infinity chosen by importance. Every UsdLux light with
             Karma’s conventions, light and shadow linking, portals, and emissive meshes as lights.
@@ -33,13 +42,13 @@ const cls = (i: number) => ['world', { 'world--plain': !slotVisible(ids[i]) }];
     </div>
   </article>
 
-  <article class:list={cls(1)} data-world>
+  <article class="world" data-world data-pictured={hasRender(ids[1]) ? '' : undefined}>
     <div class="world__inner" data-world-inner>
       <WorldMedia id={ids[1]} />
       <div class="wrap world__body">
         <p class="eyebrow"><b>06</b> Light and matter <span class="world__step">02 / {total}</span></p>
-        <h3 class="display-1">Volumes.</h3>
-        <div class="world__foot">
+        <h3 class="world__word"><span data-world-word>Volumes.</span></h3>
+        <div class="world__foot" data-world-foot>
           <p class="lede">
             VDB and native Houdini volumes through NanoVDB, with the Karma Pyro Material. Unbiased spectral tracking on
             majorants derived from the volume shader. There is no step rate to tune.
@@ -56,13 +65,13 @@ const cls = (i: number) => ['world', { 'world--plain': !slotVisible(ids[i]) }];
     </div>
   </article>
 
-  <article class:list={cls(2)} data-world>
+  <article class="world" data-world data-pictured={hasRender(ids[2]) ? '' : undefined}>
     <div class="world__inner" data-world-inner>
       <WorldMedia id={ids[2]} />
       <div class="wrap world__body">
         <p class="eyebrow"><b>06</b> Light and matter <span class="world__step">03 / {total}</span></p>
-        <h3 class="display-1">Hair.</h3>
-        <div class="world__foot">
+        <h3 class="world__word"><span data-world-word>Hair.</span></h3>
+        <div class="world__foot" data-world-foot>
           <p class="lede">
             Karma Hair, Karma Fur and MaterialX <span class="mono">chiang_hair_bsdf</span> on the Chiang fibre model,
             with Karma’s conventions for melanin, absorption, tilt and roughness.
@@ -76,13 +85,13 @@ const cls = (i: number) => ['world', { 'world--plain': !slotVisible(ids[i]) }];
     </div>
   </article>
 
-  <article class:list={cls(3)} data-world>
+  <article class="world" data-world data-pictured={hasRender(ids[3]) ? '' : undefined}>
     <div class="world__inner" data-world-inner>
       <WorldMedia id={ids[3]} />
       <div class="wrap world__body">
         <p class="eyebrow"><b>06</b> Light and matter <span class="world__step">04 / {total}</span></p>
-        <h3 class="display-1">Subsurface.</h3>
-        <div class="world__foot">
+        <h3 class="world__word"><span data-world-word>Subsurface.</span></h3>
+        <div class="world__foot" data-world-foot>
           <p class="lede">
             Random-walk subsurface scattering for Standard Surface, OpenPBR and the Principled Shader, with Karma’s
             parameterization.
@@ -96,13 +105,13 @@ const cls = (i: number) => ['world', { 'world--plain': !slotVisible(ids[i]) }];
     </div>
   </article>
 
-  <article class:list={cls(4)} data-world>
+  <article class="world" data-world data-pictured={hasRender(ids[4]) ? '' : undefined}>
     <div class="world__inner" data-world-inner>
       <WorldMedia id={ids[4]} />
       <div class="wrap world__body">
         <p class="eyebrow"><b>06</b> Light and matter <span class="world__step">05 / {total}</span></p>
-        <h3 class="display-1">Sky.</h3>
-        <div class="world__foot">
+        <h3 class="world__word"><span data-world-word>Sky.</span></h3>
+        <div class="world__foot" data-world-foot>
           <p class="lede">
             Karma’s sky model as a textured dome, the sun, and a planetary atmosphere with Rayleigh, Mie and ozone
             scattering as a medium in the path tracer.
@@ -120,40 +129,47 @@ const cls = (i: number) => ['world', { 'world--plain': !slotVisible(ids[i]) }];
 <style>
   .worlds {
     position: relative;
-  }
-  .world {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    height: 100svh;
-    min-height: 36rem;
     overflow: hidden;
-    background: var(--ink);
+    border-block: 1px solid var(--line);
+  }
+
+  /* ---- default: ordinary blocks, one per subject */
+  .world {
+    position: relative;
+  }
+  .world + .world {
+    border-top: 1px solid var(--line);
   }
   .world__inner {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    align-items: end;
-    background: var(--stage);
-    border-top: 1px solid var(--line);
-    transform-origin: 50% 0;
-    will-change: transform;
-  }
-  .world:nth-child(odd) .world__inner {
-    background: var(--ink);
+    position: relative;
   }
   .world__body {
     position: relative;
     z-index: 2;
-    padding-block: calc(var(--nav-h) + 2rem) clamp(2.5rem, 6vh, 5rem);
+    padding-block: clamp(4rem, 9vw, 7.5rem);
     display: grid;
     gap: clamp(1.25rem, 3vh, 2.5rem);
+  }
+  .world[data-pictured] .world__body {
+    padding-top: clamp(12rem, 46vw, 26rem);
   }
   .world__step {
     margin-left: 0.75rem;
     color: var(--faint);
     font-variant-numeric: tabular-nums;
+  }
+  .world__word {
+    font-size: var(--display-1);
+    font-weight: 600;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+    /* Room for descenders inside the mask. */
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+    overflow: hidden;
+  }
+  .world__word span {
+    display: inline-block;
   }
   .world__foot {
     display: grid;
@@ -170,35 +186,84 @@ const cls = (i: number) => ['world', { 'world--plain': !slotVisible(ids[i]) }];
     display: grid;
     gap: 0.6rem;
   }
-  /* Compact panels: no picture and no placeholder. */
-  .world--plain {
-    position: relative;
-    height: auto;
-    min-height: 0;
+  .worlds__glow,
+  .worlds__rail {
+    display: none;
   }
-  .world--plain .world__inner {
-    position: relative;
+
+  /* ---- sequence: pinned, one frame, the subjects follow one another */
+  .worlds[data-seq] {
+    height: 100vh;
+    height: 100svh;
+    min-height: 38rem;
   }
-  .world--plain .world__body {
-    padding-block: clamp(3.5rem, 8vw, 7rem);
+  .worlds[data-seq] .world {
+    position: absolute;
+    inset: 0;
+    border: 0;
   }
-  .world--plain .display-1 {
-    font-size: var(--display-2);
+  .worlds[data-seq] .world__inner {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-items: end;
   }
-  /* On phones the panels are ordinary blocks: their text does not fit one screen. */
-  @media (max-width: 760px) {
-    .world {
-      position: relative;
-      height: auto;
-      min-height: 0;
-    }
-    .world__inner {
-      position: relative;
-    }
-    .world__body {
-      padding-block: 5.5rem 3rem;
-    }
+  .worlds[data-seq] .world__body,
+  .worlds[data-seq] .world[data-pictured] .world__body {
+    padding-block: calc(var(--nav-h) + 2rem) clamp(2.5rem, 7vh, 5rem);
   }
+  .worlds[data-seq] .world__step {
+    display: none;
+  }
+  .worlds[data-seq] .world__word {
+    font-size: clamp(4.5rem, 1rem + 12.5vw, 14rem);
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+  }
+  /* The light of the dot, wandering from subject to subject. */
+  .worlds[data-seq] .worlds__glow {
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: min(90vmin, 56rem);
+    aspect-ratio: 1;
+    margin: calc(min(90vmin, 56rem) / -2) 0 0 calc(min(90vmin, 56rem) / -2);
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(254 72 25 / 0.2), rgb(254 72 25 / 0.07) 40%, transparent 72%);
+    pointer-events: none;
+    will-change: transform;
+  }
+  .worlds[data-seq] .worlds__rail {
+    display: grid;
+    gap: 0.55rem;
+    position: absolute;
+    right: var(--gutter);
+    top: calc(var(--nav-h) + 2.2rem);
+    z-index: 3;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: right;
+  }
+  .worlds__rail li {
+    color: var(--faint);
+    opacity: 0.55;
+    transition:
+      color 0.4s,
+      opacity 0.4s;
+  }
+  .worlds__rail li span {
+    margin-right: 0.75rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .worlds__rail li[data-on] {
+    color: var(--paper);
+    opacity: 1;
+  }
+  .worlds__rail li[data-on] span {
+    color: var(--nova);
+  }
+
   @media (max-width: 860px) {
     .world__foot {
       grid-template-columns: minmax(0, 1fr);

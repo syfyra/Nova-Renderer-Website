@@ -25,14 +25,14 @@ const does = [
     </header>
 
     <section class="dl__main" aria-label="Installer">
-      <div class="dl__card glass" data-reveal="frame">
+      <div class="dl__card glass" data-reveal="frame" data-spot>
         <div class="dl__light" aria-hidden="true"></div>
         <p class="caption dl__file">{gh.installerName}</p>
         <p class="dl__version">Nova {gh.version}</p>
         <p class="caption dl__meta">
           Windows x64 · Houdini 22.0{gh.installerSize && ` · ${gh.installerSize}`}
         </p>
-        <a class="btn btn--primary dl__btn" href={gh.installerUrl ?? gh.releaseUrl} rel="noopener">
+        <a class="btn btn--primary dl__btn" href={gh.installerUrl ?? gh.releaseUrl} rel="noopener" data-magnetic>
           <span class="btn__dot" aria-hidden="true"></span>
           {gh.installerUrl ? 'Download the installer' : 'Download from GitHub Releases'}
         </a>

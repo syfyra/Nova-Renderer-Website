@@ -10,13 +10,13 @@ const gh = await getGitHub();
 <section class="section start" id="get-started" aria-labelledby="start-title">
   <div class="start__light" aria-hidden="true" data-start-light></div>
   <div class="wrap">
-    <div class="start__panel glass" data-reveal="frame">
+    <div class="start__panel glass" data-reveal="frame" data-spot>
       <div class="start__lead">
         <p class="eyebrow"><b>11</b> Get started</p>
         <h2 id="start-title" class="display-2">Get Nova.</h2>
         <p class="lede">Free and open source. One installer, per user, without administrator rights.</p>
         <div class="start__cta">
-          <a class="btn btn--primary" href={gh.installerUrl ?? gh.releaseUrl} rel="noopener">
+          <a class="btn btn--primary" href={gh.installerUrl ?? gh.releaseUrl} rel="noopener" data-magnetic>
             <span class="btn__dot" aria-hidden="true"></span>
             Download {gh.installerName}
           </a>

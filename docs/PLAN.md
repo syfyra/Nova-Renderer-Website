@@ -268,9 +268,10 @@ assistive technology with the original text kept in an `aria-label`.
 | Quality gates | ESLint, Prettier, `astro check`, Playwright smoke and visual tests, Lighthouse CI, axe | CI on every pull request |
 | Analytics | None by default; Plausible if wanted | No cookie banner |
 
-Decision recorded: no WebGL scene in version 1. Real renders are more convincing than a real-time imitation of a
-path tracer, and they keep the page light. A WebGL image-transition shader can be added later for scene
-transitions if CSS clip-paths prove too plain.
+Decision revised (2026-11-10): the first version had no WebGL, on the grounds that real renders are more
+convincing than a real-time imitation. With only hero shots available, the page had no pictures at all, so a small
+WebGL 2 path tracer now renders the wordmark live as the hero, the interactive viewport and the layer stack. It is
+labelled as an illustration wherever it appears, and real renders replace or join it as they arrive.
 
 ### 5.2 Repository structure
 
@@ -458,4 +459,9 @@ Taken on 2026-11-10.
 5. **Logo:** supplied as an image; the wordmark was redrawn as vector paths from it
    (`src/components/brand/wordmark.json`).
 
-Status: phases 0 to 4 are implemented. Phase 5 (assets) waits for renders; the README says how to add them.
+6. **Live illustrations:** a WebGL 2 path tracer renders the wordmark as a 3D scene for the hero (with a scroll
+   flight through the O), the interactive viewport and the layer stack. It falls back to the 2D versions without a
+   usable GPU. See the README, "Live illustrations".
+
+Status: phases 0 to 4 are implemented, and the site is published on GitHub Pages from `main`. Phase 5 (assets)
+waits for renders; the README says how to add them.

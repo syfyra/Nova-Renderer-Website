@@ -17,25 +17,34 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
       <h2 id="interactive-title" class="display-2" data-reveal="lines">An edit shows in milliseconds.</h2>
       <p class="lede" data-reveal="fade">
         After an edit the viewport renders one pixel per 4×4 block, then per 2×2, then every pixel. Those samples count
-        towards the image.
+        towards the image. Move the light below to see the idea.
       </p>
     </header>
 
     <div class="interactive__grid">
-      <figure class="viewport" data-proxy data-reveal="frame">
+      <figure class="viewport" data-proxy data-reveal="frame" data-spot>
         <div class="viewport__bar">
-          <span class="caption">Viewport · illustration</span>
+          <span class="caption">Viewport · live illustration</span>
           <span class="caption num viewport__stage" data-proxy-stage aria-live="off">0256 spp</span>
         </div>
         <div class="viewport__screen">
-          <canvas data-proxy-canvas width="480" height="300" role="img" aria-label="Illustration: a picture refines from coarse 4 by 4 blocks to 2 by 2 blocks to full resolution, then loses its noise as samples accumulate."></canvas>
+          <canvas
+            class="viewport__live"
+            data-proxy-live
+            tabindex="0"
+            role="img"
+            aria-label="The Nova wordmark lit by a movable orange light, path traced live. After each move the picture returns in coarse 4 by 4 blocks, then 2 by 2 blocks, then at full resolution while its noise clears. Arrow keys move the light."
+          ></canvas>
+          <canvas class="viewport__flat" data-proxy-canvas width="480" height="300" role="img" aria-label="Illustration: a picture refines from coarse 4 by 4 blocks to 2 by 2 blocks to full resolution, then loses its noise as samples accumulate."></canvas>
+          <p class="viewport__hint glass caption" data-proxy-hint aria-hidden="true">Drag the light</p>
         </div>
         <figcaption class="viewport__foot">
           <button type="button" class="btn btn--small" data-proxy-edit>
             <span class="viewport__dot" aria-hidden="true"></span>
             Move the light
           </button>
-          <span class="caption">Drawn in your browser and slowed down. Not a Nova render.</span>
+          <span class="caption viewport__note viewport__note--live">Path traced in your browser. The proxy passes are held longer so you can see them. Not Nova.</span>
+          <span class="caption viewport__note viewport__note--flat">Drawn in your browser and slowed down. Not a Nova render.</span>
         </figcaption>
       </figure>
 
@@ -124,8 +133,46 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
     color: var(--paper);
   }
   .viewport__screen {
+    position: relative;
     background: #050505;
     border-block: 1px solid var(--line);
+  }
+  /* The live canvas replaces the flat one where WebGL 2 is available. */
+  .viewport__screen .viewport__live,
+  .viewport__hint,
+  .viewport__note--live {
+    display: none;
+  }
+  .viewport[data-live] .viewport__live {
+    display: block;
+    image-rendering: auto;
+    cursor: grab;
+    touch-action: pan-y;
+  }
+  .viewport[data-live] .viewport__live:active {
+    cursor: grabbing;
+  }
+  .viewport[data-live] .viewport__flat,
+  .viewport[data-live] .viewport__note--flat {
+    display: none;
+  }
+  .viewport[data-live] .viewport__note--live {
+    display: inline;
+  }
+  .viewport[data-live] .viewport__hint {
+    display: block;
+    position: absolute;
+    left: 50%;
+    bottom: 1rem;
+    transform: translateX(-50%);
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    color: var(--paper);
+    pointer-events: none;
+    transition: opacity 0.6s;
+  }
+  .viewport__hint[data-used] {
+    opacity: 0;
   }
   .viewport__screen canvas {
     width: 100%;
@@ -135,6 +182,10 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
   }
   .viewport__foot {
     flex-wrap: wrap;
+  }
+  .viewport__note {
+    flex: 1 1 16rem;
+    text-align: right;
   }
   .viewport__dot {
     width: 0.5rem;

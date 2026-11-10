@@ -64,7 +64,6 @@ export const slots = {
   'world-hair': { shot: 'R7', title: 'Hair', brief: 'A hair or fur close-up.' },
   'world-sss': { shot: 'R8', title: 'Subsurface', brief: 'Skin, wax or marble.' },
   'world-sky': { shot: 'R9', title: 'Sky', brief: 'An exterior under the physical sky.' },
-  'aov-beauty': { shot: 'R10', title: 'Beauty', brief: 'The beauty of the AOV set.' },
   'denoise-noisy': { shot: 'R11', title: '16 samples', brief: 'A frame at 16 samples per pixel.' },
   'denoise-clean': { shot: 'R11', title: 'Denoised', brief: 'The same frame, denoised with OptiX.' },
 } satisfies Record<string, RenderSlot>;

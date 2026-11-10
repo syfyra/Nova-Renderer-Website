@@ -37,11 +37,11 @@ const columns = [
 
 <footer class="footer">
   <div class="wrap">
+    <a class="footer__sign" href={href('/')} aria-label="Nova, home" data-sign>
+      <Wordmark id="footer-wm" />
+    </a>
     <div class="footer__top">
       <div class="footer__brand">
-        <a href={href('/')} class="footer__mark" aria-label="Nova, home">
-          <Wordmark id="footer-wm" />
-        </a>
         <p class="caption">Production path tracing for Houdini Solaris.<br />Version {VERSION} · Windows x64 · Houdini 22.0</p>
       </div>
       {
@@ -91,11 +91,15 @@ const columns = [
     grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr));
     gap: 2.5rem clamp(1.5rem, 3vw, 3rem);
   }
-  .footer__mark {
+  /* The wordmark, as large as the page, barely lighter than it. Only the dot is lit. */
+  .footer__sign {
     display: block;
-    width: 8.5rem;
-    color: var(--paper);
-    margin-bottom: 1.25rem;
+    color: var(--stage-2);
+    margin-bottom: clamp(3rem, 7vw, 6rem);
+    transition: color 0.8s;
+  }
+  .footer__sign:hover {
+    color: var(--stage-3);
   }
   .footer__col h2 {
     font-weight: 500;
