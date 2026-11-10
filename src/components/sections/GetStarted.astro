@@ -23,7 +23,7 @@ const gh = await getGitHub();
           <a class="btn" href={href('/docs/build')}>Build from source</a>
         </div>
         <p class="caption start__meta">
-          Version {gh.version}{gh.installerSize && ` · ${gh.installerSize}`} · MIT License ·
+          Version {gh.version}{gh.installerSize && ` · ${gh.installerSize}`} · MIT License ·{' '}
           <a class="link" href={href('/download')}>All download options</a>
         </p>
         <Requirements />
