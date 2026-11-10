@@ -73,6 +73,17 @@ to the releases page.
 `dist/` is plain HTML, CSS and JavaScript with no server component, so any static host serves it: GitHub Pages,
 Cloudflare Pages, Netlify, Vercel and others, all on their free tiers. All internal links respect `BASE_PATH`.
 
+### GitHub Pages
+
+`.github/workflows/deploy.yml` builds and publishes the site on every push to `main`, and can be started by hand
+from the Actions tab.
+
+One-time setup: in the repository, open **Settings > Pages** and set **Source** to **GitHub Actions**. On a free
+GitHub account, Pages needs the repository to be public.
+
+The site is then served at `https://<owner>.github.io/<repository>/`. The workflow reads the address from the Pages
+settings, so a custom domain set there is used without changing any file.
+
 ## Structure
 
 ```

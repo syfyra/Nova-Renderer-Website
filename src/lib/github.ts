@@ -31,10 +31,13 @@ const FALLBACK: GitHubData = {
 
 async function get(url: string): Promise<any | null> {
   try {
-    const res = await fetch(url, {
-      headers: { Accept: 'application/vnd.github+json', 'User-Agent': 'nova-website-build' },
-      signal: AbortSignal.timeout(6000),
-    });
+    const headers: Record<string, string> = {
+      Accept: 'application/vnd.github+json',
+      'User-Agent': 'nova-website-build',
+    };
+    // In CI a token lifts the anonymous rate limit. It only reads public data.
+    if (process.env.GITHUB_TOKEN) headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+    const res = await fetch(url, { headers, signal: AbortSignal.timeout(6000) });
     if (!res.ok) return null;
     return await res.json();
   } catch {
