@@ -83,6 +83,7 @@ export function initHeroStage(): boolean {
   const sppEl = hero.querySelector<HTMLElement>('[data-hero-spp]')!;
   const live = hero.querySelector<HTMLElement>('[data-hero-live]');
   const ember = hero.querySelector<HTMLElement>('[data-hero-ember]')!;
+  const shade = hero.querySelector<HTMLElement>('.hero__shade');
   const statement = hero.querySelector<HTMLElement>('[data-hero-statement]')!;
   const statementText = hero.querySelector<HTMLElement>('[data-hero-words]')!;
   if (live) live.hidden = false;
@@ -90,6 +91,7 @@ export function initHeroStage(): boolean {
   // ---- camera
   let keys = flight(1.6).keys;
   const fly = { p: 0 };
+  let lastP = 0;
   const applyFly = () => {
     const k = along(keys, fly.p);
     const c = tracer.camera;
@@ -103,7 +105,11 @@ export function initHeroStage(): boolean {
     const out = Math.min(1, Math.max(0, (fly.p - 0.86) / 0.14));
     tracer.fade = 1 - out * out * (3 - 2 * out);
     canvas.style.visibility = fly.p >= 0.999 ? 'hidden' : 'visible';
-    tracer.touch();
+    // A jump (an anchor link, a very slow frame) is a cut: start afresh, so
+    // nothing of the old view lingers in the new one.
+    if (Math.abs(fly.p - lastP) > 0.06) tracer.reset();
+    else tracer.touch();
+    lastP = fly.p;
   };
 
   const fit = () => {
@@ -176,6 +182,8 @@ export function initHeroStage(): boolean {
     .to(copy, { autoAlpha: 0, y: -24, duration: 0.7, ease: 'power2.in' }, 0)
     .to(meta.querySelectorAll('.hero__facts, .hero__cue'), { opacity: 0, duration: 0.7 }, 0)
     .to(fly, { p: 1, duration: 6, ease: 'power1.inOut', onUpdate: applyFly }, 0)
+    // The fade over the reflection belongs to the opening frame only.
+    .to(shade, { autoAlpha: 0, duration: 1.1 }, 0.1)
     .to(meta, { opacity: 0, duration: 0.6 }, 4.9)
     .to(ember, { autoAlpha: 1, scale: 1, duration: 1.2, ease: 'power2.out' }, 5.3)
     .fromTo(statement, { autoAlpha: 0, y: 36 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: 'power2.out' }, 5.5)

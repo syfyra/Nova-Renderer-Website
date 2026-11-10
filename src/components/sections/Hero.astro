@@ -156,7 +156,16 @@ const statement =
     margin-left: 0.9rem;
     padding-left: 0.9rem;
     border-left: 1px solid var(--line-strong);
-    color: var(--faint);
+  }
+  /* The label that says what the picture is stays readable over any frame. */
+  .hero--stage .hero__spp {
+    justify-self: start;
+    padding: 0.35rem 0.7rem;
+    border-radius: 7px;
+    background: rgb(10 10 10 / 0.55);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: var(--paper-dim);
   }
 
   /* The light that stays when the camera has passed through the O. */
@@ -413,6 +422,8 @@ const statement =
       display: block;
       order: 2;
       text-align: center;
+      justify-self: center;
+      white-space: normal;
     }
     .hero--stage .hero__live {
       display: block;
