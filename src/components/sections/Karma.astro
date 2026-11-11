@@ -1,5 +1,6 @@
 ---
 import CompareSlider from '../media/CompareSlider.astro';
+import Icon from '../primitives/Icon.astro';
 import { href } from '../../lib/site';
 import { slotVisible } from '../../content/renders';
 
@@ -7,18 +8,18 @@ const compare = slotVisible('karma-karma', 'karma-nova');
 
 // The twelve visible Karma LOPs (README, docs/reference.md "Karma's Solaris nodes").
 const lops = [
-  { name: 'Karma Render Settings', note: 'Every parameter with a Nova equivalent is read as a fallback.' },
-  { name: 'Karma Render Products', note: 'Per-var sample filters, checkpoints with resume, deep EXR.' },
-  { name: 'Karma Standard Render Vars', note: 'The render vars Karma authors, under Karma’s names.' },
-  { name: 'Karma Cryptomatte', note: 'Objects, materials and per-instance primvars.' },
-  { name: 'Karma Sky Dome Light', note: 'Karma’s sky model as a textured dome.' },
-  { name: 'Karma Physical Sky', note: 'The sky and its sun.' },
-  { name: 'Karma Sky Atmosphere', note: 'Rayleigh, Mie, ozone and ground as a medium.' },
-  { name: 'Karma Shadow Catcher', note: 'Holdouts with Karma’s shadow alpha.' },
-  { name: 'Karma Background Plate', note: 'The plate composite and the holdout LPE planes.' },
-  { name: 'Karma Blocker Light Filter', note: 'Light filters on every light sampling path.' },
-  { name: 'Karma Fog Box', note: 'Media bounded by closed surfaces.' },
-  { name: 'Karma Texture Baker', note: 'UV-space bakes with UDIMs. Bakes on the CPU.' },
+  { name: 'Karma Render Settings', note: 'Every parameter with a Nova equivalent is read as a fallback' },
+  { name: 'Karma Render Products', note: 'Per-var sample filters, checkpoints with resume, deep EXR' },
+  { name: 'Karma Standard Render Vars', note: 'The render vars Karma authors, under Karma’s names' },
+  { name: 'Karma Cryptomatte', note: 'Objects, materials and per-instance primvars' },
+  { name: 'Karma Sky Dome Light', note: 'Karma’s sky model as a textured dome' },
+  { name: 'Karma Physical Sky', note: 'The sky and its sun' },
+  { name: 'Karma Sky Atmosphere', note: 'Rayleigh, Mie, ozone and ground as a medium' },
+  { name: 'Karma Shadow Catcher', note: 'Holdouts with Karma’s shadow alpha' },
+  { name: 'Karma Background Plate', note: 'The plate composite and the holdout LPE planes' },
+  { name: 'Karma Blocker Light Filter', note: 'Light filters on every light sampling path' },
+  { name: 'Karma Fog Box', note: 'Media bounded by closed surfaces' },
+  { name: 'Karma Texture Baker', note: 'UV-space bakes with UDIMs, on the CPU' },
 ];
 ---
 
@@ -26,35 +27,28 @@ const lops = [
   <div class="wrap">
     <div class="karma__grid">
       <header class="karma__lead">
-        <p class="eyebrow" data-reveal="fade"><b>04</b> Karma compatibility</p>
-        <h2 id="karma-title" class="display-2" data-reveal="lines">It speaks Karma’s language.</h2>
-        <p class="lede" data-reveal="fade">
-          Scenes built with Karma’s Solaris nodes render in Nova as they are, on the CPU and on the GPU.
-        </p>
-        <p class="body" data-reveal="fade">
+        <p class="eyebrow">Karma compatibility</p>
+        <h2 id="karma-title" class="display-2">It speaks Karma’s language</h2>
+        <p class="lede">Scenes built with Karma’s Solaris nodes render in Nova as they are, on the CPU and on the GPU</p>
+        <p class="body">
           Nova reads Karma’s render settings as a fallback, follows Karma’s light conventions and writes Karma’s AOV
           names. Each feature was measured against Karma CPU first and is checked by an automated test. A setting Nova
           does not support warns once per stage.
         </p>
-        <p class="body" data-reveal="fade">
-          Nova’s own nodes mirror Karma’s: <strong>Nova</strong>, <strong>Nova Render Settings</strong>,
+        <p class="body">
+          Nova’s own nodes mirror Karma’s: <strong>Nova</strong>, <strong>Nova Render Settings</strong>,{' '}
           <strong>Nova (Setup)</strong> and the <strong>Nova Material Builder</strong>.
         </p>
-        <p data-reveal="fade">
-          <a class="arrow" href={href('/docs/karma')}>
-            Compatibility in detail
-            <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
-          </a>
-        </p>
+        <a class="arrow" href={href('/docs/karma')}>Compatibility in detail <Icon name="arrow-right" /></a>
       </header>
 
       <div class="karma__list">
-        <p class="caption karma__count" data-reveal="fade">All twelve visible Karma LOPs</p>
-        <ol data-karma-list>
+        <p class="eyebrow">All twelve visible Karma LOPs</p>
+        <ol>
           {
             lops.map((lop, i) => (
-              <li data-karma-row>
-                <span class="mono karma__n">{String(i + 1).padStart(2, '0')}</span>
+              <li>
+                <span class="caption num karma__n">{i + 1}</span>
                 <span class="karma__name">{lop.name}</span>
                 <span class="karma__note">{lop.note}</span>
               </li>
@@ -67,12 +61,10 @@ const lops = [
     {
       compare && (
         <>
-          <div class="karma__compare" data-reveal="frame">
+          <div class="karma__compare">
             <CompareSlider a="karma-karma" b="karma-nova" labelA="Karma CPU" labelB="Nova" ratio="2 / 1" name="Karma and Nova comparison" />
           </div>
-          <p class="caption karma__caption" data-reveal="fade">
-            One scene, one setup, two renderers. Measured differences are documented per reference scene.
-          </p>
+          <p class="caption karma__caption">One scene, one setup, two renderers. Measured differences are documented per reference scene.</p>
         </>
       )
     }
@@ -83,54 +75,50 @@ const lops = [
   .karma__grid {
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: clamp(2.5rem, 6vw, 7rem);
+    gap: 40px var(--gap-xl);
     align-items: start;
   }
   .karma__lead {
     display: grid;
-    gap: 1.5rem;
+    gap: 16px;
+    justify-items: start;
     position: sticky;
-    top: calc(var(--nav-h) + 2rem);
+    top: calc(var(--nav-h) + 32px);
   }
-  .karma__count {
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding-bottom: 1rem;
+  .karma__list ol {
+    margin-top: 12px;
   }
   .karma__list li {
     display: grid;
-    grid-template-columns: 2.5rem minmax(0, 1fr);
-    column-gap: 0.5rem;
-    row-gap: 0.2rem;
-    padding-block: 1.05rem;
+    grid-template-columns: 24px minmax(0, 1fr);
+    column-gap: 16px;
+    align-items: baseline;
+    padding-block: 12px;
     border-top: 1px solid var(--line);
-    transition: opacity 0.4s;
   }
   .karma__list li:last-child {
     border-bottom: 1px solid var(--line);
   }
   .karma__n {
     grid-row: span 2;
-    color: var(--faint);
-    padding-top: 0.45em;
-    font-size: var(--text-xs);
+    text-align: right;
   }
   .karma__name {
-    font-size: var(--text-xl);
-    font-weight: 550;
-    letter-spacing: -0.03em;
-    line-height: 1.15;
+    font-size: var(--t-18);
+    line-height: 28px;
+    font-weight: 500;
   }
   .karma__note {
     grid-column: 2;
-    color: var(--muted);
-    font-size: var(--text-sm);
+    color: var(--text-2);
+    font-size: var(--t-14);
+    line-height: 20px;
   }
   .karma__compare {
-    margin-top: clamp(4rem, 9vw, 8rem);
+    margin-top: var(--gap-l);
   }
   .karma__caption {
-    margin-top: 1rem;
+    margin-top: 12px;
   }
   @media (max-width: 900px) {
     .karma__grid {

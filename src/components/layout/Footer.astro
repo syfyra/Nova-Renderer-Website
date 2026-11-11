@@ -37,23 +37,23 @@ const columns = [
 
 <footer class="footer">
   <div class="wrap">
-    <a class="footer__sign" href={href('/')} aria-label="Nova, home" data-sign>
-      <Wordmark id="footer-wm" />
+    <a class="footer__sign" href={href('/')} aria-label="Nova, home">
+      <Wordmark id="footer-wm" glow={false} />
     </a>
     <div class="footer__top">
-      <div class="footer__brand">
-        <p class="caption">Production path tracing for Houdini Solaris.<br />Version {VERSION} · Windows x64 · Houdini 22.0</p>
-      </div>
+      <p class="footer__brand">
+        Production path tracing for Houdini Solaris<br />
+        <span class="caption">Version {VERSION} · Windows x64 · Houdini 22.0</span>
+      </p>
       {
         columns.map((col) => (
           <nav class="footer__col" aria-label={col.title}>
-            <h2 class="caption">{col.title}</h2>
+            <h2>{col.title}</h2>
             <ul>
               {col.links.map((l) => (
                 <li>
                   <a href={l.url} rel={'ext' in l ? 'noopener' : undefined}>
                     {l.label}
-                    {'ext' in l && <span aria-hidden="true"> ↗</span>}
                   </a>
                 </li>
               ))}
@@ -81,58 +81,59 @@ const columns = [
 <style>
   .footer {
     border-top: 1px solid var(--line);
-    padding-block: clamp(3.5rem, 7vw, 6rem) 2.5rem;
-    background: var(--ink);
-    position: relative;
-    z-index: 2;
+    padding-block: 64px 40px;
+    background: var(--bg);
+  }
+  /* The wordmark closes the page: one step lighter than the stage, the dot lit. */
+  .footer__sign {
+    display: block;
+    color: var(--raised);
+    margin-bottom: 64px;
   }
   .footer__top {
     display: grid;
-    grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr));
-    gap: 2.5rem clamp(1.5rem, 3vw, 3rem);
+    grid-template-columns: minmax(0, 2fr) repeat(3, minmax(0, 1fr));
+    gap: 40px var(--gap-m);
   }
-  /* The wordmark, as large as the page, barely lighter than it. Only the dot is lit. */
-  .footer__sign {
-    display: block;
-    color: var(--stage-2);
-    margin-bottom: clamp(3rem, 7vw, 6rem);
-    transition: color 0.8s;
+  .footer__brand {
+    font-size: var(--t-14);
+    line-height: 20px;
+    color: var(--text-2);
   }
-  .footer__sign:hover {
-    color: var(--stage-3);
+  .footer__brand .caption {
+    display: inline-block;
+    margin-top: 8px;
   }
   .footer__col h2 {
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 1rem;
-    color: var(--faint);
+    font-size: var(--t-14);
+    line-height: 20px;
+    font-weight: 400;
+    color: var(--text-3);
+    margin-bottom: 12px;
   }
   .footer__col ul {
     display: grid;
-    gap: 0.6rem;
+    gap: 8px;
   }
   .footer__col a {
-    font-size: var(--text-sm);
-    color: var(--paper-dim);
-    transition: color 0.2s;
+    font-size: var(--t-14);
+    line-height: 20px;
+    color: var(--text-2);
+    transition: color 160ms var(--ease);
   }
   .footer__col a:hover {
-    color: var(--paper);
-  }
-  .footer__col a span {
-    color: var(--faint);
+    color: var(--text);
   }
   .footer__legal {
-    margin-top: clamp(3rem, 6vw, 5rem);
-    padding-top: 1.5rem;
+    margin-top: 64px;
+    padding-top: 24px;
     border-top: 1px solid var(--line);
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem clamp(1.5rem, 3vw, 3rem);
-    font-size: var(--text-xs);
-    line-height: 1.6;
-    color: var(--faint);
+    gap: 16px var(--gap-m);
+    font-size: var(--t-12);
+    line-height: 20px;
+    color: var(--text-3);
   }
   @media (max-width: 860px) {
     .footer__top {

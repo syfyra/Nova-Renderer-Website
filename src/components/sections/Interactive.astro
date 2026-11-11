@@ -5,27 +5,26 @@ import { ipr, iprHome } from '../../content/benchmarks';
 import { slotVisible } from '../../content/renders';
 
 const compare = slotVisible('denoise-noisy', 'denoise-clean');
-
 const rows = iprHome.map((name) => ipr.find((r) => r.edit === name)!);
-const max = 100; // PLAN.md's budget for an edit, in milliseconds
+const max = 100; // the budget for an edit, in milliseconds
 ---
 
 <section class="section interactive" id="interactive" aria-labelledby="interactive-title">
   <div class="wrap">
     <header class="head">
-      <p class="eyebrow" data-reveal="fade"><b>08</b> Look-dev and IPR</p>
-      <h2 id="interactive-title" class="display-2" data-reveal="lines">An edit shows in milliseconds.</h2>
-      <p class="lede" data-reveal="fade">
+      <p class="eyebrow">Look-dev and IPR</p>
+      <h2 id="interactive-title" class="display-2">An edit shows in milliseconds</h2>
+      <p class="lede">
         After an edit the viewport renders one pixel per 4×4 block, then per 2×2, then every pixel. Those samples count
         towards the image. Move the light below to see the idea.
       </p>
     </header>
 
     <div class="interactive__grid">
-      <figure class="viewport" data-proxy data-reveal="frame" data-spot>
+      <figure class="viewport card" data-proxy>
         <div class="viewport__bar">
-          <span class="caption">Viewport · live illustration</span>
-          <span class="caption num viewport__stage" data-proxy-stage aria-live="off">0256 spp</span>
+          <span class="caption">Viewport, live illustration</span>
+          <span class="caption num viewport__stage" data-proxy-stage aria-live="off">256 spp</span>
         </div>
         <div class="viewport__screen">
           <canvas
@@ -36,33 +35,30 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
             aria-label="The Nova wordmark lit by a movable orange light, path traced live. After each move the picture returns in coarse 4 by 4 blocks, then 2 by 2 blocks, then at full resolution while its noise clears. Arrow keys move the light."
           ></canvas>
           <canvas class="viewport__flat" data-proxy-canvas width="480" height="300" role="img" aria-label="Illustration: a picture refines from coarse 4 by 4 blocks to 2 by 2 blocks to full resolution, then loses its noise as samples accumulate."></canvas>
-          <p class="viewport__hint glass caption" data-proxy-hint aria-hidden="true">Drag the light</p>
+          <p class="viewport__hint caption" data-proxy-hint aria-hidden="true">Drag the light</p>
         </div>
         <figcaption class="viewport__foot">
-          <button type="button" class="btn btn--small" data-proxy-edit>
-            <span class="viewport__dot" aria-hidden="true"></span>
-            Move the light
-          </button>
+          <button type="button" class="btn btn--small" data-proxy-edit>Move the light</button>
           <span class="caption viewport__note viewport__note--live">Path traced in your browser. The proxy passes are held longer so you can see them. Not Nova.</span>
           <span class="caption viewport__note viewport__note--flat">Drawn in your browser and slowed down. Not a Nova render.</span>
         </figcaption>
       </figure>
 
-      <div class="latency" data-reveal="fade">
-        <p class="caption latency__title">Edit to first image, CPU<Fn id="ipr" /></p>
-        <ul data-bars>
+      <div class="latency">
+        <p class="eyebrow">Edit to first image, CPU<Fn id="ipr" /></p>
+        <ul>
           {
             rows.map((r) => (
               <li>
                 <span class="latency__edit">{r.edit}</span>
-                <span class="latency__ms num">{r.total}</span>
-                <span class="latency__bar"><i data-bar style={`--w:${(r.ms / max).toFixed(3)}`} /></span>
+                <span class="caption num latency__ms">{r.total}</span>
+                <span class="latency__bar"><i style={`--w:${(r.ms / max).toFixed(3)}`} /></span>
               </li>
             ))
           }
         </ul>
         <p class="caption latency__scale"><span>0</span><span>100 ms</span></p>
-        <p class="body latency__note">
+        <p class="latency__note">
           Measured at 1280×720 on a scene of 980 000 triangles with 20 000 instances. Every measured edit stays below
           100&nbsp;ms.
         </p>
@@ -70,34 +66,28 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
     </div>
 
     <div class:list={['interactive__more', { 'interactive__more--plain': !compare }]}>
-      {
-        compare && (
-          <div class="interactive__denoise" data-reveal="frame">
-            <CompareSlider a="denoise-noisy" b="denoise-clean" labelA="16 samples" labelB="Denoised" ratio="16 / 10" name="Noisy and denoised comparison" />
-          </div>
-        )
-      }
-      <ul class="interactive__cards" data-reveal="stagger" data-stagger="0.1">
-        <li>
-          <h3>OptiX denoiser</h3>
-          <p>
+      {compare && <CompareSlider a="denoise-noisy" b="denoise-clean" labelA="16 samples" labelB="Denoised" ratio="16 / 10" name="Noisy and denoised comparison" />}
+      <dl class="interactive__rows">
+        <div>
+          <dt>OptiX denoiser</dt>
+          <dd>
             For final frames and in the viewport, guided by the first-hit albedo and normal. Alpha stays exact. One
             denoise takes 8&nbsp;ms at 1080p and 31&nbsp;ms at 4K on an RTX 5080.<Fn id="denoise" />
-          </p>
-        </li>
-        <li>
-          <h3>Adaptive sampling</h3>
-          <p>
+          </dd>
+        </div>
+        <div>
+          <dt>Adaptive sampling</dt>
+          <dd>
             Each pixel stops once its noise estimate is low enough, decided at power-of-two checkpoints so renders stay
             deterministic. About 3× faster at equal error on a glass scene, and about even on uniformly noisy
             ones.<Fn id="adaptive" />
-          </p>
-        </li>
-        <li>
-          <h3>Look-dev tools</h3>
-          <p>Contour, depth and crease outlines, headlight and dome overrides, simplified shading, and path guiding on the CPU and on the GPU.</p>
-        </li>
-      </ul>
+          </dd>
+        </div>
+        <div>
+          <dt>Look-dev tools</dt>
+          <dd>Contour, depth and crease outlines, headlight and dome overrides, simplified shading, and path guiding on the CPU and on the GPU</dd>
+        </div>
+      </dl>
     </div>
   </div>
 </section>
@@ -106,14 +96,11 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
   .interactive__grid {
     display: grid;
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: clamp(2rem, 5vw, 5rem);
+    gap: 40px var(--gap-l);
     align-items: start;
   }
 
   .viewport {
-    border-radius: var(--radius);
-    background: var(--stage);
-    box-shadow: inset 0 0 0 1px var(--line);
     overflow: hidden;
   }
   .viewport__bar,
@@ -121,21 +108,22 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1rem;
-    padding: 0.75rem 1rem;
-  }
-  .viewport__bar .caption {
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--faint);
+    gap: 16px;
+    padding: 12px 16px;
   }
   .viewport__bar .viewport__stage {
-    color: var(--paper);
+    color: var(--text);
   }
   .viewport__screen {
     position: relative;
-    background: #050505;
+    background: var(--bg);
     border-block: 1px solid var(--line);
+  }
+  .viewport__screen canvas {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    image-rendering: pixelated;
   }
   /* The live canvas replaces the flat one where WebGL 2 is available. */
   .viewport__screen .viewport__live,
@@ -162,67 +150,49 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
   .viewport[data-live] .viewport__hint {
     display: block;
     position: absolute;
-    left: 50%;
-    bottom: 1rem;
-    transform: translateX(-50%);
-    padding: 0.4rem 0.8rem;
-    border-radius: 999px;
-    color: var(--paper);
+    left: 12px;
+    bottom: 12px;
+    padding: 4px 8px;
+    border-radius: var(--r-s);
+    background: var(--bg);
+    color: var(--text);
     pointer-events: none;
-    transition: opacity 0.6s;
+    transition: opacity 300ms var(--ease);
   }
   .viewport__hint[data-used] {
     opacity: 0;
-  }
-  .viewport__screen canvas {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 10;
-    image-rendering: pixelated;
   }
   .viewport__foot {
     flex-wrap: wrap;
   }
   .viewport__note {
-    flex: 1 1 16rem;
+    flex: 1 1 256px;
     text-align: right;
   }
-  .viewport__dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: var(--nova);
-    box-shadow: 0 0 10px rgb(254 72 25 / 0.7);
-  }
 
-  .latency__title {
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    padding-bottom: 0.5rem;
-  }
   .latency ul {
-    display: grid;
+    margin-top: 12px;
   }
   .latency li {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 0.55rem 1rem;
-    padding-block: 0.95rem;
+    gap: 8px 16px;
+    padding-block: 12px;
     border-top: 1px solid var(--line);
   }
   .latency__edit {
-    font-size: var(--text-sm);
-    color: var(--paper-dim);
+    font-size: var(--t-14);
+    line-height: 20px;
+    color: var(--text);
   }
   .latency__ms {
-    font-family: var(--font-mono);
-    font-size: var(--text-sm);
-    color: var(--paper);
+    line-height: 20px;
+    color: var(--text-2);
   }
   .latency__bar {
     grid-column: 1 / -1;
     position: relative;
-    height: 3px;
+    height: 4px;
     background: var(--line);
     border-radius: 2px;
   }
@@ -230,59 +200,70 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
     position: absolute;
     inset: 0;
     border-radius: 2px;
-    background: var(--paper);
+    background: var(--text-2);
     transform-origin: 0 50%;
-    transform: scaleX(calc(var(--w) * var(--p, 1)));
+    transform: scaleX(var(--w));
   }
   .latency__scale {
     display: flex;
     justify-content: space-between;
-    padding-top: 0.5rem;
+    padding-top: 8px;
     border-top: 1px solid var(--line);
-    color: var(--faint);
   }
   .latency__note {
-    margin-top: 1.25rem;
-    font-size: var(--text-sm);
+    margin-top: 16px;
+    font-size: var(--t-14);
+    line-height: 20px;
+    color: var(--text-2);
   }
 
   .interactive__more {
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-    gap: clamp(2rem, 5vw, 5rem);
+    gap: 40px var(--gap-l);
     align-items: center;
-    margin-top: clamp(4rem, 9vw, 8rem);
+    margin-top: var(--gap-l);
   }
   .interactive__more--plain {
     grid-template-columns: minmax(0, 1fr);
   }
-  .interactive__cards {
-    display: grid;
+  .interactive__rows {
+    margin: 0;
   }
-  .interactive__cards li {
+  .interactive__rows > div {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 4fr);
-    gap: 1.5rem;
-    padding-block: 1.5rem;
+    gap: 4px 24px;
+    padding-block: 20px;
     border-top: 1px solid var(--line);
   }
-  .interactive__cards h3 {
-    font-size: var(--text-lg);
-    font-weight: 600;
-    letter-spacing: -0.02em;
+  .interactive__rows > div:last-child {
+    border-bottom: 1px solid var(--line);
   }
-  .interactive__cards p {
-    color: var(--muted);
-    font-size: var(--text-sm);
+  .interactive__rows dt {
+    font-weight: 500;
+    line-height: 24px;
+  }
+  .interactive__rows dd {
+    margin: 0;
+    color: var(--text-2);
+    font-size: var(--t-14);
+    line-height: 20px;
+    max-width: 44em;
   }
   @media (max-width: 900px) {
     .interactive__grid,
     .interactive__more {
       grid-template-columns: minmax(0, 1fr);
     }
-    .interactive__cards li {
+  }
+  @media (max-width: 560px) {
+    .interactive__rows > div {
       grid-template-columns: minmax(0, 1fr);
-      gap: 0.4rem;
+    }
+    /* Stacked under the button, the note reads from the same left edge. */
+    .viewport__note {
+      text-align: left;
     }
   }
 </style>

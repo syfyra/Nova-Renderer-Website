@@ -1,6 +1,7 @@
 ---
 import BenchBars from '../data/BenchBars.astro';
 import Fn from '../primitives/Fn.astro';
+import Icon from '../primitives/Icon.astro';
 import { xpu, xpuHome } from '../../content/benchmarks';
 import { href } from '../../lib/site';
 
@@ -13,50 +14,41 @@ const rows = xpuHome
   <div class="wrap">
     <div class="xpu__grid">
       <div class="xpu__lead">
-        <p class="eyebrow" data-reveal="fade"><b>02</b> Nova XPU</p>
-        <h2 id="xpu-title" class="xpu__figure" data-reveal="fade">
-          <span class="sr-only">Nova XPU renders 9 to 16 times faster per sample than the 16-thread CPU.</span>
-          <span aria-hidden="true"><span data-count data-to="9">9</span>–<span data-count data-to="16">16</span><em>×</em></span>
+        <p class="eyebrow">Nova XPU</p>
+        <h2 id="xpu-title" class="xpu__figure num">
+          <span class="sr-only">Nova XPU renders 9 to 16 times faster per sample than the 16-thread CPU</span>
+          <span aria-hidden="true">9–16×</span>
         </h2>
-        <p class="lede xpu__claim" data-reveal="fade">
-          the speed of a 16-thread CPU, per sample, on surfaces.<Fn id="xpu-per-sample" />
-        </p>
-        <p class="body" data-reveal="fade">
+        <p class="xpu__claim">the speed of a 16-thread CPU, per sample, on surfaces<Fn id="xpu-per-sample" /></p>
+        <p class="body">
           CUDA wavefront kernels and OptiX 9. Meshes, subdivision and displacement, curves, volumes, hair, subsurface
           scattering, every native and MaterialX material, light path expressions and Cryptomatte all render on the GPU.
           Volumes and heavy layered materials gain about 4×.
         </p>
-        <p data-reveal="fade">
-          <a class="arrow" href={href('/benchmarks')}>
-            All eleven scenes
-            <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
-          </a>
-        </p>
+        <a class="arrow" href={href('/benchmarks')}>All eleven scenes <Icon name="arrow-right" /></a>
       </div>
 
-      <div class="xpu__bars" data-reveal="fade">
-        <BenchBars
-          rows={rows}
-          nameA="CPU"
-          nameB="XPU"
-          unit="ms"
-          caption="Time per sample at 960×540, without setup. Lower is better. GeForce RTX 5080 against a Ryzen 7 9800X3D with 16 threads."
-        />
-      </div>
+      <BenchBars
+        rows={rows}
+        nameA="CPU"
+        nameB="XPU"
+        unit="ms"
+        caption="Time per sample at 960×540, without setup. Lower is better. GeForce RTX 5080 against a Ryzen 7 9800X3D with 16 threads."
+      />
     </div>
 
-    <div class="facts xpu__facts" data-reveal="stagger" data-stagger="0.1">
+    <div class="facts xpu__facts">
       <div class="fact">
         <p class="fact__value">4.3–7.7<small>×</small></p>
-        <p class="fact__label">end to end at 64 samples, with the GPU’s setup included.<Fn id="xpu-end-to-end" /></p>
+        <p class="fact__label">end to end at 64 samples, with the GPU’s setup included<Fn id="xpu-end-to-end" /></p>
       </div>
       <div class="fact">
         <p class="fact__value">≈ 0.3<small>s</small></p>
-        <p class="fact__label">of setup per render: device context, OptiX pipelines and the scene’s upload.</p>
+        <p class="fact__label">of setup per render: device context, OptiX pipelines and the scene’s upload</p>
       </div>
       <div class="fact">
         <p class="fact__value">7<small>ms</small></p>
-        <p class="fact__label">per pass after an edit of a light, a material or a transform in a scene of 4.2 million triangles.<Fn id="xpu-ipr" /></p>
+        <p class="fact__label">per pass after an edit of a light, a material or a transform in a scene of 4.2 million triangles<Fn id="xpu-ipr" /></p>
       </div>
     </div>
   </div>
@@ -66,42 +58,34 @@ const rows = xpuHome
   .xpu__grid {
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: clamp(2.5rem, 6vw, 7rem);
+    gap: 40px var(--gap-xl);
     align-items: start;
   }
   .xpu__lead {
     display: grid;
-    gap: 1.5rem;
-    position: sticky;
-    top: calc(var(--nav-h) + 2rem);
+    gap: 16px;
+    justify-items: start;
   }
+  /* The one large figure on the page. */
   .xpu__figure {
-    margin-top: 1rem;
-    font-size: clamp(5rem, 1rem + 11.4vw, 12.5rem);
-    font-weight: 600;
-    letter-spacing: -0.07em;
-    line-height: 0.82;
-    font-variant-numeric: tabular-nums;
+    font-size: var(--figure);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.03em;
     white-space: nowrap;
   }
-  .xpu__figure em {
-    font-style: normal;
-    color: var(--nova);
-    margin-left: 0.04em;
-  }
   .xpu__claim {
-    color: var(--paper);
-    max-width: 16em;
+    font-size: var(--t-18);
+    line-height: 28px;
+    color: var(--text);
+    max-width: 20em;
   }
   .xpu__facts {
-    margin-top: clamp(4rem, 8vw, 7rem);
+    margin-top: var(--gap-l);
   }
   @media (max-width: 900px) {
     .xpu__grid {
       grid-template-columns: minmax(0, 1fr);
-    }
-    .xpu__lead {
-      position: static;
     }
   }
 </style>

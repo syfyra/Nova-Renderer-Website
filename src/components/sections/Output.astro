@@ -20,31 +20,31 @@ const layers = [
   <div class="wrap">
     <div class="output__grid">
       <div class="output__lead">
-        <p class="eyebrow" data-reveal="fade"><b>07</b> Output</p>
-        <h2 id="output-title" class="display-2" data-reveal="lines">Every pass Karma writes, under the same names.</h2>
-        <p class="lede" data-reveal="fade">
+        <p class="eyebrow">Output</p>
+        <h2 id="output-title" class="display-2">Every pass Karma writes, under the same names</h2>
+        <p class="lede">
           One Solaris setup renders in both renderers. The components sum to the beauty per sample, and every component
           is unbiased.
         </p>
-        <ul class="output__list" data-reveal="stagger">
-          <li>
-            <h3>Light path expressions</h3>
-            <p>Karma’s dialect, with tags on lights, objects and materials, and the <span class="mono">unoccluded;</span> and <span class="mono">shadow;</span> prefixes.</p>
-          </li>
-          <li>
-            <h3>Utility AOVs</h3>
-            <p>Position, normals, depth, motion vectors, ids, any primvar, material AOVs and ambient occlusion.</p>
-          </li>
-          <li>
-            <h3>Cryptomatte</h3>
-            <p>For objects, materials and any string or int primvar. The manifests match Karma’s entry for entry.</p>
-          </li>
-          <li>
-            <h3>EXR</h3>
-            <p>Multi-part and deep EXR, per-var sample filters, checkpoints with resume.</p>
-          </li>
-        </ul>
-        <p class="caption output__cost" data-reveal="fade">
+        <dl class="output__list">
+          <div>
+            <dt>Light path expressions</dt>
+            <dd>Karma’s dialect, with tags on lights, objects and materials, and the <span class="mono">unoccluded;</span> and <span class="mono">shadow;</span> prefixes</dd>
+          </div>
+          <div>
+            <dt>Utility AOVs</dt>
+            <dd>Position, normals, depth, motion vectors, ids, any primvar, material AOVs and ambient occlusion</dd>
+          </div>
+          <div>
+            <dt>Cryptomatte</dt>
+            <dd>For objects, materials and any string or int primvar. The manifests match Karma’s entry for entry.</dd>
+          </div>
+          <div>
+            <dt>EXR</dt>
+            <dd>Multi-part and deep EXR, per-var sample filters, checkpoints with resume</dd>
+          </div>
+        </dl>
+        <p class="caption output__cost">
           No cost with the beauty only. Karma’s standard set of light path expressions costs 6–13&nbsp;% of the render
           time.<Fn id="lpe-cost" />
         </p>
@@ -57,9 +57,9 @@ const layers = [
               layers.map((l, i) => (
                 <div class="stack__layer" style={`--i:${i}`} data-stack-layer>
                   <canvas data-aov={l.pass} width="448" height="252" />
-                  <p class="stack__label">
-                    <span class="mono">{l.name}</span>
-                    {l.lpe && <span class="mono stack__lpe">{l.lpe}</span>}
+                  <p class="stack__label caption">
+                    <span>{l.name}</span>
+                    {l.lpe && <span class="stack__lpe">{l.lpe}</span>}
                   </p>
                 </div>
               ))
@@ -78,38 +78,38 @@ const layers = [
   .output__grid {
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: clamp(2.5rem, 5vw, 6rem);
+    gap: 40px var(--gap-xl);
     align-items: center;
   }
   .output__lead {
     display: grid;
-    gap: 1.5rem;
+    gap: 16px;
   }
   .output__list {
-    margin-top: 1rem;
-    display: grid;
+    margin: 16px 0 0;
   }
-  .output__list li {
+  .output__list > div {
     display: grid;
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-    gap: 1rem;
-    padding-block: 1rem;
+    gap: 4px 16px;
+    padding-block: 16px;
     border-top: 1px solid var(--line);
   }
-  .output__list h3 {
-    font-size: var(--text-base);
-    font-weight: 550;
-    letter-spacing: -0.01em;
+  .output__list dt {
+    font-weight: 500;
+    line-height: 24px;
   }
-  .output__list p {
-    font-size: var(--text-sm);
-    color: var(--muted);
+  .output__list dd {
+    margin: 0;
+    font-size: var(--t-14);
+    line-height: 20px;
+    color: var(--text-2);
   }
   .output__list .mono {
-    color: var(--paper-dim);
+    color: var(--text);
   }
   .output__cost {
-    padding-top: 1rem;
+    padding-top: 16px;
     border-top: 1px solid var(--line);
     max-width: 40em;
   }
@@ -138,37 +138,12 @@ const layers = [
   .stack__layer {
     position: absolute;
     inset: 0;
-    border-radius: 10px;
-    background: rgb(249 247 243 / 0.035);
-    box-shadow: inset 0 0 0 1px rgb(249 247 243 / calc(0.1 + var(--k) * 0.16));
-    transform: translateZ(calc(var(--i) * var(--k) * clamp(34px, 4.6vw, 70px)));
+    border-radius: var(--r-m);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    transform: translateZ(calc(var(--i) * var(--k) * 56px));
     opacity: calc(min(1, var(--k) * 4 + (1 - min(1, var(--i)))));
     overflow: hidden;
-  }
-  .stack__layer:first-child {
-    background: var(--stage);
-  }
-  .stack__layer:last-child {
-    box-shadow:
-      inset 0 0 0 1px rgb(254 72 25 / 0.55),
-      0 0 40px rgb(254 72 25 / 0.12);
-  }
-  .stack__label {
-    position: absolute;
-    left: 0.9rem;
-    bottom: 0.7rem;
-    display: flex;
-    gap: 0.75rem;
-    align-items: baseline;
-    font-size: clamp(0.75rem, 0.6rem + 0.5vw, 1rem);
-    color: var(--paper);
-    opacity: calc(var(--k) * 1.5 - 0.3);
-  }
-  .stack__layer:first-child .stack__label {
-    opacity: 1;
-  }
-  .stack__lpe {
-    color: var(--muted);
   }
   .stack canvas {
     position: absolute;
@@ -176,19 +151,32 @@ const layers = [
     width: 100%;
     height: 100%;
     opacity: 0;
-    transition: opacity 0.8s;
+    transition: opacity 400ms var(--ease);
   }
   .stack canvas[data-ready] {
     opacity: 1;
   }
-  .stack[data-live] .stack__label {
-    padding: 0.15rem 0.45rem;
-    border-radius: 5px;
-    background: rgb(10 10 10 / 0.6);
+  .stack__label {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    display: flex;
+    gap: 8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text);
+    opacity: calc(var(--k) * 1.5 - 0.3);
+  }
+  .stack__layer:first-child .stack__label {
+    opacity: 1;
+  }
+  .stack__lpe {
+    color: var(--text-3);
   }
   .output__live {
     display: none;
-    margin-top: 1.25rem;
+    margin-top: 16px;
     text-align: center;
   }
   .output__stage:has(.stack[data-live]) .output__live {
@@ -198,9 +186,10 @@ const layers = [
     .output__grid {
       grid-template-columns: minmax(0, 1fr);
     }
-    .output__list li {
+  }
+  @media (max-width: 560px) {
+    .output__list > div {
       grid-template-columns: minmax(0, 1fr);
-      gap: 0.25rem;
     }
   }
 </style>

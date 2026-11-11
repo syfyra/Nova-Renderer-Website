@@ -5,8 +5,8 @@ import { href } from '../lib/site';
 
 <Base title="Not found">
   <div class="wrap nf">
-    <p class="eyebrow"><b>404</b> Not found</p>
-    <h1 class="display-1">No light<br />reaches this page.</h1>
+    <p class="eyebrow">404</p>
+    <h1 class="display-1">This page does not exist</h1>
     <p class="lede">The address may have changed. The overview and the documentation are still where they were.</p>
     <p class="nf__links">
       <a class="btn btn--primary" href={href('/')}><span class="btn__dot" aria-hidden="true"></span>Overview</a>
@@ -20,13 +20,13 @@ import { href } from '../lib/site';
     min-height: 100svh;
     display: grid;
     align-content: center;
-    gap: 1.75rem;
-    padding-block: calc(var(--nav-h) + 3rem) 5rem;
+    gap: 16px;
+    padding-block: calc(var(--nav-h) + 48px) 80px;
   }
   .nf__links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 1rem;
+    gap: 12px;
+    margin-top: 16px;
   }
 </style>

@@ -82,7 +82,7 @@ export function initViewport(): boolean {
         tracer.block = 1;
       }
     } else if (tracer.render(perFrame)) {
-      label(`${String(tracer.spp).padStart(4, '0')} spp`);
+      label(`${tracer.spp} spp`);
     }
   });
 

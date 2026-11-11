@@ -2,37 +2,37 @@
 import Base from '../layouts/Base.astro';
 import CodeBlock from '../components/primitives/CodeBlock.astro';
 import Requirements from '../components/data/Requirements.astro';
+import Icon from '../components/primitives/Icon.astro';
 import { getGitHub } from '../lib/github';
 import { REPO_URL, RELEASES_URL, href, source } from '../lib/site';
 
 const gh = await getGitHub();
 const does = [
   'Installs for the current user, without administrator rights, to %LOCALAPPDATA%\\Programs\\Nova by default. Any folder can be chosen.',
-  'Registers Nova with Houdini 22.0 through a package file in Documents\\houdini22.0\\packages.',
-  'Adds “Nova for Houdini” to Apps & features, with an uninstaller that removes only what Nova put there.',
-  'Refuses to replace Nova’s files while Houdini, hython, husk or hbatch is running.',
-  'Shows the Houdini installations and the graphics card it finds.',
-  'Keeps a nova.json that was already there and points elsewhere as nova.json.bak, and restores it when Nova is uninstalled.',
+  'Registers Nova with Houdini 22.0 through a package file in Documents\\houdini22.0\\packages',
+  'Adds “Nova for Houdini” to Apps & features, with an uninstaller that removes only what Nova put there',
+  'Refuses to replace Nova’s files while Houdini, hython, husk or hbatch is running',
+  'Shows the Houdini installations and the graphics card it finds',
+  'Keeps a nova.json that was already there and points elsewhere as nova.json.bak, and restores it when Nova is uninstalled',
 ];
 ---
 
 <Base title="Download" description="Download Nova for Houdini 22.0 on Windows x64. One installer, per user, without administrator rights. Or build Nova from source.">
   <div class="wrap dl">
     <header class="page-head">
-      <p class="eyebrow" data-reveal="fade"><b>Download</b> Version {gh.version}</p>
-      <h1 class="display-2" data-reveal="lines">Nova for Houdini.</h1>
-      <p class="lede" data-reveal="fade">One installer for Windows. Free, open source, MIT licensed.</p>
+      <p class="eyebrow">Download</p>
+      <h1 class="display-1">Download Nova for Houdini 22.0</h1>
+      <p class="lede">One installer for Windows. Free, open source, MIT licensed.</p>
     </header>
 
     <section class="dl__main" aria-label="Installer">
-      <div class="dl__card glass" data-reveal="frame" data-spot>
-        <div class="dl__light" aria-hidden="true"></div>
+      <div class="dl__card card">
         <p class="caption dl__file">{gh.installerName}</p>
         <p class="dl__version">Nova {gh.version}</p>
         <p class="caption dl__meta">
           Windows x64 · Houdini 22.0{gh.installerSize && ` · ${gh.installerSize}`}
         </p>
-        <a class="btn btn--primary dl__btn" href={gh.installerUrl ?? gh.releaseUrl} rel="noopener" data-magnetic>
+        <a class="btn btn--primary dl__btn" href={gh.installerUrl ?? gh.releaseUrl} rel="noopener">
           <span class="btn__dot" aria-hidden="true"></span>
           {gh.installerUrl ? 'Download the installer' : 'Download from GitHub Releases'}
         </a>
@@ -43,8 +43,8 @@ const does = [
         </p>
       </div>
 
-      <div class="dl__req" data-reveal="fade">
-        <h2 class="caption dl__label">Before you download</h2>
+      <div class="dl__req">
+        <h2 class="eyebrow">Before you download</h2>
         <Requirements />
         <p class="body dl__note">
           The installer is not code-signed, so Windows SmartScreen may show a warning before it runs. Close Houdini
@@ -54,28 +54,27 @@ const does = [
     </section>
 
     <section class="dl__section">
-      <h2 class="display-3" data-reveal="lines">What the installer does</h2>
-      <ul class="dl__list" data-reveal="stagger">
+      <h2 class="display-3">What the installer does</h2>
+      <ul class="dl__list">
         {does.map((d) => <li>{d}</li>)}
       </ul>
     </section>
 
     <section class="dl__section dl__two">
       <div>
-        <h2 class="display-3" data-reveal="lines">After installing</h2>
-        <ol class="dl__steps" data-reveal="stagger">
-          <li><span class="mono">1</span><p>Start Houdini 22.0 and open Solaris.</p></li>
-          <li><span class="mono">2</span><p>Choose <strong>Nova CPU</strong> or <strong>Nova XPU</strong> in the viewport’s renderer menu.</p></li>
-          <li><span class="mono">3</span><p>TAB → Rendering → <strong>Nova (Setup)</strong> builds the render settings, a render pass and a USD Render ROP.</p></li>
+        <h2 class="display-3">After installing</h2>
+        <ol class="dl__steps">
+          <li><span class="caption num">1</span><p>Start Houdini 22.0 and open Solaris</p></li>
+          <li><span class="caption num">2</span><p>Choose <strong>Nova CPU</strong> or <strong>Nova XPU</strong> in the viewport’s renderer menu</p></li>
+          <li><span class="caption num">3</span><p>Press <kbd>Tab</kbd> and choose Rendering, then <strong>Nova (Setup)</strong>, which builds the render settings, a render pass and a USD Render ROP</p></li>
         </ol>
-        <p class="dl__more" data-reveal="fade">
+        <p class="dl__more">
           <a class="arrow" href={href('/docs')}>
-            Get started
-            <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
+            Get started <Icon name="arrow-right" />
           </a>
         </p>
       </div>
-      <div class="dl__codes" data-reveal="fade">
+      <div class="dl__codes">
         <CodeBlock label="husk" lines={['husk --renderer Nova scene.usda -o out.exr', 'husk --renderer "Nova XPU" scene.usda -o out.exr']} />
         <CodeBlock label="Silent install" lines={[`${gh.installerName} --silent [--dir <folder>]`, '"Uninstall Nova.exe" --uninstall [--silent]']} />
       </div>
@@ -83,20 +82,19 @@ const does = [
 
     <section class="dl__section dl__two">
       <div>
-        <h2 class="display-3" data-reveal="lines">Build from source</h2>
-        <p class="body" data-reveal="fade">
+        <h2 class="display-3">Build from source</h2>
+        <p class="body">
           Nova builds with Visual Studio 2022 Build Tools, CMake and vcpkg against a Houdini 22.0 installation. CUDA 12.8
           or later is optional and enables Nova XPU and the OptiX denoiser. The first configure builds Embree and takes
           about 20 minutes.
         </p>
-        <p class="dl__more" data-reveal="fade">
+        <p class="dl__more">
           <a class="arrow" href={href('/docs/build')}>
-            Build instructions
-            <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
+            Build instructions <Icon name="arrow-right" />
           </a>
         </p>
       </div>
-      <div data-reveal="fade">
+      <div>
         <CodeBlock
           label="Build"
           lines={['cmake --preset vs2022', 'cmake --build --preset release', 'ctest --preset release', 'cmake --install build/vs2022 --config Release']}
@@ -117,124 +115,93 @@ const does = [
   .dl__main {
     display: grid;
     grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-    gap: clamp(2rem, 5vw, 6rem);
+    gap: 40px var(--gap-xl);
     align-items: start;
   }
   .dl__card {
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--radius-l);
-    padding: clamp(1.75rem, 4vw, 3.5rem);
+    border-radius: var(--r-xl);
+    padding: var(--gap-l);
     display: grid;
-    gap: 0.6rem;
+    gap: 8px;
     justify-items: start;
-    min-height: 24rem;
-    align-content: end;
-  }
-  .dl__light {
-    position: absolute;
-    right: -12%;
-    top: -34%;
-    width: 78%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(closest-side, rgb(254 72 25 / 0.85), rgb(254 72 25 / 0.3) 45%, transparent 72%);
-    filter: blur(36px);
-    opacity: 0.6;
-    pointer-events: none;
-  }
-  .dl__file {
-    position: relative;
-    color: var(--paper-dim);
   }
   .dl__version {
-    position: relative;
-    font-size: var(--display-2);
-    font-weight: 600;
-    letter-spacing: -0.045em;
-    line-height: 1;
-  }
-  .dl__meta {
-    position: relative;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--paper-dim);
+    font-size: var(--h1);
+    font-weight: 500;
+    line-height: 1.04;
+    letter-spacing: -0.03em;
   }
   .dl__btn {
-    position: relative;
-    margin-top: 1.5rem;
+    margin-top: 24px;
   }
   .dl__alt {
-    position: relative;
-    margin-top: 0.75rem;
-    color: var(--muted);
+    margin-top: 8px;
   }
-  .dl__label {
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 500;
-    padding-bottom: 1rem;
+  .dl__req .eyebrow {
+    margin-bottom: 12px;
   }
   .dl__note {
-    margin-top: 1.5rem;
-    font-size: var(--text-sm);
+    margin-top: 16px;
+    font-size: var(--t-14);
+    line-height: 20px;
   }
   .dl__note .mono {
-    color: var(--paper-dim);
+    color: var(--text);
   }
   .dl__section {
-    margin-top: clamp(5rem, 10vw, 9rem);
-    padding-top: 2rem;
-    border-top: 1px solid var(--line-strong);
+    margin-top: var(--section);
+    padding-top: 32px;
+    border-top: 1px solid var(--line-2);
   }
   .dl__two {
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: clamp(2rem, 5vw, 6rem);
+    gap: 40px var(--gap-xl);
     align-items: start;
   }
   .dl__two .body {
-    margin-top: 1.5rem;
+    margin-top: 16px;
   }
   .dl__list {
-    margin-top: 2rem;
+    margin-top: 24px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-    gap: 0 clamp(1.5rem, 3vw, 3rem);
+    grid-template-columns: repeat(auto-fit, minmax(288px, 1fr));
+    gap: 0 var(--gap-m);
   }
   .dl__list li {
-    padding-block: 1.1rem;
+    padding-block: 16px;
     border-top: 1px solid var(--line);
-    font-size: var(--text-sm);
-    color: var(--paper-dim);
+    font-size: var(--t-14);
+    line-height: 20px;
+    color: var(--text-2);
   }
   .dl__steps {
-    margin-top: 2rem;
-    display: grid;
+    margin-top: 24px;
   }
   .dl__steps li {
     display: grid;
-    grid-template-columns: 2rem minmax(0, 1fr);
-    padding-block: 1rem;
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 12px;
+    padding-block: 16px;
     border-top: 1px solid var(--line);
-    color: var(--paper-dim);
+    color: var(--text-2);
   }
-  .dl__steps .mono {
-    color: var(--nova);
+  .dl__steps .caption {
+    line-height: 24px;
   }
   .dl__steps strong {
-    color: var(--paper);
-    font-weight: 550;
+    color: var(--text);
+    font-weight: 500;
   }
   .dl__more {
-    margin-top: 1.75rem;
+    margin-top: 24px;
   }
   .dl__codes {
     display: grid;
-    gap: 1rem;
+    gap: 16px;
   }
   .dl__cap {
-    margin-top: 0.9rem;
+    margin-top: 12px;
   }
   @media (max-width: 900px) {
     .dl__main,

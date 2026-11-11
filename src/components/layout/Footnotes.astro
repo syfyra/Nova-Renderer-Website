@@ -6,17 +6,15 @@ import { SOURCE_TAG } from '../../lib/site';
 
 <section class="notes" aria-labelledby="notes-title">
   <div class="wrap">
-    <h2 id="notes-title" class="caption">Footnotes · measured on Nova {SOURCE_TAG}</h2>
+    <h2 id="notes-title" class="eyebrow">Footnotes, measured on Nova {SOURCE_TAG}</h2>
     <ol>
       {
         homeNotes.map((id, i) => (
           <li id={`fn-${i + 1}`}>
-            <span class="notes__n mono">{i + 1}</span>
+            <span class="caption num">{i + 1}</span>
             <p>
               {claims[id].note}{' '}
-              <a href={claims[id].src.url} rel="noopener" class="notes__src mono">
-                {claims[id].src.label} ↗
-              </a>
+              <a href={claims[id].src.url} rel="noopener" class="link mono">{claims[id].src.label}</a>
             </p>
           </li>
         ))
@@ -27,46 +25,29 @@ import { SOURCE_TAG } from '../../lib/site';
 
 <style>
   .notes {
-    padding-block: clamp(3rem, 6vw, 5rem);
+    padding-block: 64px;
     border-top: 1px solid var(--line);
-    background: var(--ink);
-    position: relative;
-    z-index: 2;
-  }
-  h2 {
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--faint);
-    margin-bottom: 1.75rem;
   }
   ol {
+    margin-top: 24px;
     columns: 2;
-    column-gap: clamp(1.5rem, 4vw, 4rem);
-    font-size: var(--text-xs);
-    line-height: 1.6;
-    color: var(--muted);
+    column-gap: var(--gap-l);
+    font-size: var(--t-12);
+    line-height: 20px;
+    color: var(--text-2);
   }
   li {
     display: grid;
-    grid-template-columns: 1.75rem 1fr;
+    grid-template-columns: 24px minmax(0, 1fr);
     break-inside: avoid;
-    padding-bottom: 0.9rem;
-    scroll-margin-top: 6rem;
+    padding-bottom: 12px;
+    scroll-margin-top: 96px;
+  }
+  li .caption {
+    line-height: 20px;
   }
   li:target p {
-    color: var(--paper);
-  }
-  .notes__n {
-    color: var(--faint);
-  }
-  .notes__src {
-    color: var(--paper-dim);
-    white-space: nowrap;
-    transition: color 0.2s;
-  }
-  .notes__src:hover {
-    color: var(--nova);
+    color: var(--text);
   }
   @media (max-width: 760px) {
     ol {

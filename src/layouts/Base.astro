@@ -25,7 +25,7 @@ const ogImage = Astro.site ? new URL(href('/og.png'), Astro.site).href : href('/
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="theme-color" content="#100f0d" />
     <meta name="color-scheme" content="dark" />
     {canonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" href={href('/favicon.svg')} type="image/svg+xml" />
@@ -36,8 +36,8 @@ const ogImage = Astro.site ? new URL(href('/og.png'), Astro.site).href : href('/
     <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
     <script is:inline>
-      // Announce motion before first paint so reveal targets never flash.
-      // If the motion bundle fails to start, the class is removed again.
+      // Announce motion before first paint, so the hero can hold its opening
+      // state. If the motion bundle fails to start, the class is removed again.
       (function () {
         var d = document.documentElement;
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -50,7 +50,6 @@ const ogImage = Astro.site ? new URL(href('/og.png'), Astro.site).href : href('/
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <i class="progress" data-progress aria-hidden="true"></i>
     <Nav overlay={overlayNav} />
     <main id="main">
       <slot />

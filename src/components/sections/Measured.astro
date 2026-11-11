@@ -1,100 +1,51 @@
 ---
 import Fn from '../primitives/Fn.astro';
+import Icon from '../primitives/Icon.astro';
 import { href, source } from '../../lib/site';
 ---
 
 <section class="section measured" id="measured" aria-labelledby="measured-title">
   <div class="wrap">
     <header class="head">
-      <p class="eyebrow" data-reveal="fade"><b>09</b> Verification</p>
-      <h2 id="measured-title" class="display-2" data-reveal="lines">Measured, not claimed.</h2>
-      <p class="lede" data-reveal="fade">
+      <p class="eyebrow">Verification</p>
+      <h2 id="measured-title" class="display-2">Measured against Karma CPU, feature by feature</h2>
+      <p class="lede">
         Every feature is measured against Karma CPU or an analytic value, and the differences that remain are written
         down. The same scene renders the same image, run to run and on CPU and GPU alike.
       </p>
     </header>
 
-    <ul class="measured__grid" data-reveal="stagger" data-stagger="0.1">
-      <li>
-        <p class="measured__value num">≈&thinsp;<span data-count data-to="690">690</span></p>
-        <p class="measured__label">automated tests: unit tests, husk renders, statistical comparisons against Karma, isolated Houdini sessions.<Fn id="tests" /></p>
+    <ul class="facts">
+      <li class="fact">
+        <p class="fact__value">≈ 690</p>
+        <p class="fact__label">automated tests: unit tests, husk renders, statistical comparisons against Karma, isolated Houdini sessions<Fn id="tests" /></p>
       </li>
-      <li>
-        <p class="measured__value num"><span data-count data-to="12">12</span><small>/12</small></p>
-        <p class="measured__label">visible Karma LOPs, each measured against Karma CPU and checked by an automated test.</p>
+      <li class="fact">
+        <p class="fact__value">12<small>of 12</small></p>
+        <p class="fact__label">visible Karma LOPs, each measured against Karma CPU and checked by an automated test</p>
       </li>
-      <li>
-        <p class="measured__value num"><span data-count data-to="740">740</span><small>/746</small></p>
-        <p class="measured__label">MaterialX 1.39 node definitions in the shading compiler.</p>
+      <li class="fact">
+        <p class="fact__value">740<small>of 746</small></p>
+        <p class="fact__label">MaterialX 1.39 node definitions in the shading compiler</p>
       </li>
-      <li>
-        <p class="measured__value num"><span data-count data-to="71">71</span></p>
-        <p class="measured__label">verified defects found and fixed in the November 2026 audit.<Fn id="audit" /></p>
+      <li class="fact">
+        <p class="fact__value">71</p>
+        <p class="fact__label">verified defects found and fixed in the November 2026 audit<Fn id="audit" /></p>
       </li>
     </ul>
 
-    <p class="measured__links" data-reveal="fade">
-      <a class="arrow" href={href('/benchmarks')}>
-        Read the benchmarks
-        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
-      </a>
-      <a class="arrow" href={source('docs/bug-audit-2026-11.md')} rel="noopener" data-ext>
-        Read the bug audit
-        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9l6-6M4 3h5v5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
-      </a>
+    <p class="measured__links">
+      <a class="arrow" href={href('/benchmarks')}>Read the benchmarks <Icon name="arrow-right" /></a>
+      <a class="arrow" href={source('docs/bug-audit-2026-11.md')} rel="noopener">Read the bug audit <Icon name="arrow-up-right" /></a>
     </p>
   </div>
 </section>
 
 <style>
-  .measured__grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0 clamp(1.5rem, 3vw, 3rem);
-    margin: 0;
-  }
-  .measured__grid > li {
-    border-top: 1px solid var(--line-strong);
-    padding-top: 1.5rem;
-    display: grid;
-    gap: 1rem;
-    align-content: start;
-  }
-  .measured__value {
-    font-size: clamp(3rem, 1.6rem + 5.2vw, 6.5rem);
-    font-weight: 600;
-    letter-spacing: -0.06em;
-    line-height: 0.9;
-    white-space: nowrap;
-  }
-  .measured__value small {
-    font-size: 0.34em;
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    color: var(--muted);
-    margin-left: 0.2em;
-  }
-  .measured__label {
-    color: var(--muted);
-    font-size: var(--text-sm);
-    line-height: 1.5;
-    max-width: 22em;
-  }
   .measured__links {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem 2.5rem;
-    margin-top: clamp(3rem, 6vw, 5rem);
-  }
-  @media (max-width: 900px) {
-    .measured__grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      row-gap: 2.5rem;
-    }
-  }
-  @media (max-width: 480px) {
-    .measured__grid {
-      grid-template-columns: minmax(0, 1fr);
-    }
+    gap: 16px 32px;
+    margin-top: 32px;
   }
 </style>

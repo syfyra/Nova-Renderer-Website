@@ -2,6 +2,7 @@
 // Two frames of the same picture under a draggable divider.
 // Pointer, touch and keyboard (arrow keys, Home, End) move it.
 import RenderFrame from './RenderFrame.astro';
+import Icon from '../primitives/Icon.astro';
 import { slotVisible, type SlotId } from '../../content/renders';
 
 interface Props {
@@ -18,14 +19,14 @@ const show = slotVisible(a, b);
 
 {show && (
 <div class="compare" data-compare style={`aspect-ratio:${ratio}; --pos:50%`}>
-  <div class="compare__layer compare__layer--a">
-    <RenderFrame id={a} fill bare align="start" />
+  <div class="compare__layer">
+    <RenderFrame id={a} fill bare />
   </div>
   <div class="compare__layer compare__layer--b">
-    <RenderFrame id={b} fill bare align="end" />
+    <RenderFrame id={b} fill bare />
   </div>
-  <span class="compare__chip compare__chip--a glass caption">{labelA}</span>
-  <span class="compare__chip compare__chip--b glass caption">{labelB}</span>
+  <span class="compare__chip compare__chip--a caption">{labelA}</span>
+  <span class="compare__chip compare__chip--b caption">{labelB}</span>
   <div
     class="compare__handle"
     role="slider"
@@ -37,9 +38,7 @@ const show = slotVisible(a, b);
     aria-orientation="horizontal"
     data-compare-handle
   >
-    <span class="compare__grip glass" aria-hidden="true">
-      <svg viewBox="0 0 20 20"><path d="M7.5 6 3.5 10l4 4M12.5 6l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-    </span>
+    <span class="compare__grip" aria-hidden="true"><Icon name="chevrons-left-right" /></span>
   </div>
 </div>
 )}
@@ -48,13 +47,13 @@ const show = slotVisible(a, b);
   .compare {
     position: relative;
     width: 100%;
-    border-radius: var(--radius);
+    border-radius: var(--r-l);
     overflow: hidden;
-    background: var(--stage);
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--line);
     touch-action: pan-y;
     user-select: none;
     cursor: ew-resize;
-    box-shadow: inset 0 0 0 1px var(--line);
   }
   .compare__layer {
     position: absolute;
@@ -63,26 +62,24 @@ const show = slotVisible(a, b);
   .compare__layer--b {
     clip-path: inset(0 0 0 var(--pos));
   }
-  .compare__layer--b :global(.frame--empty) {
-    background: var(--stage-2);
-  }
-  .compare :global(.frame__tick) {
-    display: none;
+  .compare__layer--b :global(.frame) {
+    background: var(--raised);
   }
   .compare__chip {
     position: absolute;
-    top: 1rem;
-    padding: 0.35rem 0.7rem;
-    border-radius: 999px;
-    color: var(--paper);
+    top: 12px;
+    padding: 4px 8px;
+    border-radius: var(--r-s);
+    background: var(--bg);
+    color: var(--text);
     pointer-events: none;
     z-index: 2;
   }
   .compare__chip--a {
-    left: 1rem;
+    left: 12px;
   }
   .compare__chip--b {
-    right: 1rem;
+    right: 12px;
   }
   .compare__handle {
     position: absolute;
@@ -103,24 +100,16 @@ const show = slotVisible(a, b);
     bottom: 0;
     left: 50%;
     width: 1px;
-    background: rgb(249 247 243 / 0.7);
+    background: var(--text);
   }
   .compare__grip {
     position: relative;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-m);
     display: grid;
     place-items: center;
-    color: var(--paper);
-    transition: transform 0.4s var(--ease-out);
-  }
-  .compare__grip svg {
-    width: 20px;
-    height: 20px;
-  }
-  .compare:hover .compare__grip,
-  .compare__handle:focus-visible .compare__grip {
-    transform: scale(1.08);
+    background: var(--text);
+    color: var(--bg);
   }
 </style>

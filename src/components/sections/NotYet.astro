@@ -1,72 +1,58 @@
 ---
+import Icon from '../primitives/Icon.astro';
 import { limitations } from '../../content/limitations';
 import { VERSION, href } from '../../lib/site';
 ---
 
 <section class="section notyet" id="not-yet" aria-labelledby="notyet-title">
-  <div class="wrap">
-    <div class="notyet__grid">
-      <header class="notyet__lead">
-        <p class="eyebrow" data-reveal="fade"><b>10</b> Limitations</p>
-        <h2 id="notyet-title" class="display-2" data-reveal="lines">Not yet.</h2>
-        <p class="body" data-reveal="fade">
-          Nova is at version {VERSION}. This is what it does not do today. Differences from Karma are documented with
-          the feature they belong to.
-        </p>
-        <p data-reveal="fade">
-          <a class="arrow" href={href('/docs/limitations')}>
-            The full list
-            <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
-          </a>
-        </p>
-      </header>
-      <div class="notyet__cols" data-reveal="stagger" data-stagger="0.08">
-        {
-          limitations.map((group) => (
-            <section>
-              <h3 class="caption">{group.title}</h3>
-              <ul>
-                {group.items.map((item) => <li>{item}</li>)}
-              </ul>
-            </section>
-          ))
-        }
-      </div>
+  <div class="wrap notyet__grid">
+    <header class="notyet__lead">
+      <p class="eyebrow">Limitations</p>
+      <h2 id="notyet-title" class="display-2">What Nova {VERSION} does not do yet</h2>
+      <p class="body">Differences from Karma are documented with the feature they belong to</p>
+      <a class="arrow" href={href('/docs/limitations')}>The full list <Icon name="arrow-right" /></a>
+    </header>
+    <div class="notyet__cols">
+      {
+        limitations.map((group) => (
+          <section>
+            <h3 class="eyebrow">{group.title}</h3>
+            <ul>
+              {group.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </section>
+        ))
+      }
     </div>
   </div>
 </section>
 
 <style>
-  .notyet {
-    background: var(--stage);
-    border-block: 1px solid var(--line);
-  }
   .notyet__grid {
     display: grid;
     grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
-    gap: clamp(2.5rem, 6vw, 7rem);
+    gap: 40px var(--gap-xl);
     align-items: start;
   }
   .notyet__lead {
     display: grid;
-    gap: 1.5rem;
+    gap: 16px;
+    justify-items: start;
   }
   .notyet__cols {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 2.5rem clamp(1.5rem, 3vw, 3rem);
+    gap: 40px var(--gap-m);
   }
-  .notyet__cols h3 {
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-weight: 500;
-    padding-bottom: 0.75rem;
+  .notyet__cols ul {
+    margin-top: 8px;
   }
   .notyet__cols li {
-    padding-block: 0.7rem;
+    padding-block: 12px;
     border-top: 1px solid var(--line);
-    font-size: var(--text-sm);
-    color: var(--paper-dim);
+    font-size: var(--t-14);
+    line-height: 20px;
+    color: var(--text);
   }
   @media (max-width: 900px) {
     .notyet__grid {

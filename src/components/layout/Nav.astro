@@ -26,17 +26,11 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
           </a>
         ))
       }
-      <a href={REPO_URL} rel="noopener" data-ext>
-        GitHub
-        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9l6-6M4 3h5v5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
-      </a>
+      <a href={REPO_URL} rel="noopener">GitHub</a>
     </nav>
 
     <div class="nav__actions">
-      <a class="btn btn--primary btn--small" href={href('/download')}>
-        <span class="btn__dot" aria-hidden="true"></span>
-        Download
-      </a>
+      <a class="btn btn--primary btn--small" href={href('/download')}>Download</a>
       <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-menu" data-nav-toggle>
         <span class="sr-only">Menu</span>
         <span class="nav__toggle-lines" aria-hidden="true"><i></i><i></i></span>
@@ -64,27 +58,17 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
     position: fixed;
     inset: 0 0 auto 0;
     z-index: 100;
-    transition:
-      transform 0.5s var(--ease-out),
-      background-color 0.4s,
-      box-shadow 0.4s;
-  }
-  .nav::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    opacity: 0;
-    background: rgb(12 12 11 / 0.62);
-    -webkit-backdrop-filter: blur(22px) saturate(1.5);
-    backdrop-filter: blur(22px) saturate(1.5);
+    background: var(--bg);
     box-shadow: inset 0 -1px 0 0 var(--line);
-    transition: opacity 0.4s;
+    transition:
+      transform 300ms var(--ease),
+      background-color 160ms var(--ease),
+      box-shadow 160ms var(--ease);
   }
-  .nav:not([data-overlay])::before,
-  .nav.is-scrolled::before,
-  .nav.is-open::before {
-    opacity: 1;
+  /* Over the hero the bar is clear until the page moves. */
+  .nav[data-overlay]:not(.is-scrolled):not(.is-open) {
+    background: transparent;
+    box-shadow: none;
   }
   .nav.is-hidden:not(.is-open) {
     transform: translateY(-100%);
@@ -94,75 +78,54 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.5rem;
+    gap: 24px;
     height: var(--nav-h);
   }
 
   .nav__brand {
     display: block;
-    width: 4.4rem;
-    color: var(--paper);
+    width: 72px;
+    color: var(--text);
     flex: none;
-    padding-block: 0.5rem;
+    padding-block: 8px;
   }
 
   .nav__links {
     display: flex;
     align-items: center;
-    gap: clamp(1.25rem, 2.6vw, 2.5rem);
+    gap: 32px;
     margin-left: auto;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    letter-spacing: -0.005em;
+    font-size: var(--t-14);
   }
   .nav__links a {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35em;
-    padding-block: 0.5rem;
-    color: var(--muted);
-    transition: color 0.25s;
+    padding-block: 8px;
+    color: var(--text-2);
+    transition: color 160ms var(--ease);
   }
   .nav__links a:hover,
   .nav__links a[aria-current='page'] {
-    color: var(--paper);
-  }
-  .nav__links a[aria-current='page']::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 3px;
-    height: 3px;
-    margin-left: -1.5px;
-    border-radius: 50%;
-    background: var(--nova);
-  }
-  .nav__links svg {
-    width: 0.7em;
-    height: 0.7em;
-    opacity: 0.7;
+    color: var(--text);
   }
 
   .nav__actions {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 12px;
   }
 
   .nav__toggle {
     display: none;
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 50%;
-    box-shadow: inset 0 0 0 1px var(--line-strong);
+    width: 36px;
+    height: 36px;
+    border-radius: var(--r-m);
+    background: var(--raised);
+    box-shadow: inset 0 0 0 1px var(--line-2);
     place-items: center;
   }
   .nav__toggle-lines {
     position: relative;
     display: block;
-    width: 14px;
+    width: 16px;
     height: 8px;
   }
   .nav__toggle-lines i {
@@ -170,8 +133,8 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
     left: 0;
     width: 100%;
     height: 1.5px;
-    background: var(--paper);
-    transition: transform 0.4s var(--ease-out);
+    background: var(--text);
+    transition: transform 160ms var(--ease);
   }
   .nav__toggle-lines i:first-child {
     top: 0;
@@ -188,21 +151,19 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
 
   .nav__menu {
     border-top: 1px solid var(--line);
-    padding-block: 1rem 2rem;
+    padding-block: 8px 24px;
   }
   .nav__menu nav {
     display: grid;
   }
   .nav__menu a {
-    padding: 0.85rem 0;
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -0.03em;
+    padding: 12px 0;
+    font-size: var(--t-18);
     border-bottom: 1px solid var(--line);
-    color: var(--paper-dim);
+    color: var(--text-2);
   }
   .nav__menu a[aria-current='page'] {
-    color: var(--paper);
+    color: var(--text);
   }
 
   @media (max-width: 760px) {
@@ -230,7 +191,7 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
     const onScroll = () => {
       const y = window.scrollY;
       nav.classList.toggle('is-scrolled', y > 40);
-      // Hide while reading down, return on the way up.
+      // Out of the way while reading down, back on the way up.
       if (Math.abs(y - last) > 6) {
         nav.classList.toggle('is-hidden', y > last && y > 400);
         last = y;

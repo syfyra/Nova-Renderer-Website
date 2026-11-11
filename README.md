@@ -2,8 +2,8 @@
 
 The product website of [Nova](https://github.com/syfyra/Nova-Renderer), a path tracer for Houdini Solaris.
 
-A static site built with [Astro](https://astro.build), GSAP and Lenis. The plan it follows is in
-[`docs/PLAN.md`](docs/PLAN.md).
+A static site built with [Astro](https://astro.build) and GSAP. The plan it started from is in
+[`docs/PLAN.md`](docs/PLAN.md); the design it has now is described under [Design](#design).
 
 ## Develop
 
@@ -11,7 +11,7 @@ Requires Node 22.
 
 ```sh
 npm install
-npm run dev        # http://localhost:4321, empty render slots are shown as labelled frames
+npm run dev        # http://localhost:4321, empty render slots are shown as empty frames
 npm run build      # writes the static site to dist/
 npm run preview    # serves dist/
 npm run check      # type check
@@ -38,9 +38,10 @@ Every picture slot is listed in `src/content/renders.ts` with the shot it expect
 
 Only images rendered by Nova belong in these slots (and Karma CPU in the two Karma comparison slots).
 
-Empty slots appear as labelled frames in `npm run dev` and are left out of `npm run build`, so the site can be
-published before every render exists. Sections adapt: comparison sliders disappear, the materials gallery becomes a
-grid, the full-height scenes become compact blocks. `NOVA_SHOW_PENDING=1 npm run build` keeps the frames.
+Empty slots appear as plain frames of the right size in `npm run dev` (the expected shot is in the tooltip) and are
+left out of `npm run build`, so the site can be published before every render exists. Sections adapt: comparison
+sliders disappear, and the material cards and the rows of "Light and matter" stand without a picture.
+`NOVA_SHOW_PENDING=1 npm run build` keeps the frames.
 
 ## Accuracy
 
@@ -94,12 +95,12 @@ src/
     layout/           navigation, footer, footnotes
     media/            render frames, comparison slider
     data/             benchmark bars, requirements
-    primitives/       code block, footnote marker
+    primitives/       code block, footnote marker, icon
     sections/         the home page, section by section
   content/            claims, benchmarks, limitations, render registry, docs navigation
   layouts/            Base and Docs
   lib/                site constants, GitHub build-time data
-  motion/             GSAP and Lenis: core.ts (all pages), home.ts (home page)
+  motion/             GSAP: core.ts (all pages), home.ts (home page)
     tracer/           the live path tracer: scene.ts (geometry), shader.ts (GLSL), tracer.ts (accumulation)
     hero-stage.ts     the live hero and its flight
     viewport.ts       the interactive viewport
@@ -137,14 +138,36 @@ Behaviour to know:
   resolves through a Monte Carlo accumulator (`accumulate.ts`) and the page zooms through the O in two dimensions.
 - `?rtpx=<pixels>` in the address forces the number of pixels traced per frame. It is a testing aid.
 
+## Design
+
+The page is a dark stage with one light. Everything in `src/styles/global.css` follows from that.
+
+- **Colour.** One warm neutral ramp: `--bg`, `--surface`, `--raised` for surfaces, `--text`, `--text-2`, `--text-3`
+  for the three text roles, hairlines as the text colour at 8 % and 14 %. Depth comes from the surface steps, not
+  from shadows.
+- **The accent.** `--accent` is the orange of the logo's dot. It appears as a flat dot on the one action that
+  matters in a view, as the Nova XPU series in a chart, and in the wordmark. Nothing else is orange, and there are
+  no gradients between hues, glows, coloured shadows or glass. The glow inside the logo itself is part of the mark.
+- **Type.** Inter in weights 400 and 500, JetBrains Mono for values, names and captions. Sentence case throughout,
+  no uppercase labels, negative tracking on display sizes only. Headlines, labels and buttons end without a
+  period.
+- **Spacing and shape.** A 4 px grid. Two sections meet with `--section` between them. Corner radius follows size:
+  `--r-s` for chips, `--r-m` for controls, `--r-l` for cards, `--r-xl` for panels.
+- **Icons.** One set, [Lucide](https://lucide.dev) (ISC), as inline paths in `components/primitives/Icon.astro`:
+  16 px, stroke 1.5.
+
 ## Motion
 
-- `prefers-reduced-motion` disables all choreography: no pinned sequences, no flight. The content is simply
-  visible, and the live hero appears once it is calm.
-- Three sequences are pinned on wide screens: the hero, the materials gallery when it has pictures, and
-  "Light and matter". On small screens they are ordinary blocks.
+Motion explains something or it is absent. There are no scroll reveals: content is simply there.
+
+- The hero is the only pinned sequence: the wordmark resolves, and scrolling flies the camera through the O into
+  the opening statement.
+- The layer stack of "Output" opens with the scroll position, to show that the passes are parts of one image.
+- Comparison sliders make one short sweep on first sight. Hover and press states take 160 ms.
+- One easing curve everywhere: `--ease` in CSS, `power4.out` in GSAP. Nothing loops.
+- `prefers-reduced-motion` turns all of it off: no pin, no flight. The live hero appears once it is calm.
 
 ## Licence
 
 MIT. Nova's logo and name belong to the Nova project. Fonts: Inter and JetBrains Mono, both under the SIL Open Font
-License, self-hosted through Fontsource.
+License, self-hosted through Fontsource. Icons: Lucide, ISC License.
