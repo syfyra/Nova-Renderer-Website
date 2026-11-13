@@ -14,11 +14,8 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
   <div class="wrap">
     <header class="head">
       <p class="eyebrow" data-reveal="fade"><b>08</b> Look-dev and IPR</p>
-      <h2 id="interactive-title" class="display-2" data-reveal="lines">An edit shows in milliseconds.</h2>
-      <p class="lede" data-reveal="fade">
-        After an edit the viewport renders one pixel per 4×4 block, then per 2×2, then every pixel. Those samples count
-        towards the image. Move the light below to see the idea.
-      </p>
+      <h2 id="interactive-title" class="display-2" data-reveal="lines">Now move the light.</h2>
+      <p class="lede" data-reveal="fade">The picture answers in milliseconds: 4×4 blocks, then 2×2, then every pixel.</p>
     </header>
 
     <div class="interactive__grid">
@@ -62,10 +59,7 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
           }
         </ul>
         <p class="caption latency__scale"><span>0</span><span>100 ms</span></p>
-        <p class="body latency__note">
-          Measured at 1280×720 on a scene of 980 000 triangles with 20 000 instances. Every measured edit stays below
-          100&nbsp;ms.
-        </p>
+        <p class="body latency__note">Every measured edit stays below 100&nbsp;ms, at 1280×720 on 980 000 triangles.</p>
       </div>
     </div>
 
@@ -80,22 +74,15 @@ const max = 100; // PLAN.md's budget for an edit, in milliseconds
       <ul class="interactive__cards" data-reveal="stagger" data-stagger="0.1" data-focus>
         <li>
           <h3>OptiX denoiser</h3>
-          <p>
-            For final frames and in the viewport, guided by the first-hit albedo and normal. Alpha stays exact. One
-            denoise takes 8&nbsp;ms at 1080p and 31&nbsp;ms at 4K on an RTX 5080.<Fn id="denoise" />
-          </p>
+          <p>8&nbsp;ms at 1080p, 31&nbsp;ms at 4K on an RTX 5080.<Fn id="denoise" /></p>
         </li>
         <li>
           <h3>Adaptive sampling</h3>
-          <p>
-            Each pixel stops once its noise estimate is low enough, decided at power-of-two checkpoints so renders stay
-            deterministic. About 3× faster at equal error on a glass scene, and about even on uniformly noisy
-            ones.<Fn id="adaptive" />
-          </p>
+          <p>About 3× faster at equal error on a glass scene, about even on uniformly noisy ones.<Fn id="adaptive" /></p>
         </li>
         <li>
           <h3>Look-dev tools</h3>
-          <p>Contour, depth and crease outlines, headlight and dome overrides, simplified shading, and path guiding on the CPU and on the GPU.</p>
+          <p>Outlines, headlight and dome overrides, simplified shading, path guiding.</p>
         </li>
       </ul>
     </div>

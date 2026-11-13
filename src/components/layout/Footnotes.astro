@@ -6,8 +6,15 @@ import { SOURCE_TAG } from '../../lib/site';
 
 <section class="notes" aria-labelledby="notes-title">
   <div class="wrap">
-    <h2 id="notes-title" class="caption">Footnotes · measured on Nova {SOURCE_TAG}</h2>
-    <ol>
+    <!-- The small print stays out of the story until someone asks for it: a
+         footnote marker opens the list and goes to its note (motion/core.ts). -->
+    <details data-notes>
+      <summary>
+        <h2 id="notes-title" class="caption">Footnotes · measured on Nova {SOURCE_TAG}</h2>
+        <span class="caption notes__count">{homeNotes.length} notes</span>
+        <svg viewBox="0 0 12 12" aria-hidden="true" class="notes__chevron"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
+      </summary>
+      <ol>
       {
         homeNotes.map((id, i) => (
           <li id={`fn-${i + 1}`}>
@@ -21,26 +28,56 @@ import { SOURCE_TAG } from '../../lib/site';
           </li>
         ))
       }
-    </ol>
+      </ol>
+    </details>
   </div>
 </section>
 
 <style>
   .notes {
-    padding-block: clamp(3rem, 6vw, 5rem);
+    padding-block: 0.75rem;
     border-top: 1px solid var(--line);
     background: var(--ink);
     position: relative;
     z-index: 2;
   }
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-block: 1rem;
+    cursor: pointer;
+    list-style: none;
+    color: var(--faint);
+    transition: color 0.2s;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover,
+  details[open] summary {
+    color: var(--paper);
+  }
   h2 {
     font-weight: 500;
     text-transform: none;
     letter-spacing: 0;
+    color: inherit;
+  }
+  .notes__count {
+    margin-right: auto;
     color: var(--faint);
-    margin-bottom: 1.75rem;
+  }
+  .notes__chevron {
+    width: 0.75rem;
+    height: 0.75rem;
+    transition: rotate 0.4s var(--ease-out);
+  }
+  details[open] .notes__chevron {
+    rotate: 180deg;
   }
   ol {
+    padding-block: 1rem clamp(2rem, 5vw, 4rem);
     columns: 2;
     column-gap: clamp(1.5rem, 4vw, 4rem);
     font-size: var(--text-xs);
@@ -54,7 +91,8 @@ import { SOURCE_TAG } from '../../lib/site';
     padding-bottom: 0.9rem;
     scroll-margin-top: 6rem;
   }
-  li:target p {
+  li:target p,
+  li[data-current] p {
     color: var(--paper);
   }
   .notes__n {

@@ -19,7 +19,7 @@ const plain = !cards.some((c) => slotVisible(c.slot));
     <div class="wrap materials__head">
       <div>
         <p class="eyebrow" data-reveal="fade"><b>05</b> Materials</p>
-        <h2 id="materials-title" class="display-2" data-reveal="lines">Materials render as authored.</h2>
+        <h2 id="materials-title" class="display-2" data-reveal="lines">Then it hits something. It looks the way you made it.</h2>
       </div>
       <p class="caption materials__hint" aria-hidden="true">
         <span data-materials-index>01</span> / {String(cards.length).padStart(2, '0')}
@@ -32,50 +32,35 @@ const plain = !cards.some((c) => slotVisible(c.slot));
           <RenderFrame id={cards[0].slot} ratio="4 / 5" sizes="(min-width: 900px) 30vw, 80vw" />
           <p class="caption mat__kicker">{cards[0].kicker}</p>
           <h3 class="mat__title">{cards[0].title}</h3>
-          <p class="mat__text">
-            740 of the 746 MaterialX 1.39 node definitions run through Nova’s shading compiler, with Karma’s
-            semantics.<Fn id="materialx" /> Layering is exact per MaterialX and OpenPBR, with energy compensation.
-          </p>
+          <p class="mat__text">740 of 746 node definitions run, with Karma’s semantics.<Fn id="materialx" /></p>
           <p class="mat__tags">{cards[0].tags.map((t) => <span class="tag">{t}</span>)}</p>
         </li>
         <li class="mat">
           <RenderFrame id={cards[1].slot} ratio="4 / 5" sizes="(min-width: 900px) 30vw, 80vw" />
           <p class="caption mat__kicker">{cards[1].kicker}</p>
           <h3 class="mat__title">{cards[1].title}</h3>
-          <p class="mat__text">
-            35 of Karma’s 55 <span class="mono">kma_*</span> nodes: ray switches and ray imports, ramps, hex tiling,
-            Voronoi, curvature, ambient occlusion, rounded edges.<Fn id="kma" />
-          </p>
+          <p class="mat__text">35 of Karma’s 55 <span class="mono">kma_*</span> nodes.<Fn id="kma" /></p>
           <p class="mat__tags">{cards[1].tags.map((t) => <span class="tag">{t}</span>)}</p>
         </li>
         <li class="mat">
           <RenderFrame id={cards[2].slot} ratio="4 / 5" sizes="(min-width: 900px) 30vw, 80vw" />
           <p class="caption mat__kicker">{cards[2].kicker}</p>
           <h3 class="mat__title">{cards[2].title}</h3>
-          <p class="mat__text">
-            Parameters, textures, bump and normal maps, emission, opacity and displacement follow the Principled
-            Shader’s own rules: Disney sheen and clearcoat, Schlick metal, reflectivity as an effective IOR.
-          </p>
+          <p class="mat__text">By the Principled Shader’s own rules.</p>
           <p class="mat__tags">{cards[2].tags.map((t) => <span class="tag">{t}</span>)}</p>
         </li>
         <li class="mat">
           <RenderFrame id={cards[3].slot} ratio="4 / 5" sizes="(min-width: 900px) 30vw, 80vw" />
           <p class="caption mat__kicker">{cards[3].kicker}</p>
           <h3 class="mat__title">{cards[3].title}</h3>
-          <p class="mat__text">
-            The surface function is compiled once and run in batches of 256 shading points. Its BSDF stays in VEX and is
-            evaluated and sampled there. On the GPU, VEX materials render as grey stand-ins.
-          </p>
+          <p class="mat__text">The BSDF stays in VEX. On the GPU, VEX materials render as grey stand-ins.</p>
           <p class="mat__tags">{cards[3].tags.map((t) => <span class="tag">{t}</span>)}</p>
         </li>
         <li class="mat">
           <RenderFrame id={cards[4].slot} ratio="4 / 5" sizes="(min-width: 900px) 30vw, 80vw" />
           <p class="caption mat__kicker">{cards[4].kicker}</p>
           <h3 class="mat__title">{cards[4].title}</h3>
-          <p class="mat__text">
-            Float and vector displacement at Karma’s dicing quality, watertight and motion-blurred. Textures with UDIMs,
-            ray-cone footprints and colour spaces decided as Karma decides them.
-          </p>
+          <p class="mat__text">At Karma’s dicing quality, watertight and motion-blurred.</p>
           <p class="mat__tags">{cards[4].tags.map((t) => <span class="tag">{t}</span>)}</p>
         </li>
       </ul>

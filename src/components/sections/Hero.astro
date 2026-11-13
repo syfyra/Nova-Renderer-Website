@@ -12,8 +12,8 @@ import { hasRender } from '../../content/renders';
 import { REPO_URL, VERSION, href } from '../../lib/site';
 
 const withRender = hasRender('hero');
-const statement =
-  'Nova is a physically based path tracer that plugs into Houdini’s Solaris as a Hydra render delegate. Scenes, materials, lights, render settings and AOVs set up for Karma render in Nova with the same look.';
+// The story opens in three beats, one to a line.
+const beats = ['It starts with one light in the dark.', 'A ray leaves it.', 'Follow the ray.'];
 ---
 
 <section class="hero" data-hero aria-labelledby="hero-title">
@@ -42,10 +42,7 @@ const statement =
         <div class="hero__rule" data-hero-rule aria-hidden="true"></div>
         <div class="hero__copy" data-hero-copy>
           <p class="hero__tagline" data-hero-line>Production path tracing for Houdini Solaris</p>
-          <p class="hero__sub" data-hero-line>
-            A Hydra render delegate for the CPU and for NVIDIA GPUs.<br class="hero__br" /> It renders Karma scenes the way
-            Karma does.
-          </p>
+          <p class="hero__sub" data-hero-line>It renders Karma scenes the way Karma does.</p>
           <div class="hero__cta" data-hero-line>
             <a class="btn btn--primary" href={href('/download')} data-magnetic>
               <span class="btn__dot" aria-hidden="true"></span>
@@ -61,7 +58,7 @@ const statement =
     </div>
 
     <div class="hero__statement wrap" data-hero-statement>
-      <p class="hero__statement-text" data-hero-words>{statement}</p>
+      <p class="hero__statement-text" data-hero-words>{beats.map((beat) => <span class="hero__beat">{beat} </span>)}</p>
     </div>
 
     <div class="hero__meta wrap" data-hero-meta>
@@ -279,15 +276,18 @@ const statement =
     visibility: hidden;
   }
   .hero__statement-text {
-    max-width: 22em;
     margin-inline: auto;
-    font-size: clamp(1.5rem, 0.9rem + 2.9vw, 3.5rem);
+    font-size: clamp(1.75rem, 0.9rem + 3.6vw, 4.25rem);
     font-weight: 500;
     line-height: 1.12;
     letter-spacing: -0.035em;
     text-align: center;
     text-wrap: balance;
     color: var(--paper);
+  }
+
+  .hero__beat {
+    display: block;
   }
 
   .hero__meta {
@@ -405,9 +405,6 @@ const statement =
   }
 
   @media (max-width: 760px) {
-    .hero__br {
-      display: none;
-    }
     .hero__meta {
       grid-template-columns: minmax(0, 1fr);
       justify-items: center;

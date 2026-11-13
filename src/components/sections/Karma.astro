@@ -28,18 +28,8 @@ const lops = [
       <header class="karma__lead">
         <p class="eyebrow" data-reveal="fade"><b>04</b> Karma compatibility</p>
         <h2 id="karma-title" class="display-2" data-reveal="lines">It speaks Karma’s language.</h2>
-        <p class="lede" data-reveal="fade">
-          Scenes built with Karma’s Solaris nodes render in Nova as they are, on the CPU and on the GPU.
-        </p>
-        <p class="body" data-reveal="fade">
-          Nova reads Karma’s render settings as a fallback, follows Karma’s light conventions and writes Karma’s AOV
-          names. Each feature was measured against Karma CPU first and is checked by an automated test. A setting Nova
-          does not support warns once per stage.
-        </p>
-        <p class="body" data-reveal="fade">
-          Nova’s own nodes mirror Karma’s: <strong>Nova</strong>, <strong>Nova Render Settings</strong>,
-          <strong>Nova (Setup)</strong> and the <strong>Nova Material Builder</strong>.
-        </p>
+        <p class="lede" data-reveal="fade">The scene it travels through is yours: built for Karma, rendered as it is.</p>
+        <p class="body" data-reveal="fade">What Nova cannot do yet, it says out loud, once per stage.</p>
         <p data-reveal="fade">
           <a class="arrow" href={href('/docs/karma')}>
             Compatibility in detail
@@ -53,7 +43,7 @@ const lops = [
         <ol data-karma-list data-focus>
           {
             lops.map((lop, i) => (
-              <li data-karma-row>
+              <li data-karma-row tabindex="0">
                 <span class="mono karma__n">{String(i + 1).padStart(2, '0')}</span>
                 <span class="karma__name">{lop.name}</span>
                 <span class="karma__note">{lop.note}</span>
@@ -70,9 +60,7 @@ const lops = [
           <div class="karma__compare" data-reveal="frame">
             <CompareSlider a="karma-karma" b="karma-nova" labelA="Karma CPU" labelB="Nova" ratio="2 / 1" name="Karma and Nova comparison" />
           </div>
-          <p class="caption karma__caption" data-reveal="fade">
-            One scene, one setup, two renderers. Measured differences are documented per reference scene.
-          </p>
+          <p class="caption karma__caption" data-reveal="fade">One scene, one setup, two renderers.</p>
         </>
       )
     }
@@ -128,10 +116,26 @@ const lops = [
     letter-spacing: -0.03em;
     line-height: 1.15;
   }
+  /* The note waits under the name until the row is under the pointer, or
+     has the focus (a tap gives it that). */
   .karma__note {
     grid-column: 2;
     color: var(--muted);
     font-size: var(--text-sm);
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition:
+      max-height 0.5s var(--ease-out),
+      opacity 0.4s var(--ease-out);
+  }
+  .karma__list li:hover .karma__note,
+  .karma__list li:focus .karma__note {
+    max-height: 3.2em;
+    opacity: 1;
+  }
+  .karma__list li:focus-visible {
+    outline-offset: -2px;
   }
   .karma__compare {
     margin-top: clamp(4rem, 9vw, 8rem);

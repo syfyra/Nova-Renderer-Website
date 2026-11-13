@@ -149,6 +149,18 @@ Behaviour to know:
 - `components/layout/ChapterRail.astro` is a thread at the left edge of wide screens: one mark per chapter, the
   logo's dot on the chapter in view.
 
+## Story
+
+The home page tells one story instead of describing a product: a ray leaves the light in the hero, two machines
+follow it, it hits materials, passes through lights, smoke, hair, skin and sky, is written down pass by pass, and is
+then measured. Each chapter's headline is a beat of that journey; the numbers and their footnotes carry the facts.
+
+- Keep the copy short. A chapter gets a headline, one line and its figures. Detail belongs in the docs pages.
+- The notes of the twelve Karma nodes open under the pointer or on focus.
+- The footnotes are closed until a footnote marker is used (`initNotes` in `src/motion/core.ts`).
+- A line of the story may be vivid, but never claims something the renderer does not do. Measured statements keep
+  their conditions in the claims ledger.
+
 ## Design
 
 - **Colour.** A warm neutral ramp (`--ink`, `--stage`, `--stage-2`, `--stage-3`, `--paper`, `--paper-dim`,

@@ -6,32 +6,25 @@ import Fn from '../primitives/Fn.astro';
   <div class="wrap">
     <header class="head">
       <p class="eyebrow" data-reveal="fade"><b>03</b> Nova on the CPU</p>
-      <h2 id="cpu-title" class="display-2" data-reveal="lines">A wavefront path tracer on every core.</h2>
+      <h2 id="cpu-title" class="display-2" data-reveal="lines">No GPU? Every core takes up the chase.</h2>
     </header>
 
     <div class="cpu__cols" data-reveal="stagger" data-stagger="0.12" data-focus>
       <article class="cpu__col">
         <p class="caption">Intersection</p>
         <h3 class="display-3">Embree 4</h3>
-        <p class="body">
-          Rays are traced through Embree 4 with AVX2. Instances are Embree instance arrays with one transform each, and
-          deforming meshes refit their BVH instead of rebuilding it.
-        </p>
+        <p class="body">What did the ray hit?</p>
       </article>
       <article class="cpu__col">
         <p class="caption">Integration</p>
         <h3 class="display-3">Wavefront</h3>
-        <p class="body">
-          Rays move through queues: generate, intersect, shade, shadow. Owen-scrambled Sobol sequences, multiple
-          importance sampling of lights and BSDFs, and a light tree for scenes with many lights.
-        </p>
+        <p class="body">Where does it go next?</p>
       </article>
       <article class="cpu__col">
         <p class="caption">Shading</p>
         <h3 class="display-3">A SIMD VM</h3>
         <p class="body">
-          Materials compile to bytecode for a SIMD shading VM. A value edit never recompiles; a structural edit
-          recompiles one material in about 0.1&nbsp;ms.<Fn id="shading-edit" />
+          What does it see there? A structural edit recompiles one material in about 0.1&nbsp;ms.<Fn id="shading-edit" />
         </p>
       </article>
     </div>

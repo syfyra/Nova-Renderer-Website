@@ -260,6 +260,34 @@ function initSpot() {
   });
 }
 
+// The footnotes are closed until asked for. A footnote marker, or an address
+// that names a note, opens the list first, so the scroll to the note has
+// somewhere to go, and marks the note.
+function initNotes() {
+  const notes = document.querySelector<HTMLDetailsElement>('[data-notes]');
+  if (!notes) return;
+  const mark = (hash: string) => {
+    if (!/^#fn-\d+$/.test(hash)) return null;
+    const note = notes.querySelector<HTMLElement>(hash);
+    if (!note) return null;
+    notes.open = true;
+    notes.querySelectorAll('[data-current]').forEach((n) => n.removeAttribute('data-current'));
+    note.setAttribute('data-current', '');
+    return note;
+  };
+  // In the capture phase: before anything measures where the note is.
+  document.addEventListener(
+    'click',
+    (e) => {
+      const a = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('sup.fn a');
+      if (a) mark(a.hash);
+    },
+    true,
+  );
+  const named = mark(location.hash);
+  if (named) requestAnimationFrame(() => named.scrollIntoView({ block: 'center' }));
+}
+
 // Lists that keep the row under the pointer lit (data-focus, global.css) get
 // their transition on the first visit, long after they have arrived.
 function initFocus() {
@@ -306,6 +334,7 @@ function boot() {
   initCopy();
   initCompare();
   initSpot();
+  initNotes();
   initFocus();
   initMagnetic();
   initProgress();
