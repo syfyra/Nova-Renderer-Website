@@ -1,8 +1,5 @@
 ---
-// Chapter one: the scene. The twelve Karma LOPs light up one after another
-// as the list scrolls through the view (motion/home.ts).
 import CompareSlider from '../media/CompareSlider.astro';
-import Icon from '../primitives/Icon.astro';
 import { href } from '../../lib/site';
 import { slotVisible } from '../../content/renders';
 
@@ -10,18 +7,18 @@ const compare = slotVisible('karma-karma', 'karma-nova');
 
 // The twelve visible Karma LOPs (README, docs/reference.md "Karma's Solaris nodes").
 const lops = [
-  'Karma Render Settings',
-  'Karma Render Products',
-  'Karma Standard Render Vars',
-  'Karma Cryptomatte',
-  'Karma Sky Dome Light',
-  'Karma Physical Sky',
-  'Karma Sky Atmosphere',
-  'Karma Shadow Catcher',
-  'Karma Background Plate',
-  'Karma Blocker Light Filter',
-  'Karma Fog Box',
-  'Karma Texture Baker',
+  { name: 'Karma Render Settings', note: 'Every parameter with a Nova equivalent is read as a fallback.' },
+  { name: 'Karma Render Products', note: 'Per-var sample filters, checkpoints with resume, deep EXR.' },
+  { name: 'Karma Standard Render Vars', note: 'The render vars Karma authors, under Karma’s names.' },
+  { name: 'Karma Cryptomatte', note: 'Objects, materials and per-instance primvars.' },
+  { name: 'Karma Sky Dome Light', note: 'Karma’s sky model as a textured dome.' },
+  { name: 'Karma Physical Sky', note: 'The sky and its sun.' },
+  { name: 'Karma Sky Atmosphere', note: 'Rayleigh, Mie, ozone and ground as a medium.' },
+  { name: 'Karma Shadow Catcher', note: 'Holdouts with Karma’s shadow alpha.' },
+  { name: 'Karma Background Plate', note: 'The plate composite and the holdout LPE planes.' },
+  { name: 'Karma Blocker Light Filter', note: 'Light filters on every light sampling path.' },
+  { name: 'Karma Fog Box', note: 'Media bounded by closed surfaces.' },
+  { name: 'Karma Texture Baker', note: 'UV-space bakes with UDIMs. Bakes on the CPU.' },
 ];
 ---
 
@@ -29,26 +26,37 @@ const lops = [
   <div class="wrap">
     <div class="karma__grid">
       <header class="karma__lead">
-        <p class="eyebrow" data-reveal>The scene</p>
-        <h2 id="karma-title" class="display-2" data-words>Start with the scene you built for Karma</h2>
-        <p class="lede" data-reveal>
-          Nova reads Karma’s render settings, follows its light conventions and writes its AOV names. A setting it does
-          not support warns once per stage.
+        <p class="eyebrow" data-reveal="fade"><b>04</b> Karma compatibility</p>
+        <h2 id="karma-title" class="display-2" data-reveal="lines">It speaks Karma’s language.</h2>
+        <p class="lede" data-reveal="fade">
+          Scenes built with Karma’s Solaris nodes render in Nova as they are, on the CPU and on the GPU.
         </p>
-        <a class="arrow" href={href('/docs/karma')} data-reveal>Compatibility in detail <Icon name="arrow-right" /></a>
+        <p class="body" data-reveal="fade">
+          Nova reads Karma’s render settings as a fallback, follows Karma’s light conventions and writes Karma’s AOV
+          names. Each feature was measured against Karma CPU first and is checked by an automated test. A setting Nova
+          does not support warns once per stage.
+        </p>
+        <p class="body" data-reveal="fade">
+          Nova’s own nodes mirror Karma’s: <strong>Nova</strong>, <strong>Nova Render Settings</strong>,
+          <strong>Nova (Setup)</strong> and the <strong>Nova Material Builder</strong>.
+        </p>
+        <p data-reveal="fade">
+          <a class="arrow" href={href('/docs/karma')}>
+            Compatibility in detail
+            <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
+          </a>
+        </p>
       </header>
 
-      <div class="karma__list" data-karma>
-        <p class="karma__count">
-          <span class="karma__n num" data-karma-n>12</span>
-          <span class="eyebrow">of 12 visible Karma LOPs render in Nova</span>
-        </p>
-        <ol data-focus>
+      <div class="karma__list">
+        <p class="caption karma__count" data-reveal="fade">All twelve visible Karma LOPs</p>
+        <ol data-karma-list data-focus>
           {
-            lops.map((name, i) => (
-              <li data-karma-item>
-                <span class="caption num">{i + 1}</span>
-                <span class="karma__name">{name}</span>
+            lops.map((lop, i) => (
+              <li data-karma-row>
+                <span class="mono karma__n">{String(i + 1).padStart(2, '0')}</span>
+                <span class="karma__name">{lop.name}</span>
+                <span class="karma__note">{lop.note}</span>
               </li>
             ))
           }
@@ -59,10 +67,12 @@ const lops = [
     {
       compare && (
         <>
-          <div class="karma__compare" data-reveal>
+          <div class="karma__compare" data-reveal="frame">
             <CompareSlider a="karma-karma" b="karma-nova" labelA="Karma CPU" labelB="Nova" ratio="2 / 1" name="Karma and Nova comparison" />
           </div>
-          <p class="caption karma__caption">One scene, one setup, two renderers</p>
+          <p class="caption karma__caption" data-reveal="fade">
+            One scene, one setup, two renderers. Measured differences are documented per reference scene.
+          </p>
         </>
       )
     }
@@ -73,77 +83,68 @@ const lops = [
   .karma__grid {
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: 40px var(--gap-xl);
+    gap: clamp(2.5rem, 6vw, 7rem);
     align-items: start;
   }
   .karma__lead {
     display: grid;
-    gap: 16px;
-    justify-items: start;
+    gap: 1.5rem;
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
   }
   .karma__count {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-    padding-bottom: 16px;
-  }
-  .karma__n {
-    font-size: var(--h2);
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    min-width: 1.3em;
-  }
-  .karma__list ol {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: repeat(6, auto);
-    grid-auto-flow: column;
-    column-gap: var(--gap-m);
+    text-transform: none;
+    letter-spacing: 0;
+    padding-bottom: 1rem;
   }
   .karma__list li {
     display: grid;
-    grid-template-columns: 20px minmax(0, 1fr);
-    column-gap: 12px;
-    align-items: baseline;
-    padding-block: 12px;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    column-gap: 0.5rem;
+    row-gap: 0.2rem;
+    padding-block: 1.05rem;
     border-top: 1px solid var(--line);
-    color: var(--text);
-    transition:
-      color 400ms var(--ease),
-      opacity 240ms var(--ease);
+    transition: opacity 0.4s;
   }
-  .karma__list li .caption {
-    text-align: right;
-  }
+  /* The name steps towards the pointer. */
   .karma__name {
-    font-weight: 500;
-    line-height: 24px;
-    transition: transform 300ms var(--ease);
+    transition: translate 0.4s var(--ease-out);
   }
   .karma__list li:hover .karma__name {
-    transform: translateX(4px);
+    translate: 0.3rem 0;
   }
-  /* Scrolling lights the names one after another. */
-  :global(html.motion) .karma__list li:not([data-lit]) {
-    color: var(--text-3);
+  .karma__list li:last-child {
+    border-bottom: 1px solid var(--line);
+  }
+  .karma__n {
+    grid-row: span 2;
+    color: var(--faint);
+    padding-top: 0.45em;
+    font-size: var(--text-xs);
+  }
+  .karma__name {
+    font-size: var(--text-xl);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+  }
+  .karma__note {
+    grid-column: 2;
+    color: var(--muted);
+    font-size: var(--text-sm);
   }
   .karma__compare {
-    margin-top: var(--gap-l);
+    margin-top: clamp(4rem, 9vw, 8rem);
   }
   .karma__caption {
-    margin-top: 12px;
+    margin-top: 1rem;
   }
   @media (max-width: 900px) {
     .karma__grid {
       grid-template-columns: minmax(0, 1fr);
     }
-  }
-  @media (max-width: 560px) {
-    .karma__list ol {
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-rows: none;
-      grid-auto-flow: row;
+    .karma__lead {
+      position: static;
     }
   }
 </style>

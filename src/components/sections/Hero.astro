@@ -7,22 +7,22 @@
 // lockup below does the same in two dimensions (the mark resolves, the page
 // zooms through the O).
 import Wordmark from '../brand/Wordmark.astro';
-import Icon from '../primitives/Icon.astro';
 import RenderFrame from '../media/RenderFrame.astro';
 import { hasRender } from '../../content/renders';
 import { REPO_URL, VERSION, href } from '../../lib/site';
 
 const withRender = hasRender('hero');
 const statement =
-  'Nova is a path tracer for Houdini’s Solaris. What you set up for Karma renders in Nova with the same look.';
+  'Nova is a physically based path tracer that plugs into Houdini’s Solaris as a Hydra render delegate. Scenes, materials, lights, render settings and AOVs set up for Karma render in Nova with the same look.';
 ---
 
 <section class="hero" data-hero aria-labelledby="hero-title">
   <div class="hero__pin" data-hero-pin>
     <canvas class="hero__stage" data-hero-stage aria-hidden="true"></canvas>
     <div class="hero__shade" aria-hidden="true"></div>
+    <div class="hero__bloom" data-hero-bloom aria-hidden="true"></div>
     <canvas class="hero__canvas" data-hero-canvas aria-hidden="true"></canvas>
-    <i class="hero__ember" data-hero-ember aria-hidden="true"></i>
+    <div class="hero__ember" data-hero-ember aria-hidden="true"><i></i></div>
 
     {
       withRender && (
@@ -42,15 +42,18 @@ const statement =
         <div class="hero__rule" data-hero-rule aria-hidden="true"></div>
         <div class="hero__copy" data-hero-copy>
           <p class="hero__tagline" data-hero-line>Production path tracing for Houdini Solaris</p>
-          <p class="hero__sub" data-hero-line>Karma scenes, rendered the way Karma renders them, on the CPU and on NVIDIA GPUs</p>
+          <p class="hero__sub" data-hero-line>
+            A Hydra render delegate for the CPU and for NVIDIA GPUs.<br class="hero__br" /> It renders Karma scenes the way
+            Karma does.
+          </p>
           <div class="hero__cta" data-hero-line>
-            <a class="btn btn--primary" href={href('/download')}>
+            <a class="btn btn--primary" href={href('/download')} data-magnetic>
               <span class="btn__dot" aria-hidden="true"></span>
               Download for Windows
             </a>
             <a class="btn" href={REPO_URL} rel="noopener">
               View on GitHub
-              <Icon name="arrow-up-right" />
+              <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9l6-6M4 3h5v5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
             </a>
           </div>
         </div>
@@ -72,6 +75,7 @@ const statement =
         <li>Windows x64</li>
         <li>MIT</li>
       </ul>
+      <p class="caption hero__cue" aria-hidden="true">Scroll <i></i></p>
     </div>
   </div>
 </section>
@@ -85,10 +89,23 @@ const statement =
     position: relative;
     height: 100vh;
     height: 100svh;
-    min-height: 544px;
+    min-height: 34rem;
     overflow: hidden;
     display: grid;
     place-items: center;
+  }
+
+  /* The only gradient on the page that is not a picture: the light of the dot
+     on the stage around it. */
+  .hero__bloom {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    width: min(150vw, 130rem);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgb(254 72 25 / 0.11), rgb(254 72 25 / 0.035) 38%, transparent 70%);
+    pointer-events: none;
   }
 
   /* The live stage: the wordmark as an object, path traced in the browser. */
@@ -99,21 +116,21 @@ const statement =
     width: 100%;
     height: 100vh;
     height: 100svh;
-    min-height: 544px;
+    min-height: 34rem;
     display: none;
     pointer-events: none;
   }
-  /* The reflection fades into the page, and the copy stays readable on it. */
   .hero__shade {
     position: absolute;
     inset: 0;
     display: none;
     pointer-events: none;
+    /* The reflection fades into the page, and the copy stays readable on it. */
     background: linear-gradient(
       to bottom,
-      transparent calc(var(--base-px, 52vh) + 4px),
-      rgb(16 15 13 / 0.82) calc(var(--base-px, 52vh) + 72px),
-      var(--bg) calc(var(--base-px, 52vh) + 168px)
+      transparent calc(var(--base-px, 52vh) + 0.5vh),
+      rgb(16 15 13 / 0.82) calc(var(--base-px, 52vh) + 9vh),
+      var(--ink) calc(var(--base-px, 52vh) + 21vh)
     );
   }
   .hero--stage .hero__stage,
@@ -122,54 +139,66 @@ const statement =
   }
   .hero--stage .hero__wordmark,
   .hero--stage .hero__rule,
-  .hero--stage .hero__canvas {
+  .hero--stage .hero__canvas,
+  .hero--stage .hero__bloom {
     display: none;
   }
   /* The copy sits just below the wordmark's short reflection. */
   .hero--stage .hero__center {
     align-self: start;
-    padding-top: calc(var(--base-px, 52vh) + 48px);
+    padding-top: calc(var(--base-px, 52vh) + clamp(2.25rem, 7.5vh, 4.75rem));
     padding-bottom: 0;
   }
   .hero--stage .hero__copy {
     padding-top: 0;
   }
   .hero__live {
-    margin-left: 12px;
-    padding-left: 12px;
-    border-left: 1px solid var(--line-2);
+    margin-left: 0.9rem;
+    padding-left: 0.9rem;
+    border-left: 1px solid var(--line-strong);
   }
   /* The label that says what the picture is stays readable over any frame. */
   .hero--stage .hero__spp {
     justify-self: start;
-    padding: 4px 8px;
-    border-radius: var(--r-s);
-    background: var(--surface);
-    color: var(--text-2);
+    padding: 0.35rem 0.7rem;
+    border-radius: 7px;
+    background: var(--stage-2);
+    color: var(--paper-dim);
   }
 
-  /* The light that stays when the camera has passed through the O: the dot. */
+  /* The light that stays when the camera has passed through the O. */
   .hero__ember {
     position: absolute;
     left: 50%;
     top: 24%;
-    width: 12px;
-    height: 12px;
-    margin: -6px 0 0 -6px;
+    width: min(64vmin, 34rem);
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
     border-radius: 50%;
-    background: var(--accent);
+    background: radial-gradient(closest-side, rgb(254 72 25 / 0.3), rgb(254 72 25 / 0.1) 34%, transparent 70%);
     pointer-events: none;
     visibility: hidden;
     z-index: 2;
   }
+  .hero__ember i {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    margin: -5px;
+    border-radius: 50%;
+    background: var(--nova);
+    box-shadow: 0 0 18px 4px rgb(254 72 25 / 0.7);
+  }
 
-  /* 2D fallback: the wordmark resolves on a canvas, then the SVG takes over. */
   .hero__canvas {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
+    image-rendering: auto;
     opacity: 0;
   }
 
@@ -191,45 +220,43 @@ const statement =
     z-index: 2;
     width: 100%;
     padding-inline: var(--gutter);
-    padding-bottom: 64px;
+    padding-bottom: clamp(3rem, 8vh, 6rem);
     display: grid;
     place-items: center;
   }
   .hero__lockup {
-    width: min(100%, 1056px);
+    width: min(100%, 66rem);
     display: grid;
     justify-items: center;
   }
   .hero__wordmark {
     width: 100%;
-    color: var(--text);
+    color: var(--paper);
+    will-change: transform;
   }
   .hero__rule {
     width: 100%;
     height: 1px;
-    margin-top: 32px;
-    background: var(--line-2);
+    margin-top: clamp(1.25rem, 3.2vw, 2.75rem);
+    background: var(--line-strong);
     transform-origin: 50% 50%;
   }
   .hero__copy {
     display: grid;
     justify-items: center;
     text-align: center;
-    padding-top: 24px;
+    padding-top: clamp(1rem, 2.4vw, 2rem);
   }
-  /* The line under the logo, set as it is on the logo card. */
   .hero__tagline {
-    font-size: var(--t-24);
-    line-height: 32px;
+    font-size: clamp(0.95rem, 0.7rem + 1.1vw, 1.5rem);
     font-weight: 500;
-    letter-spacing: 0.04em;
-    color: var(--text);
+    letter-spacing: 0.045em;
+    color: var(--paper);
   }
   .hero__sub {
-    margin-top: 12px;
-    font-size: var(--t-16);
-    line-height: 24px;
-    color: var(--text-2);
+    margin-top: 0.9rem;
+    font-size: var(--text-base);
+    color: var(--muted);
     max-width: 34rem;
     text-wrap: balance;
   }
@@ -237,8 +264,8 @@ const statement =
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 12px;
-    margin-top: 32px;
+    gap: 0.75rem;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
   }
 
   .hero__statement {
@@ -252,15 +279,15 @@ const statement =
     visibility: hidden;
   }
   .hero__statement-text {
-    max-width: 16em;
+    max-width: 22em;
     margin-inline: auto;
-    font-size: var(--h1);
+    font-size: clamp(1.5rem, 0.9rem + 2.9vw, 3.5rem);
     font-weight: 500;
-    line-height: 1.08;
-    letter-spacing: -0.03em;
+    line-height: 1.12;
+    letter-spacing: -0.035em;
     text-align: center;
     text-wrap: balance;
-    color: var(--text);
+    color: var(--paper);
   }
 
   .hero__meta {
@@ -270,29 +297,73 @@ const statement =
     bottom: 0;
     z-index: 4;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    gap: 16px;
-    padding-block: 20px;
+    gap: 1rem;
+    padding-block: 1.25rem;
     max-width: none;
   }
   .hero__spp {
-    color: var(--text-3);
+    color: var(--faint);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
   .hero__facts {
     display: flex;
-    gap: 8px 24px;
+    gap: 0.6rem 1.5rem;
     flex-wrap: wrap;
-    justify-content: flex-end;
+    justify-content: center;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+  .hero__facts li + li::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 3px;
+    margin-right: 1.5rem;
+    border-radius: 50%;
+    background: var(--faint);
+    vertical-align: middle;
+  }
+  .hero__cue {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--faint);
+  }
+  .hero__cue i {
+    position: relative;
+    width: 1px;
+    height: 1.75rem;
+    background: var(--line-strong);
+    overflow: hidden;
+  }
+  .hero__cue i::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -40%;
+    width: 100%;
+    height: 40%;
+    background: var(--paper);
+    animation: cue 2.2s var(--ease-in-out) infinite;
+  }
+  @keyframes cue {
+    to {
+      top: 100%;
+    }
   }
 
   /* Before the intro runs: nothing but the stage. */
   :global(html.motion) .hero__wordmark,
   :global(html.motion) .hero__rule,
   :global(html.motion) [data-hero-line],
-  :global(html.motion) .hero__meta {
+  :global(html.motion) .hero__meta,
+  :global(html.motion) .hero__bloom {
     visibility: hidden;
   }
 
@@ -300,21 +371,22 @@ const statement =
   :global(html:not(.motion)) .hero__pin {
     height: auto;
     min-height: 100svh;
-    padding-top: calc(var(--nav-h) + 48px);
+    padding-top: calc(var(--nav-h) + 3rem);
     display: block;
   }
   :global(html:not(.motion)) .hero__center {
-    min-height: calc(100svh - var(--nav-h) - 144px);
+    min-height: calc(100svh - var(--nav-h) - 9rem);
   }
   :global(html:not(.motion)) .hero__statement {
     position: relative;
     visibility: visible;
-    padding-block: var(--section);
+    padding-block: clamp(4rem, 10vw, 9rem);
   }
   :global(html:not(.motion)) .hero__meta {
     position: relative;
   }
-  :global(html:not(.motion)) .hero__spp {
+  :global(html:not(.motion)) .hero__spp,
+  :global(html:not(.motion)) .hero__cue {
     visibility: hidden;
   }
   :global(html:not(.motion)) .hero--stage .hero__pin {
@@ -322,7 +394,7 @@ const statement =
   }
   :global(html:not(.motion)) .hero--stage .hero__center {
     align-items: start;
-    min-height: calc(100svh - 80px);
+    min-height: calc(100svh - 5rem);
   }
   :global(html:not(.motion)) .hero--stage .hero__spp {
     visibility: visible;
@@ -333,16 +405,16 @@ const statement =
   }
 
   @media (max-width: 760px) {
+    .hero__br {
+      display: none;
+    }
     .hero__meta {
       grid-template-columns: minmax(0, 1fr);
       justify-items: center;
     }
-    .hero__spp {
+    .hero__spp,
+    .hero__cue {
       display: none;
-    }
-    .hero__facts {
-      gap: 4px 16px;
-      justify-content: center;
     }
     .hero--stage .hero__spp {
       display: block;
@@ -353,12 +425,19 @@ const statement =
     }
     .hero--stage .hero__live {
       display: block;
-      margin: 4px 0 0;
+      margin: 0.2rem 0 0;
       padding: 0;
       border: 0;
     }
     .hero--stage .hero__center {
-      padding-top: calc(var(--base-px, 36vh) + 32px);
+      padding-top: calc(var(--base-px, 36vh) + 2.5rem);
+    }
+    .hero__facts {
+      gap: 0.4rem 1rem;
+      letter-spacing: 0.04em;
+    }
+    .hero__facts li + li::before {
+      margin-right: 1rem;
     }
     .hero__statement {
       padding-top: 12vh;

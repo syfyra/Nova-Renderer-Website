@@ -22,8 +22,8 @@ const { lines, label = 'Command', prompt = '>' } = Astro.props;
 
 <style>
   .code {
-    border-radius: var(--r-m);
-    background: var(--bg);
+    border-radius: var(--radius);
+    background: rgb(0 0 0 / 0.35);
     box-shadow: inset 0 0 0 1px var(--line);
     overflow: hidden;
   }
@@ -31,29 +31,38 @@ const { lines, label = 'Command', prompt = '>' } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 8px 8px 16px;
+    padding: 0.6rem 0.6rem 0.6rem 1.1rem;
     border-bottom: 1px solid var(--line);
   }
-  .code__copy {
-    padding: 4px 8px;
-    border-radius: var(--r-s);
-    background: var(--raised);
-    box-shadow: inset 0 0 0 1px var(--line);
-    color: var(--text-2);
-    transition: color 160ms var(--ease);
+  figcaption > .caption {
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--faint);
   }
-  .code__copy:hover,
+  .code__copy {
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    color: var(--paper-dim);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition:
+      color 0.2s,
+      box-shadow 0.2s;
+  }
+  .code__copy:hover {
+    color: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
   .code__copy[data-done] {
-    color: var(--text);
+    color: var(--nova);
   }
   pre {
     margin: 0;
-    padding: 12px 16px;
+    padding: 1rem 1.1rem 1.1rem;
     overflow-x: auto;
     font-family: var(--font-mono);
-    font-size: var(--t-14);
-    line-height: 24px;
-    color: var(--text);
+    font-size: clamp(0.78rem, 0.74rem + 0.2vw, 0.875rem);
+    line-height: 1.75;
+    color: var(--paper);
     font-variant-ligatures: none;
   }
   .code__line {
@@ -62,8 +71,8 @@ const { lines, label = 'Command', prompt = '>' } = Astro.props;
   }
   .code__prompt {
     display: inline-block;
-    width: 20px;
-    color: var(--text-3);
+    width: 1.4em;
+    color: var(--faint);
     user-select: none;
   }
 </style>

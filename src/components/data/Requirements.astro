@@ -1,5 +1,9 @@
 ---
 // The compatibility checklist. Shown beside every download action.
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
 const items = [
   { k: 'System', v: 'Windows 10 or 11, x64' },
   { k: 'Host', v: 'Houdini 22.0' },
@@ -8,11 +12,11 @@ const items = [
 ];
 ---
 
-<dl class="req">
+<dl class:list={['req', { 'req--compact': compact }]}>
   {
     items.map((i) => (
       <div>
-        <dt>{i.k}</dt>
+        <dt class="caption">{i.k}</dt>
         <dd>{i.v}</dd>
       </div>
     ))
@@ -22,24 +26,26 @@ const items = [
 <style>
   .req {
     margin: 0;
+    display: grid;
   }
   .req > div {
     display: grid;
-    grid-template-columns: 96px minmax(0, 1fr);
-    gap: 16px;
-    padding-block: 12px;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 1rem;
+    align-items: baseline;
+    padding-block: 0.85rem;
     border-top: 1px solid var(--line);
-    font-size: var(--t-14);
-    line-height: 20px;
   }
   .req > div:last-child {
     border-bottom: 1px solid var(--line);
   }
   dt {
-    color: var(--text-3);
+    text-transform: none;
+    letter-spacing: 0;
   }
   dd {
     margin: 0;
-    color: var(--text);
+    font-size: var(--text-sm);
+    color: var(--paper);
   }
 </style>

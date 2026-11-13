@@ -22,33 +22,33 @@ const toc = [
 
 <Base title="Benchmarks" description="Every performance measurement of Nova, with the machine, the command and the method. CPU and GPU, interactivity, sampling, denoising, and Nova against Karma CPU.">
   <div class="wrap">
-    <header class="page-head" data-stagger>
-      <p class="eyebrow">Benchmarks, Nova {SOURCE_TAG}</p>
-      <h1 class="display-1">Every measurement, with its method</h1>
-      <p class="lede">
+    <header class="page-head">
+      <p class="eyebrow" data-reveal="fade"><b>Benchmarks</b> Nova {SOURCE_TAG}</p>
+      <h1 class="display-2" data-reveal="lines">Every measurement, with its method.</h1>
+      <p class="lede" data-reveal="fade">
         These numbers come from Nova’s own benchmark log. They were measured on one machine, on Nova’s reference
-        scenes.
+        scenes, and they say what was measured and nothing more.
       </p>
     </header>
 
     <div class="bm">
       <nav class="bm__toc" aria-label="On this page">
-        <p class="eyebrow">On this page</p>
+        <p class="caption">On this page</p>
         <ul>
           {toc.map(([id, label]) => (<li><a href={`#${id}`}>{label}</a></li>))}
         </ul>
-        <a class="bm__src caption link" href={source('docs/benchmarks.md')} rel="noopener">docs/benchmarks.md</a>
+        <a class="bm__src caption" href={source('docs/benchmarks.md')} rel="noopener">docs/benchmarks.md ↗</a>
       </nav>
 
       <div class="bm__body">
         <section id="method" class="bm__section">
           <h2 class="display-3">Machine and method</h2>
           <dl class="bm__machine">
-            <div><dt>CPU</dt><dd>{MACHINE.cpu}, all threads used</dd></div>
-            <div><dt>GPU</dt><dd>{MACHINE.gpu}</dd></div>
-            <div><dt>System</dt><dd>{MACHINE.os}, {MACHINE.build}</dd></div>
-            <div><dt>Scenes</dt><dd>The Karma reference scenes of the repository, with their own path lengths and lights</dd></div>
-            <div><dt>Command</dt><dd><code class="mono">nova_cli tests/reference/scenes/&lt;scene&gt;.usda -o out.exr --res 960x540 --spp 64</code></dd></div>
+            <div><dt class="caption">CPU</dt><dd>{MACHINE.cpu}, all threads used</dd></div>
+            <div><dt class="caption">GPU</dt><dd>{MACHINE.gpu}</dd></div>
+            <div><dt class="caption">System</dt><dd>{MACHINE.os}, {MACHINE.build}</dd></div>
+            <div><dt class="caption">Scenes</dt><dd>The Karma reference scenes of the repository, with their own path lengths and lights</dd></div>
+            <div><dt class="caption">Command</dt><dd><code class="mono">nova_cli tests/reference/scenes/&lt;scene&gt;.usda -o out.exr --res 960x540 --spp 64</code></dd></div>
           </dl>
           <p class="body">
             Unless a section says otherwise, times are the render time <span class="mono">nova_cli</span> reports on an
@@ -72,7 +72,7 @@ const toc = [
             The XPU time includes the GPU’s setup (driver context, OptiX pipelines, the scene’s upload), not the process
             start. The faster of two runs.
           </p>
-          <div class="table-wrap" data-reveal>
+          <div class="table-wrap">
             <table class="table">
               <thead>
                 <tr><th>Scene</th><th class="n">CPU</th><th class="n">Mrays/s</th><th class="n">XPU</th><th class="n">Mrays/s</th><th class="n">XPU setup</th><th class="n">Speed-up</th></tr>
@@ -105,7 +105,7 @@ const toc = [
             Time from the USD edit to the first new image on the CPU, the median of six edits, at 1280×720 on a scene of
             980 000 triangles with 20 000 instances. Before proxy passes and BVH refits every edit took 183–256&nbsp;ms.
           </p>
-          <div class="table-wrap" data-reveal>
+          <div class="table-wrap">
             <table class="table">
               <thead>
                 <tr><th>Edit</th><th class="n">Total</th><th class="n">Sync</th><th class="n">Restart</th><th class="n">First proxy pass</th></tr>
@@ -134,7 +134,7 @@ const toc = [
             The variance oracle against uniform sampling at equal error. The error is the relMSE against Nova’s own
             converged image, the mean of two 4096-sample renders with their noise subtracted.
           </p>
-          <div class="table-wrap" data-reveal>
+          <div class="table-wrap">
             <table class="table">
               <thead>
                 <tr><th>Scene</th><th class="n">Uniform, equal error</th><th class="n">Oracle</th><th class="n">relMSE</th><th class="n">Speed-up</th><th>Gate</th></tr>
@@ -150,7 +150,7 @@ const toc = [
 
           <h3 class="bm__h3">OptiX denoiser</h3>
           <p class="body">Error at 16 samples per pixel before and after denoising, against the same converged images. Alpha stays exact.</p>
-          <div class="table-wrap" data-reveal>
+          <div class="table-wrap">
             <table class="table">
               <thead>
                 <tr><th>Scene</th><th class="n">Noisy, 16 spp</th><th class="n">Denoised</th><th class="n">Error</th></tr>
@@ -162,7 +162,7 @@ const toc = [
               </tbody>
             </table>
           </div>
-          <div class="facts bm__facts" data-stagger>
+          <div class="facts bm__facts">
             {denoiseTime.map((d) => (
               <div class="fact">
                 <p class="fact__value">{d.ms}<small>ms</small></p>
@@ -193,7 +193,7 @@ const toc = [
           </ul>
 
           <h3 class="bm__h3">Hair, subsurface and many lights</h3>
-          <div class="facts bm__facts" data-stagger>
+          <div class="facts bm__facts">
             <div class="fact"><p class="fact__value">21.9<small>s</small></p><p class="fact__label">Nova</p></div>
             <div class="fact"><p class="fact__value">102.0<small>s</small></p><p class="fact__label">Karma CPU</p></div>
             <div class="fact"><p class="fact__value">4.7<small>×</small></p><p class="fact__label">on this scene</p></div>
@@ -211,7 +211,7 @@ const toc = [
             own settings. Twenty is Karma’s standard set: the beauty and 19 render vars. With the beauty only, no
             light-path-expression code runs.
           </p>
-          <div class="table-wrap" data-reveal>
+          <div class="table-wrap">
             <table class="table">
               <thead>
                 <tr><th>Scene</th><th class="n">Beauty only</th><th class="n">1</th><th class="n">20, Karma’s set</th><th class="n">74</th></tr>
@@ -251,104 +251,112 @@ const toc = [
 <style>
   .bm {
     display: grid;
-    grid-template-columns: 224px minmax(0, 1fr);
-    gap: 40px var(--gap-xl);
+    grid-template-columns: 14rem minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 7rem);
     padding-bottom: var(--section);
     align-items: start;
   }
   .bm__toc {
     position: sticky;
-    top: calc(var(--nav-h) + 32px);
+    top: calc(var(--nav-h) + 2rem);
+    display: grid;
+    gap: 1rem;
+  }
+  .bm__toc .caption {
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--faint);
   }
   .bm__toc ul {
     display: grid;
-    gap: 8px;
-    margin-top: 12px;
-    padding-bottom: 16px;
+    gap: 0.55rem;
+    padding-block: 0.25rem 0.75rem;
     border-bottom: 1px solid var(--line);
   }
   .bm__toc li a {
-    font-size: var(--t-14);
-    line-height: 20px;
-    color: var(--text-2);
-    transition: color 160ms var(--ease);
+    font-size: var(--text-sm);
+    color: var(--muted);
+    transition: color 0.2s;
   }
   .bm__toc li a:hover {
-    color: var(--text);
+    color: var(--paper);
   }
-  .bm__src {
-    display: inline-block;
-    margin-top: 16px;
+  .bm__toc .bm__src {
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--paper-dim);
   }
   .bm__body {
     display: grid;
-    gap: var(--section);
+    gap: clamp(4rem, 8vw, 7rem);
     min-width: 0;
   }
   .bm__section {
     display: grid;
-    gap: 24px;
-    scroll-margin-top: 96px;
+    gap: 1.5rem;
+    scroll-margin-top: 6rem;
     min-width: 0;
   }
   .bm__section > .display-3 {
-    padding-top: 24px;
-    border-top: 1px solid var(--line-2);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line-strong);
   }
   .bm__h3 {
-    margin-top: 24px;
-    font-size: var(--t-18);
-    line-height: 28px;
+    margin-top: 1.5rem;
+    font-size: var(--text-lg);
+    font-weight: 500;
+    letter-spacing: -0.02em;
   }
   .bm__machine {
     margin: 0;
+    display: grid;
   }
   .bm__machine > div {
     display: grid;
-    grid-template-columns: 96px minmax(0, 1fr);
-    gap: 16px;
-    padding-block: 12px;
+    grid-template-columns: 6.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding-block: 0.8rem;
     border-bottom: 1px solid var(--line);
-    font-size: var(--t-14);
-    line-height: 20px;
+    align-items: baseline;
   }
   .bm__machine dt {
-    font-family: var(--font-sans);
-    font-size: var(--t-14);
-    line-height: 20px;
-    color: var(--text-3);
+    text-transform: none;
+    letter-spacing: 0;
   }
   .bm__machine dd {
     margin: 0;
-    color: var(--text);
+    font-size: var(--text-sm);
+    color: var(--paper);
     overflow-wrap: anywhere;
   }
   .bm__notes {
     display: grid;
-    gap: 8px;
+    gap: 0.6rem;
     max-width: var(--measure);
-    font-size: var(--t-14);
-    line-height: 20px;
-    color: var(--text-2);
+    font-size: var(--text-sm);
+    color: var(--muted);
   }
   .bm__notes li {
-    padding-left: 16px;
+    padding-left: 1.1rem;
     position: relative;
   }
   .bm__notes li::before {
     content: '';
     position: absolute;
     left: 0;
-    top: 10px;
-    width: 6px;
+    top: 0.72em;
+    width: 0.4rem;
     height: 1px;
-    background: var(--text-3);
+    background: var(--faint);
   }
   .bm__notes .mono {
-    color: var(--text);
+    color: var(--paper-dim);
   }
   .bm__cap {
     max-width: 46em;
+  }
+  .bm__facts {
+    margin-top: 0.5rem;
   }
   @media (max-width: 900px) {
     .bm {

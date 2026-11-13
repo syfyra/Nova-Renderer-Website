@@ -1,6 +1,4 @@
 ---
-// Chapter two: the device. The two renderers slide towards each other until
-// an equals sign stands between them (motion/home.ts).
 import CompareSlider from '../media/CompareSlider.astro';
 import Fn from '../primitives/Fn.astro';
 import { slotVisible } from '../../content/renders';
@@ -11,81 +9,109 @@ const compare = slotVisible('same-cpu', 'same-xpu');
 <section class="section devices" id="devices" aria-labelledby="devices-title">
   <div class="wrap">
     <header class="head">
-      <p class="eyebrow" data-reveal>Two renderers</p>
-      <h2 id="devices-title" class="display-2" data-words>Render it on the CPU or the GPU, into the same image</h2>
-      <p class="lede" data-reveal>
-        Both run the same code with the same random numbers. On the reference scenes, every pixel agrees within
-        1&nbsp;%.<Fn id="same-image" />
+      <p class="eyebrow" data-reveal="fade"><b>01</b> Two renderers, one image</p>
+      <h2 id="devices-title" class="display-2" data-reveal="lines">The same image on the CPU and on the GPU.</h2>
+      <p class="lede" data-reveal="fade">
+        Houdini sees Nova as two renderers. Both run the same code with the same random numbers, so a GPU render matches
+        the CPU’s image up to floating-point rounding.
       </p>
     </header>
 
-    {compare && <CompareSlider a="same-cpu" b="same-xpu" labelA="Nova, CPU" labelB="Nova XPU, GPU" ratio="2 / 1" name="CPU and GPU comparison" />}
+    {
+      compare && (
+        <div data-reveal="frame">
+          <CompareSlider a="same-cpu" b="same-xpu" labelA="Nova · CPU" labelB="Nova XPU · GPU" ratio="2 / 1" name="CPU and GPU comparison" />
+        </div>
+      )
+    }
+    <p class="devices__note" data-reveal="fade">
+      <span>On the reference scenes, every pixel agrees within 1&nbsp;%.<Fn id="same-image" /></span>
+      {compare && <span class="caption">Drag the divider</span>}
+    </p>
 
-    <div class="devices__pair" data-devices>
-      <article class="device card" data-device="cpu">
-        <p class="eyebrow">CPU</p>
+    <div class="devices__pair" data-reveal="stagger" data-stagger="0.12">
+      <article class="device">
+        <p class="caption device__kicker">CPU</p>
         <h3 class="display-3">Nova</h3>
-        <p class="device__parts">Embree 4, a wavefront path tracer and a SIMD shading VM</p>
-        <p class="caption">Runs on any x64 CPU with AVX2</p>
+        <ul class="device__list" data-focus>
+          <li>Embree 4</li>
+          <li>A wavefront path tracer</li>
+          <li>A SIMD shading VM</li>
+        </ul>
+        <p class="device__req">Runs on any x64 CPU with AVX2.</p>
       </article>
-      <p class="devices__equals" data-device="equals" aria-hidden="true">=</p>
-      <article class="device card" data-device="gpu">
-        <p class="eyebrow">NVIDIA GPU</p>
+      <article class="device">
+        <p class="caption device__kicker">NVIDIA GPU</p>
         <h3 class="display-3">Nova XPU</h3>
-        <p class="device__parts">CUDA wavefront kernels and OptiX 9, with the same shading VM and light tree</p>
-        <p class="caption">Needs an RTX 50 series card. Without a usable GPU it renders on the CPU and says so.</p>
+        <ul class="device__list" data-focus>
+          <li>CUDA wavefront kernels</li>
+          <li>OptiX 9 ray tracing</li>
+          <li>The same bytecode VM, closures and light tree</li>
+        </ul>
+        <p class="device__req">Needs an RTX 50 series card. Without a usable GPU it renders on the CPU and says so.</p>
       </article>
     </div>
   </div>
 </section>
 
 <style>
+  .devices__note {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-top: 1.25rem;
+    color: var(--paper-dim);
+    font-size: var(--text-lg);
+    letter-spacing: -0.015em;
+  }
+  .devices__note .caption {
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--faint);
+    white-space: nowrap;
+  }
   .devices__pair {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-    align-items: center;
-    gap: 16px;
-    margin-top: var(--gap-l);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 3vw, 3rem);
+    margin-top: clamp(4rem, 8vw, 7rem);
   }
   .device {
+    border-top: 1px solid var(--line-strong);
+    padding-top: 1.5rem;
+  }
+  .device__kicker {
+    text-transform: none;
+    letter-spacing: 0;
+    margin-bottom: 0.75rem;
+  }
+  .device__list {
+    margin-top: 1.75rem;
     display: grid;
-    gap: 8px;
-    align-content: start;
-    height: 100%;
-    padding: 32px;
-    /* The scroll position moves these cards; only the outline eases. */
-    transition: box-shadow 240ms var(--ease);
   }
-  .device__parts {
-    margin-top: 8px;
-    color: var(--text-2);
-    max-width: 28em;
+  .device__list li {
+    padding-block: 0.8rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--text-lg);
+    letter-spacing: -0.015em;
+    color: var(--paper-dim);
   }
-  .device .caption {
-    margin-top: 16px;
-    max-width: 44em;
-  }
-  .devices__equals {
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--raised);
-    box-shadow: inset 0 0 0 1px var(--line-2);
-    font-family: var(--font-mono);
-    font-size: var(--t-18);
-    line-height: 1;
-    color: var(--text);
+  .device__req {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: var(--text-sm);
+    max-width: 30em;
   }
   @media (max-width: 760px) {
     .devices__pair {
       grid-template-columns: minmax(0, 1fr);
-      justify-items: center;
     }
-    .device {
-      width: 100%;
-      padding: 24px;
+    .devices__note {
+      flex-direction: column;
+      gap: 0.5rem;
     }
   }
 </style>

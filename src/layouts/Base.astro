@@ -36,8 +36,8 @@ const ogImage = Astro.site ? new URL(href('/og.png'), Astro.site).href : href('/
     <meta property="og:image" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
     <script is:inline>
-      // Announce motion before first paint, so the hero can hold its opening
-      // state. If the motion bundle fails to start, the class is removed again.
+      // Announce motion before first paint so reveal targets never flash.
+      // If the motion bundle fails to start, the class is removed again.
       (function () {
         var d = document.documentElement;
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -50,7 +50,7 @@ const ogImage = Astro.site ? new URL(href('/og.png'), Astro.site).href : href('/
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <div class="progress" aria-hidden="true"><i data-progress></i></div>
+    <i class="progress" data-progress aria-hidden="true"></i>
     <Nav overlay={overlayNav} />
     <main id="main">
       <slot />

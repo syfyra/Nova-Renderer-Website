@@ -1,8 +1,7 @@
 ---
 // A showcase slot. With an image in src/assets/renders/<id>.* it renders the
-// picture with its metadata caption. Without one it is a plain surface of the
-// right size and nothing else, so nothing unfinished can ship by accident;
-// production builds leave empty slots out altogether.
+// picture with its metadata caption; without one it renders a labelled frame
+// that says what belongs there.
 import { Picture } from 'astro:assets';
 import { SHOW_PENDING, captionOf, getRender, type SlotId } from '../../content/renders';
 
@@ -16,6 +15,7 @@ interface Props {
   ratio?: string;
   sizes?: string;
   eager?: boolean;
+  align?: 'start' | 'end';
 }
 const {
   id,
@@ -25,20 +25,16 @@ const {
   ratio = '16 / 9',
   sizes = '(min-width: 1500px) 1400px, 100vw',
   eager = false,
+  align = 'start',
 } = Astro.props;
 const { meta, image } = getRender(id);
 const show = Boolean(image) || SHOW_PENDING;
 ---
 
 {show && (
-<figure
-  class:list={['frame', className, { 'frame--fill': fill }]}
-  style={fill ? undefined : `aspect-ratio:${ratio}`}
-  data-frame={id}
-  title={image ? undefined : `${meta.shot}: ${meta.brief}`}
->
+<figure class:list={['frame', className, { 'frame--fill': fill, 'frame--empty': !image }]} style={fill ? undefined : `aspect-ratio:${ratio}`} data-frame={id}>
   {
-    image && (
+    image ? (
       <>
         <Picture
           src={image}
@@ -58,6 +54,16 @@ const show = Boolean(image) || SHOW_PENDING;
           </figcaption>
         )}
       </>
+    ) : (
+      <div class:list={['frame__slot', `frame__slot--${align}`]}>
+        <i class="frame__tick frame__tick--tl" />
+        <i class="frame__tick frame__tick--tr" />
+        <i class="frame__tick frame__tick--bl" />
+        <i class="frame__tick frame__tick--br" />
+        <p class="caption frame__shot">{meta.shot} · render pending</p>
+        <p class="frame__title">{meta.title}</p>
+        <p class="caption frame__brief">{meta.brief}</p>
+      </div>
     )
   }
 </figure>
@@ -67,17 +73,15 @@ const show = Boolean(image) || SHOW_PENDING;
   .frame {
     position: relative;
     width: 100%;
-    border-radius: var(--r-l);
+    border-radius: var(--radius);
     overflow: hidden;
-    background: var(--surface);
-    box-shadow: inset 0 0 0 1px var(--line);
+    background: var(--stage);
   }
   .frame--fill {
     position: absolute;
     inset: 0;
     border-radius: 0;
     height: 100%;
-    box-shadow: none;
   }
   .frame :global(picture) {
     display: contents;
@@ -89,11 +93,76 @@ const show = Boolean(image) || SHOW_PENDING;
   }
   .frame__caption {
     position: absolute;
-    left: 12px;
-    bottom: 12px;
-    padding: 4px 8px;
-    border-radius: var(--r-s);
-    background: var(--surface);
-    color: var(--text-2);
+    left: 1rem;
+    bottom: 0.85rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    background: var(--stage-2);
+    color: var(--paper-dim);
+  }
+
+  /* The empty slot: a quiet frame with crop ticks. */
+  .frame--empty {
+    background: var(--stage);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .frame__slot {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.35rem;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+  }
+  .frame__slot--end {
+    align-items: flex-end;
+    text-align: right;
+  }
+  .frame__shot {
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--faint);
+  }
+  .frame__title {
+    font-size: var(--text-xl);
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--paper-dim);
+  }
+  .frame__brief {
+    color: var(--faint);
+    max-width: 30em;
+  }
+  .frame__tick {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border: 0 solid var(--line-strong);
+  }
+  .frame__tick--tl {
+    top: 14px;
+    left: 14px;
+    border-top-width: 1px;
+    border-left-width: 1px;
+  }
+  .frame__tick--tr {
+    top: 14px;
+    right: 14px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+  }
+  .frame__tick--bl {
+    bottom: 14px;
+    left: 14px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+  }
+  .frame__tick--br {
+    bottom: 14px;
+    right: 14px;
+    border-bottom-width: 1px;
+    border-right-width: 1px;
   }
 </style>

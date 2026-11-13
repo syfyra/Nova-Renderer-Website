@@ -21,12 +21,12 @@ const src = fm.source ?? 'docs/reference.md';
   <div class="wrap docs">
     <aside class="docs__side">
       <details class="docs__menu" open>
-        <summary>Documentation</summary>
+        <summary class="caption">Documentation</summary>
         <nav aria-label="Documentation">
           {
             docsNav.map((group) => (
               <div class="docs__group">
-                <p class="eyebrow">{group.title}</p>
+                <p class="caption">{group.title}</p>
                 <ul>
                   {group.items.map((item) => (
                     <li>
@@ -45,8 +45,8 @@ const src = fm.source ?? 'docs/reference.md';
 
     <article class="docs__article">
       <header class="docs__head">
-        <p class="eyebrow">Docs, Nova {SOURCE_TAG}</p>
-        <h1 class="display-1">{fm.title}</h1>
+        <p class="eyebrow"><b>Docs</b> Nova {SOURCE_TAG}</p>
+        <h1 class="display-2">{fm.title}</h1>
         {fm.lede && <p class="lede">{fm.lede}</p>}
       </header>
 
@@ -57,7 +57,7 @@ const src = fm.source ?? 'docs/reference.md';
       <footer class="docs__foot">
         <p class="caption">
           Written from
-          <a class="link" href={source(src, fm.sourceAnchor)} rel="noopener">{src}</a>
+          <a class="link" href={source(src, fm.sourceAnchor)} rel="noopener">{src} ↗</a>
           at {SOURCE_TAG}. The repository is the reference.
         </p>
         <nav class="docs__pager" aria-label="Pages">
@@ -72,87 +72,97 @@ const src = fm.source ?? 'docs/reference.md';
 <style>
   .docs {
     display: grid;
-    grid-template-columns: 208px minmax(0, 1fr);
-    gap: 40px var(--gap-xl);
-    padding-top: calc(var(--nav-h) + var(--section) / 2);
+    grid-template-columns: 13rem minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    padding-top: calc(var(--nav-h) + clamp(3rem, 7vw, 6rem));
     padding-bottom: var(--section);
     align-items: start;
   }
   .docs__side {
     position: sticky;
-    top: calc(var(--nav-h) + 32px);
+    top: calc(var(--nav-h) + 2rem);
   }
   .docs__menu summary {
     display: none;
+    text-transform: none;
+    letter-spacing: 0;
     cursor: pointer;
-    padding: 8px 12px;
-    border-radius: var(--r-m);
-    background: var(--raised);
-    box-shadow: inset 0 0 0 1px var(--line-2);
-    font-size: var(--t-14);
-    line-height: 20px;
-    color: var(--text);
+    padding: 0.8rem 1rem;
+    border-radius: var(--radius-s);
+    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--paper);
   }
   .docs__group + .docs__group {
-    margin-top: 24px;
+    margin-top: 1.75rem;
+  }
+  .docs__group > .caption {
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--faint);
+    margin-bottom: 0.6rem;
   }
   .docs__group ul {
     display: grid;
-    gap: 2px;
-    margin-top: 8px;
+    border-left: 1px solid var(--line);
   }
   .docs__group a {
     display: block;
-    margin-left: -12px;
-    padding: 8px 12px;
-    border-radius: var(--r-s);
-    font-size: var(--t-14);
-    line-height: 20px;
-    color: var(--text-2);
+    padding: 0.35rem 0 0.35rem 0.9rem;
+    margin-left: -1px;
+    border-left: 1px solid transparent;
+    font-size: var(--text-sm);
+    color: var(--muted);
     transition:
-      color 160ms var(--ease),
-      background-color 160ms var(--ease);
+      color 0.2s,
+      border-color 0.2s;
   }
   .docs__group a:hover {
-    color: var(--text);
+    color: var(--paper);
   }
   .docs__group a[aria-current='page'] {
-    color: var(--text);
-    background: var(--raised);
-    box-shadow: inset 0 0 0 1px var(--line);
+    color: var(--paper);
+    border-left-color: var(--nova);
   }
   .docs__article {
     min-width: 0;
   }
   .docs__head {
     display: grid;
-    gap: 16px;
-    margin-bottom: 40px;
+    gap: 1.25rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .docs__head .display-2 {
+    font-size: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
   }
   .docs__foot {
-    margin-top: 64px;
-    padding-top: 24px;
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding-top: 1.5rem;
     border-top: 1px solid var(--line);
-    max-width: 44rem;
+    max-width: 46rem;
   }
   .docs__pager {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-top: 32px;
+    gap: 1rem;
+    margin-top: 2rem;
   }
   .docs__pager a {
     display: grid;
-    gap: 4px;
-    padding: 16px 20px;
-    border-radius: var(--r-l);
-    background: var(--surface);
+    gap: 0.3rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--radius);
     box-shadow: inset 0 0 0 1px var(--line);
     font-weight: 500;
-    transition: background-color 160ms var(--ease);
+    letter-spacing: -0.01em;
+    transition: box-shadow 0.25s;
   }
   .docs__pager a:hover {
-    background: var(--raised);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+  }
+  .docs__pager .caption {
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--faint);
   }
   .docs__next {
     text-align: right;
@@ -168,7 +178,7 @@ const src = fm.source ?? 'docs/reference.md';
       display: block;
     }
     .docs__menu nav {
-      padding-top: 16px;
+      padding-top: 1.25rem;
     }
   }
 </style>

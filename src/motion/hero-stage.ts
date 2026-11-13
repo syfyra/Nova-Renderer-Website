@@ -135,7 +135,7 @@ export function initHeroStage(): boolean {
   gsap.ticker.add(() => {
     if (!onScreen || document.hidden || fly.p >= 0.999) return;
     if (!tracer.render(perFrame)) return;
-    sppEl.textContent = String(tracer.spp);
+    sppEl.textContent = String(Math.min(tracer.spp, 9999)).padStart(4, '0');
     if (!shown && tracer.spp >= 48) {
       // Reduced motion: the picture appears once it is calm.
       shown = true;
@@ -165,7 +165,7 @@ export function initHeroStage(): boolean {
   const words = SplitText.create(statementText, { type: 'words', aria: 'auto' }).words;
   gsap.set(statement, { visibility: 'visible', autoAlpha: 0 });
   gsap.set(words, { opacity: 0.1 });
-  gsap.set(ember, { autoAlpha: 0 });
+  gsap.set(ember, { autoAlpha: 0, scale: 0.5 });
 
   gsap
     .timeline({
@@ -185,7 +185,7 @@ export function initHeroStage(): boolean {
     // The fade over the reflection belongs to the opening frame only.
     .to(shade, { autoAlpha: 0, duration: 1.1 }, 0.1)
     .to(meta, { opacity: 0, duration: 0.6 }, 4.9)
-    .to(ember, { autoAlpha: 1, duration: 0.8 }, 5.3)
+    .to(ember, { autoAlpha: 1, scale: 1, duration: 1.2, ease: 'power2.out' }, 5.3)
     .fromTo(statement, { autoAlpha: 0, y: 36 }, { autoAlpha: 1, y: 0, duration: 0.9, ease: 'power2.out' }, 5.5)
     .to(words, { opacity: 1, duration: 0.5, stagger: { each: 3.6 / words.length } }, 5.8)
     .to({}, { duration: 0.6 });

@@ -1,100 +1,80 @@
 ---
-// Chapter ten: what is missing. One group is open at a time; the rest are a
-// title and a count until they are asked for.
-import Icon from '../primitives/Icon.astro';
 import { limitations } from '../../content/limitations';
 import { VERSION, href } from '../../lib/site';
 ---
 
 <section class="section notyet" id="not-yet" aria-labelledby="notyet-title">
-  <div class="wrap notyet__grid">
-    <header class="notyet__lead">
-      <p class="eyebrow" data-reveal>Limitations</p>
-      <h2 id="notyet-title" class="display-2" data-words>What Nova {VERSION} does not do yet</h2>
-      <a class="arrow" href={href('/docs/limitations')} data-reveal>The full list <Icon name="arrow-right" /></a>
-    </header>
-    <div class="notyet__groups" data-stagger>
-      {
-        limitations.map((group, i) => (
-          <details class="limit" name="limits" open={i === 0}>
-            <summary>
-              <span class="limit__title">{group.title}</span>
-              <span class="caption num">{group.items.length}</span>
-              <Icon name="chevron-down" />
-            </summary>
-            <ul>
-              {group.items.map((item) => <li>{item}</li>)}
-            </ul>
-          </details>
-        ))
-      }
+  <div class="wrap">
+    <div class="notyet__grid">
+      <header class="notyet__lead">
+        <p class="eyebrow" data-reveal="fade"><b>10</b> Limitations</p>
+        <h2 id="notyet-title" class="display-2" data-reveal="lines">Not yet.</h2>
+        <p class="body" data-reveal="fade">
+          Nova is at version {VERSION}. This is what it does not do today. Differences from Karma are documented with
+          the feature they belong to.
+        </p>
+        <p data-reveal="fade">
+          <a class="arrow" href={href('/docs/limitations')}>
+            The full list
+            <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2 6h8M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
+          </a>
+        </p>
+      </header>
+      <div class="notyet__cols" data-reveal="stagger" data-stagger="0.08">
+        {
+          limitations.map((group) => (
+            <section>
+              <h3 class="caption">{group.title}</h3>
+              <ul data-focus>
+                {group.items.map((item) => <li>{item}</li>)}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>
 
 <style>
+  .notyet {
+    background: var(--stage);
+    border-block: 1px solid var(--line);
+  }
   .notyet__grid {
     display: grid;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: 40px var(--gap-xl);
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: clamp(2.5rem, 6vw, 7rem);
     align-items: start;
   }
   .notyet__lead {
     display: grid;
-    gap: 16px;
-    justify-items: start;
+    gap: 1.5rem;
   }
-  .notyet__groups {
-    border-bottom: 1px solid var(--line);
-  }
-  .limit {
-    border-top: 1px solid var(--line);
-  }
-  .limit summary {
+  .notyet__cols {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto 16px;
-    align-items: center;
-    gap: 16px;
-    padding-block: 20px;
-    cursor: pointer;
-    list-style: none;
-    color: var(--text-2);
-    transition: color 160ms var(--ease);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem clamp(1.5rem, 3vw, 3rem);
   }
-  .limit summary::-webkit-details-marker {
-    display: none;
-  }
-  .limit summary:hover,
-  .limit[open] summary {
-    color: var(--text);
-  }
-  .limit__title {
-    font-size: var(--t-18);
-    line-height: 24px;
+  .notyet__cols h3 {
+    text-transform: none;
+    letter-spacing: 0;
     font-weight: 500;
-    transition: transform 300ms var(--ease);
+    padding-bottom: 0.75rem;
   }
-  .limit summary:hover .limit__title {
-    transform: translateX(4px);
-  }
-  .limit summary :global(.icon) {
-    color: var(--text-3);
-  }
-  .limit[open] summary :global(.icon) {
-    transform: rotate(180deg);
-  }
-  .limit ul {
-    padding-bottom: 20px;
-  }
-  .limit li {
-    padding-block: 8px;
-    font-size: var(--t-14);
-    line-height: 20px;
-    color: var(--text-2);
-    max-width: 44em;
+  .notyet__cols li {
+    padding-block: 0.7rem;
+    border-top: 1px solid var(--line);
+    font-size: var(--text-sm);
+    color: var(--paper-dim);
   }
   @media (max-width: 900px) {
     .notyet__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 560px) {
+    .notyet__cols {
       grid-template-columns: minmax(0, 1fr);
     }
   }

@@ -9,19 +9,19 @@ const gh = await getGitHub();
 
 <section class="section start" id="get-started" aria-labelledby="start-title">
   <div class="wrap">
-    <div class="start__panel card" data-reveal>
+    <div class="start__panel glass" data-reveal="frame" data-spot>
       <div class="start__lead">
-        <p class="eyebrow">Get started</p>
-        <h2 id="start-title" class="display-2" data-words>Install Nova for Houdini 22.0</h2>
+        <p class="eyebrow"><b>11</b> Get started</p>
+        <h2 id="start-title" class="display-2">Get Nova.</h2>
         <p class="lede">Free and open source. One installer, per user, without administrator rights.</p>
         <div class="start__cta">
-          <a class="btn btn--primary" href={gh.installerUrl ?? gh.releaseUrl} rel="noopener">
+          <a class="btn btn--primary" href={gh.installerUrl ?? gh.releaseUrl} rel="noopener" data-magnetic>
             <span class="btn__dot" aria-hidden="true"></span>
             Download {gh.installerName}
           </a>
           <a class="btn" href={href('/docs/build')}>Build from source</a>
         </div>
-        <p class="caption">
+        <p class="caption start__meta">
           Version {gh.version}{gh.installerSize && ` · ${gh.installerSize}`} · MIT License ·{' '}
           <a class="link" href={href('/download')}>All download options</a>
         </p>
@@ -30,31 +30,31 @@ const gh = await getGitHub();
 
       <ol class="start__steps" data-focus>
         <li>
-          <span class="caption num">1</span>
+          <span class="mono start__n">1</span>
           <div>
             <h3>Install</h3>
-            <p>Close Houdini and run the installer</p>
+            <p>Close Houdini and run the installer. It registers Nova with Houdini 22.0 and adds an uninstaller to Apps &amp; features.</p>
           </div>
         </li>
         <li>
-          <span class="caption num">2</span>
+          <span class="mono start__n">2</span>
           <div>
             <h3>Choose the renderer</h3>
-            <p>Pick <strong>Nova CPU</strong> or <strong>Nova XPU</strong> in the viewport’s renderer menu</p>
+            <p>In Solaris, pick <strong>Nova CPU</strong> or <strong>Nova XPU</strong> in the viewport’s renderer menu.</p>
           </div>
         </li>
         <li>
-          <span class="caption num">3</span>
+          <span class="mono start__n">3</span>
           <div>
             <h3>Set up a render</h3>
             <p>
-              Press <kbd>Tab</kbd> and choose Rendering, then <strong>Nova (Setup)</strong>. Existing Karma setups render
-              as they are.
+              TAB → Rendering → <strong>Nova (Setup)</strong> builds render settings, a render pass and a USD Render ROP,
+              as Karma (Setup) does. Existing Karma setups render as they are.
             </p>
           </div>
         </li>
         <li>
-          <span class="caption num">4</span>
+          <span class="mono start__n">4</span>
           <div>
             <h3>Or render with husk</h3>
             <CodeBlock
@@ -69,57 +69,66 @@ const gh = await getGitHub();
 </section>
 
 <style>
+  .start {
+    overflow: hidden;
+  }
   .start__panel {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 6fr) minmax(0, 5fr);
-    gap: 40px var(--gap-xl);
-    padding: var(--gap-l);
-    border-radius: var(--r-xl);
+    gap: clamp(2rem, 5vw, 6rem);
+    padding: clamp(1.5rem, 5vw, 5rem);
+    border-radius: var(--radius-l);
   }
   .start__lead {
     display: grid;
-    gap: 16px;
+    gap: 1.5rem;
     align-content: start;
   }
   .start__cta {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 8px;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
   }
-  .start__lead :global(.req) {
-    margin-top: 8px;
+  .start__meta {
+    color: var(--paper-dim);
+  }
+  .start__steps {
+    display: grid;
+    align-content: start;
   }
   .start__steps li {
     display: grid;
-    grid-template-columns: 24px minmax(0, 1fr);
-    gap: 12px;
-    padding-block: 20px;
+    grid-template-columns: 2rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding-block: 1.25rem;
     border-top: 1px solid var(--line);
   }
   .start__steps li:first-child {
     border-top: 0;
     padding-top: 0;
   }
-  .start__steps .caption {
-    line-height: 24px;
+  .start__n {
+    color: var(--nova);
+    padding-top: 0.2em;
   }
   .start__steps h3 {
-    font-size: var(--t-16);
-    line-height: 24px;
+    font-size: var(--text-lg);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.35rem;
   }
   .start__steps p {
-    margin-top: 4px;
-    font-size: var(--t-14);
-    line-height: 20px;
-    color: var(--text-2);
+    font-size: var(--text-sm);
+    color: var(--paper-dim);
   }
   .start__steps strong {
-    color: var(--text);
+    color: var(--paper);
     font-weight: 500;
   }
   .start__steps :global(.code) {
-    margin-top: 12px;
+    margin-top: 0.6rem;
   }
   @media (max-width: 900px) {
     .start__panel {

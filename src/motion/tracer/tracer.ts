@@ -338,7 +338,6 @@ export class PathTracer {
     gl.uniform2f(u.uUvScale, vw / this.width, vh / this.height);
     gl.uniform1f(u.uExposure, this.exposure);
     gl.uniform1f(u.uRaw, this.pass >= PASS.normals ? 1 : 0);
-    // The page background (--bg), so the stage has no edge.
     gl.uniform3f(u.uLift, 16 / 255, 15 / 255, 13 / 255);
     gl.uniform1f(u.uAspect, this.width / this.height);
     gl.uniform1f(u.uFade, this.fade);

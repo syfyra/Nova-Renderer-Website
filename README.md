@@ -2,8 +2,8 @@
 
 The product website of [Nova](https://github.com/syfyra/Nova-Renderer), a path tracer for Houdini Solaris.
 
-A static site built with [Astro](https://astro.build) and GSAP. The plan it started from is in
-[`docs/PLAN.md`](docs/PLAN.md); the design it has now is described under [Design](#design).
+A static site built with [Astro](https://astro.build), GSAP and Lenis. The plan it follows is in
+[`docs/PLAN.md`](docs/PLAN.md).
 
 ## Develop
 
@@ -11,7 +11,7 @@ Requires Node 22.
 
 ```sh
 npm install
-npm run dev        # http://localhost:4321, empty render slots are shown as empty frames
+npm run dev        # http://localhost:4321, empty render slots are shown as labelled frames
 npm run build      # writes the static site to dist/
 npm run preview    # serves dist/
 npm run check      # type check
@@ -38,10 +38,9 @@ Every picture slot is listed in `src/content/renders.ts` with the shot it expect
 
 Only images rendered by Nova belong in these slots (and Karma CPU in the two Karma comparison slots).
 
-Empty slots appear as plain frames of the right size in `npm run dev` (the expected shot is in the tooltip) and are
-left out of `npm run build`, so the site can be published before every render exists. Sections adapt: comparison
-sliders disappear, and the material cards and the rows of "Light and matter" stand without a picture.
-`NOVA_SHOW_PENDING=1 npm run build` keeps the frames.
+Empty slots appear as labelled frames in `npm run dev` and are left out of `npm run build`, so the site can be
+published before every render exists. Sections adapt: comparison sliders disappear, the materials gallery becomes a
+grid, the full-height scenes become compact blocks. `NOVA_SHOW_PENDING=1 npm run build` keeps the frames.
 
 ## Accuracy
 
@@ -95,12 +94,12 @@ src/
     layout/           navigation, footer, footnotes, chapter rail
     media/            render frames, comparison slider
     data/             benchmark bars, requirements
-    primitives/       code block, footnote marker, icon
+    primitives/       code block, footnote marker
     sections/         the home page, section by section
   content/            claims, benchmarks, limitations, render registry, docs navigation
   layouts/            Base and Docs
   lib/                site constants, GitHub build-time data
-  motion/             GSAP: core.ts (all pages), home.ts (home page)
+  motion/             GSAP and Lenis: core.ts (all pages), home.ts (home page)
     tracer/           the live path tracer: scene.ts (geometry), shader.ts (GLSL), tracer.ts (accumulation)
     hero-stage.ts     the live hero and its flight
     viewport.ts       the interactive viewport
@@ -138,67 +137,28 @@ Behaviour to know:
   resolves through a Monte Carlo accumulator (`accumulate.ts`) and the page zooms through the O in two dimensions.
 - `?rtpx=<pixels>` in the address forces the number of pixels traced per frame. It is a testing aid.
 
-## Design
-
-The page is a dark stage with one light. Everything in `src/styles/global.css` follows from that.
-
-- **Colour.** One warm neutral ramp: `--bg`, `--surface`, `--raised` for surfaces, `--text`, `--text-2`, `--text-3`
-  for the three text roles, hairlines as the text colour at 8 % and 14 %. Depth comes from the surface steps, not
-  from shadows.
-- **The accent.** `--accent` is the orange of the logo's dot. It appears as a flat dot on the one action that
-  matters in a view, on the chapter in view in the rail, as the Nova XPU series in a chart, and in the wordmark. Nothing else is orange, and there are
-  no gradients between hues, glows, coloured shadows or glass. The glow inside the logo itself is part of the mark.
-- **Type.** Inter in weights 400 and 500, JetBrains Mono for values, names and captions. Sentence case throughout,
-  no uppercase labels, negative tracking on display sizes only. Headlines, labels and buttons end without a
-  period.
-- **Spacing and shape.** A 4 px grid. Two sections meet with `--section` between them. Corner radius follows size:
-  `--r-s` for chips, `--r-m` for controls, `--r-l` for cards, `--r-xl` for panels.
-- **Icons.** One set, [Lucide](https://lucide.dev) (ISC), as inline paths in `components/primitives/Icon.astro`:
-  16 px, stroke 1.5.
-
-## Story
-
-The home page reads as one story, told by its headlines: start with the scene you built for Karma, render it on the
-CPU or the GPU into the same image, at this speed, with these materials and lights, into these passes, while you
-watch, and here is how it was measured and what is missing. Each chapter is a headline, one line and something to
-look at. The detail lives behind the links, in the collapsed lists and in the footnotes.
-
-- The chapters and their order are in `src/pages/index.astro`.
-- `components/layout/ChapterRail.astro` is the thread at the edge of wide screens: one mark per chapter, the logo's
-  dot on the one in view.
-- The limitations open one group at a time. The footnotes are closed until a footnote marker is used.
-
 ## Motion
 
-Content is lit and arrives while scrolling, and answers the pointer. Markup opts in with attributes; the behaviour is
-in `src/motion/core.ts`, the opening states in `src/styles/global.css`.
+- `prefers-reduced-motion` disables all choreography: no pinned sequences, no flight. The content is simply
+  visible, and the live hero appears once it is calm.
+- Three sequences are pinned on wide screens: the hero, the materials gallery when it has pictures, and
+  "Light and matter". On small screens they are ordinary blocks.
+- Under the pointer: primary actions lean towards it and their dot sends out one ring, panels are lit where the
+  pointer is, lists marked `data-focus` keep the row under the pointer lit, and a row of the output list picks its
+  passes out of the layer stack.
+- `components/layout/ChapterRail.astro` is a thread at the left edge of wide screens: one mark per chapter, the
+  logo's dot on the chapter in view.
 
-| Attribute | Effect |
-|---|---|
-| `data-words` | A headline that scrolling lights word by word, like the statement in the hero |
-| `data-reveal` | An element that arrives once, with one short move |
-| `data-stagger` | A container whose children arrive one after another |
-| `data-count` | A figure that counts up to the value in the markup |
-| `data-bars` | A chart whose bars grow from zero |
-| `data-drift` | A large figure that drifts a little against the page |
-| `data-focus` | A list whose rows step back while another row is under the pointer (CSS only) |
+## Design
 
-Chapter-specific motion is in `src/motion/home.ts`: the hero flight (the only pinned sequence), the Karma nodes that
-come on one after another, the two renderers that meet at an equals sign, the layer stack that opens, and the output
-rows that pick their passes out of it.
-
-Under the pointer: buttons lift and the primary one leans towards it while its dot sends out one ring, arrows move
-the way they point, links draw a hairline, cards are lit where the pointer is.
-
-Rules that hold everywhere:
-
-- One easing curve: `--ease` in CSS, `power4.out` in GSAP. Nothing loops.
-- `html.motion` is set before first paint only when motion is allowed. Without JavaScript, with
-  `prefers-reduced-motion`, or if the script fails to start, the class is absent and everything is simply there:
-  no hidden content, final numbers, full bars, no pin, no flight.
-- Numbers on the page are in the markup at their true value. A count-up only animates towards it.
+- **Colour.** A warm neutral ramp (`--ink`, `--stage`, `--stage-2`, `--stage-3`, `--paper`, `--paper-dim`,
+  `--muted`, `--faint` in `src/styles/global.css`) and one accent, the orange of the logo's dot.
+- **Surfaces.** Panels are solid, one step above the stage, with a hairline. There is no glass and no blur.
+- **Light.** The only glows are light sources of the story: the logo's dot, the light in the hero, and the light
+  that wanders through "Light and matter". Buttons, bars and markers are flat.
+- **Type.** Inter in weights 400 and 500, JetBrains Mono for labels and values, in sentence case.
 
 ## Licence
 
 MIT. Nova's logo and name belong to the Nova project. Fonts: Inter and JetBrains Mono, both under the SIL Open Font
-License, self-hosted through Fontsource. Icons: Lucide, ISC License.
+License, self-hosted through Fontsource.

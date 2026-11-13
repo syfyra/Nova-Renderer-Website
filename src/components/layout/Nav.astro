@@ -26,11 +26,17 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
           </a>
         ))
       }
-      <a href={REPO_URL} rel="noopener">GitHub</a>
+      <a href={REPO_URL} rel="noopener" data-ext>
+        GitHub
+        <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 9l6-6M4 3h5v5" fill="none" stroke="currentColor" stroke-width="1.4"></path></svg>
+      </a>
     </nav>
 
     <div class="nav__actions">
-      <a class="btn btn--primary btn--small" href={href('/download')}>Download</a>
+      <a class="btn btn--primary btn--small" href={href('/download')}>
+        <span class="btn__dot" aria-hidden="true"></span>
+        Download
+      </a>
       <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-menu" data-nav-toggle>
         <span class="sr-only">Menu</span>
         <span class="nav__toggle-lines" aria-hidden="true"><i></i><i></i></span>
@@ -58,17 +64,25 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
     position: fixed;
     inset: 0 0 auto 0;
     z-index: 100;
-    background: var(--bg);
-    box-shadow: inset 0 -1px 0 0 var(--line);
     transition:
-      transform 300ms var(--ease),
-      background-color 160ms var(--ease),
-      box-shadow 160ms var(--ease);
+      transform 0.5s var(--ease-out),
+      background-color 0.4s,
+      box-shadow 0.4s;
   }
-  /* Over the hero the bar is clear until the page moves. */
-  .nav[data-overlay]:not(.is-scrolled):not(.is-open) {
-    background: transparent;
-    box-shadow: none;
+  .nav::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    background: var(--ink);
+    box-shadow: inset 0 -1px 0 0 var(--line);
+    transition: opacity 0.4s;
+  }
+  .nav:not([data-overlay])::before,
+  .nav.is-scrolled::before,
+  .nav.is-open::before {
+    opacity: 1;
   }
   .nav.is-hidden:not(.is-open) {
     transform: translateY(-100%);
@@ -78,81 +92,75 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
+    gap: 1.5rem;
     height: var(--nav-h);
   }
 
   .nav__brand {
     display: block;
-    width: 72px;
-    color: var(--text);
+    width: 4.4rem;
+    color: var(--paper);
     flex: none;
-    padding-block: 8px;
-  }
-  /* The dot of the mark swells under the pointer. */
-  .nav__brand :global(.wm-dot) {
-    transform-box: fill-box;
-    transform-origin: 50% 50%;
-    transition: transform 300ms var(--ease);
-  }
-  .nav__brand:hover :global(.wm-dot) {
-    transform: scale(1.35);
+    padding-block: 0.5rem;
   }
 
   .nav__links {
     display: flex;
     align-items: center;
-    gap: 32px;
+    gap: clamp(1.25rem, 2.6vw, 2.5rem);
     margin-left: auto;
-    font-size: var(--t-14);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
   }
   .nav__links a {
     position: relative;
-    padding-block: 8px;
-    color: var(--text-2);
-    transition: color 160ms var(--ease);
-  }
-  /* A hairline draws in under a link; it stays under the page you are on. */
-  .nav__links a::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 4px;
-    height: 1px;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: 0 50%;
-    transition: transform 300ms var(--ease);
-  }
-  .nav__links a:hover::after,
-  .nav__links a[aria-current='page']::after {
-    transform: scaleX(1);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    padding-block: 0.5rem;
+    color: var(--muted);
+    transition: color 0.25s;
   }
   .nav__links a:hover,
   .nav__links a[aria-current='page'] {
-    color: var(--text);
+    color: var(--paper);
+  }
+  .nav__links a[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 3px;
+    height: 3px;
+    margin-left: -1.5px;
+    border-radius: 50%;
+    background: var(--nova);
+  }
+  .nav__links svg {
+    width: 0.7em;
+    height: 0.7em;
+    opacity: 0.7;
   }
 
   .nav__actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0.75rem;
   }
 
   .nav__toggle {
     display: none;
-    width: 36px;
-    height: 36px;
-    border-radius: var(--r-m);
-    background: var(--raised);
-    box-shadow: inset 0 0 0 1px var(--line-2);
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px var(--line-strong);
     place-items: center;
   }
   .nav__toggle-lines {
     position: relative;
     display: block;
-    width: 16px;
+    width: 14px;
     height: 8px;
   }
   .nav__toggle-lines i {
@@ -160,8 +168,8 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
     left: 0;
     width: 100%;
     height: 1.5px;
-    background: var(--text);
-    transition: transform 160ms var(--ease);
+    background: var(--paper);
+    transition: transform 0.4s var(--ease-out);
   }
   .nav__toggle-lines i:first-child {
     top: 0;
@@ -178,19 +186,21 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
 
   .nav__menu {
     border-top: 1px solid var(--line);
-    padding-block: 8px 24px;
+    padding-block: 1rem 2rem;
   }
   .nav__menu nav {
     display: grid;
   }
   .nav__menu a {
-    padding: 12px 0;
-    font-size: var(--t-18);
+    padding: 0.85rem 0;
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.03em;
     border-bottom: 1px solid var(--line);
-    color: var(--text-2);
+    color: var(--paper-dim);
   }
   .nav__menu a[aria-current='page'] {
-    color: var(--text);
+    color: var(--paper);
   }
 
   @media (max-width: 760px) {
@@ -218,7 +228,7 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
     const onScroll = () => {
       const y = window.scrollY;
       nav.classList.toggle('is-scrolled', y > 40);
-      // Out of the way while reading down, back on the way up.
+      // Hide while reading down, return on the way up.
       if (Math.abs(y - last) > 6) {
         nav.classList.toggle('is-hidden', y > last && y > 400);
         last = y;
