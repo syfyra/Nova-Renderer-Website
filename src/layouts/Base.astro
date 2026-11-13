@@ -50,6 +50,7 @@ const ogImage = Astro.site ? new URL(href('/og.png'), Astro.site).href : href('/
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
+    <div class="progress" aria-hidden="true"><i data-progress></i></div>
     <Nav overlay={overlayNav} />
     <main id="main">
       <slot />

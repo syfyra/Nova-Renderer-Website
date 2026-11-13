@@ -7,34 +7,31 @@ import { href, source } from '../../lib/site';
 <section class="section measured" id="measured" aria-labelledby="measured-title">
   <div class="wrap">
     <header class="head">
-      <p class="eyebrow">Verification</p>
-      <h2 id="measured-title" class="display-2">Measured against Karma CPU, feature by feature</h2>
-      <p class="lede">
-        Every feature is measured against Karma CPU or an analytic value, and the differences that remain are written
-        down. The same scene renders the same image, run to run and on CPU and GPU alike.
-      </p>
+      <p class="eyebrow" data-reveal>Verification</p>
+      <h2 id="measured-title" class="display-2" data-words>Every feature is measured against Karma CPU or an analytic value</h2>
+      <p class="lede" data-reveal>The differences that remain are written down</p>
     </header>
 
-    <ul class="facts">
+    <ul class="facts" data-stagger>
       <li class="fact">
-        <p class="fact__value">≈ 690</p>
-        <p class="fact__label">automated tests: unit tests, husk renders, statistical comparisons against Karma, isolated Houdini sessions<Fn id="tests" /></p>
+        <p class="fact__value">≈ <span data-count>690</span></p>
+        <p class="fact__label">automated tests<Fn id="tests" /></p>
       </li>
       <li class="fact">
-        <p class="fact__value">12<small>of 12</small></p>
-        <p class="fact__label">visible Karma LOPs, each measured against Karma CPU and checked by an automated test</p>
+        <p class="fact__value"><span data-count>12</span><small>of 12</small></p>
+        <p class="fact__label">visible Karma LOPs, each checked by a test</p>
       </li>
       <li class="fact">
-        <p class="fact__value">740<small>of 746</small></p>
-        <p class="fact__label">MaterialX 1.39 node definitions in the shading compiler</p>
+        <p class="fact__value"><span data-count>740</span><small>of 746</small></p>
+        <p class="fact__label">MaterialX 1.39 node definitions</p>
       </li>
       <li class="fact">
-        <p class="fact__value">71</p>
-        <p class="fact__label">verified defects found and fixed in the November 2026 audit<Fn id="audit" /></p>
+        <p class="fact__value"><span data-count>71</span></p>
+        <p class="fact__label">defects found and fixed in the November 2026 audit<Fn id="audit" /></p>
       </li>
     </ul>
 
-    <p class="measured__links">
+    <p class="measured__links" data-reveal>
       <a class="arrow" href={href('/benchmarks')}>Read the benchmarks <Icon name="arrow-right" /></a>
       <a class="arrow" href={source('docs/bug-audit-2026-11.md')} rel="noopener">Read the bug audit <Icon name="arrow-up-right" /></a>
     </p>

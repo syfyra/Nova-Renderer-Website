@@ -16,6 +16,7 @@
   /* A raised control under the pointer, and a neutral mark in a chart. */
   --hover: #2a2824;
   --mark: rgb(239 233 222 / 0.28);
+  --line-3: rgb(239 233 222 / 0.24);
   --text-hover: #fbf7ef;
   --accent: #fe4819;
 
@@ -310,22 +311,54 @@ table {
 
 /* A text link with an arrow. */
 .arrow {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  padding-block: 4px;
   font-size: var(--t-14);
   font-weight: 500;
   color: var(--text);
-  transition: color 160ms var(--ease);
+}
+/* A hairline under the words draws in from the left under the pointer. */
+.arrow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 24px;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 300ms var(--ease);
+}
+.arrow:hover::after {
+  transform: scaleX(1);
 }
 .arrow svg {
   width: 16px;
   height: 16px;
   color: var(--text-3);
-  transition: color 160ms var(--ease);
+  transition:
+    color 160ms var(--ease),
+    transform 300ms var(--ease);
 }
 .arrow:hover svg {
   color: var(--text);
+}
+
+/* Arrows move the way they point when their link is under the pointer. */
+.icon {
+  transition: transform 300ms var(--ease);
+}
+a:hover > .icon--arrow-right,
+button:hover > .icon--arrow-right {
+  transform: translateX(4px);
+}
+a:hover > .icon--arrow-up-right,
+button:hover > .icon--arrow-up-right {
+  transform: translate(2px, -2px);
 }
 
 sup.fn {
@@ -360,6 +393,7 @@ kbd {
 }
 
 /* ----------------------------------------------------------------- buttons */
+/* --tx and --ty lean a button towards the pointer (motion/core.ts). */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -374,15 +408,20 @@ kbd {
   font-size: var(--t-14);
   font-weight: 500;
   white-space: nowrap;
+  transform: translate(var(--tx, 0px), var(--ty, 0px));
   transition:
     background-color 160ms var(--ease),
-    transform 160ms var(--ease);
+    box-shadow 160ms var(--ease),
+    transform 240ms var(--ease);
 }
 .btn:hover {
   background: var(--hover);
+  box-shadow: inset 0 0 0 1px var(--line-3);
+  transform: translate(var(--tx, 0px), calc(var(--ty, 0px) - 1px));
 }
 .btn:active {
-  transform: scale(0.98);
+  transform: translate(var(--tx, 0px), var(--ty, 0px)) scale(0.98);
+  transition-duration: 80ms;
 }
 /* The primary action: off white from the ramp, dark text, and the dot. */
 .btn--primary {
@@ -392,6 +431,7 @@ kbd {
 }
 .btn--primary:hover {
   background: var(--text-hover);
+  box-shadow: none;
 }
 .btn__dot {
   width: 8px;
@@ -399,6 +439,20 @@ kbd {
   border-radius: 50%;
   background: var(--accent);
   flex: none;
+  transition: transform 240ms var(--ease);
+}
+/* Under the pointer the dot comes on: it grows, and one ring leaves it. */
+.btn:hover .btn__dot {
+  transform: scale(1.25);
+  animation: dot-ring 700ms var(--ease) 1;
+}
+@keyframes dot-ring {
+  from {
+    box-shadow: 0 0 0 0 rgb(254 72 25 / 0.5);
+  }
+  to {
+    box-shadow: 0 0 0 8px rgb(254 72 25 / 0);
+  }
 }
 .btn--small {
   height: 36px;
@@ -412,9 +466,48 @@ kbd {
 
 /* ------------------------------------------------------------------- cards */
 .card {
+  position: relative;
   background: var(--surface);
   box-shadow: inset 0 0 0 1px var(--line);
   border-radius: var(--r-l);
+  transition:
+    box-shadow 240ms var(--ease),
+    transform 400ms var(--ease);
+}
+/* The pointer is a light on the card (--mx, --my from motion/core.ts). */
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 50%), rgb(239 233 222 / 0.07), transparent 70%);
+  opacity: 0;
+  transition: opacity 300ms var(--ease);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .card:hover {
+    box-shadow: inset 0 0 0 1px var(--line-2);
+  }
+  .card:hover::after {
+    opacity: 1;
+  }
+}
+
+/* The large figure a chapter can open with. */
+.figure {
+  font-size: var(--figure);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.figure-claim {
+  font-size: var(--t-18);
+  line-height: 28px;
+  color: var(--text);
+  max-width: 20em;
 }
 
 /* A row of plain figures. */
@@ -637,6 +730,71 @@ kbd {
   height: 1px;
   background: var(--line);
   margin-block: 40px;
+}
+
+/* ------------------------------------------------------------------ motion */
+/* Opening states for content that arrives on scroll. They hold only while
+   html.motion is set, which the page does before first paint when motion is
+   allowed (layouts/Base.astro, motion/core.ts). */
+html.motion [data-reveal]:not([data-in]),
+html.motion [data-stagger] > :not([data-in]) {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: none !important;
+}
+html.motion [data-words] {
+  opacity: 0.16;
+}
+html.motion [data-bars] i {
+  --g: 0;
+}
+
+/* How far down the page you are: a hairline along the top edge. */
+.progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 120;
+  height: 2px;
+  pointer-events: none;
+}
+.progress i {
+  display: block;
+  height: 100%;
+  background: var(--text-2);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+/* Where the chapter rail shows the way, the line steps aside. */
+@media (min-width: 1200px) {
+  body:has([data-rail]) .progress {
+    display: none;
+  }
+}
+
+/* A disclosure opens and closes at its own height where the browser can
+   animate to auto; elsewhere it simply opens. */
+:root {
+  interpolate-size: allow-keywords;
+}
+details::details-content {
+  block-size: 0;
+  overflow: clip;
+  transition:
+    block-size 400ms var(--ease),
+    content-visibility 400ms allow-discrete;
+}
+details[open]::details-content {
+  block-size: auto;
+}
+
+/* A list under the pointer: the row it is on stays lit, the others step back. */
+@media (hover: hover) {
+  [data-focus] > * {
+    transition: opacity 240ms var(--ease);
+  }
+  [data-focus]:hover > :not(:hover) {
+    opacity: 0.4;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

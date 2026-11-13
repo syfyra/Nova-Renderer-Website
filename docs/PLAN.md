@@ -3,9 +3,10 @@
 A product website for [Nova](https://github.com/syfyra/Nova-Renderer), the path tracer for Houdini Solaris.
 This is the plan the site started from, kept as written.
 
-> **Status.** The site is built. Its visual system was reduced afterwards: no glass, glows or scroll reveals, no
-> smooth-scroll library, and the hero is the only pinned sequence. Sections 3, 4 and 5 below describe the original
-> intent; the current design and motion rules are in the [README](../README.md#design).
+> **Status.** The site is built. Its visual system was reduced afterwards (no glass or glows, no smooth-scroll
+> library, the hero as the only pinned sequence), and the home page was shortened into one story told by its
+> headlines. Sections 3, 4 and 5 below describe the original intent; the current design, story and motion rules are
+> in the [README](../README.md#design).
 
 Source of truth: `syfyra/Nova-Renderer` at tag `v0.1.0` (commit `4ce13bd`), read in full for this plan:
 `README.md`, `docs/reference.md`, `docs/benchmarks.md`, `docs/bug-audit-2026-11.md`, `docs/design/M10.md`,

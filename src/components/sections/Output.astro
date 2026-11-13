@@ -20,28 +20,25 @@ const layers = [
   <div class="wrap">
     <div class="output__grid">
       <div class="output__lead">
-        <p class="eyebrow">Output</p>
-        <h2 id="output-title" class="display-2">Every pass Karma writes, under the same names</h2>
-        <p class="lede">
-          One Solaris setup renders in both renderers. The components sum to the beauty per sample, and every component
-          is unbiased.
-        </p>
-        <dl class="output__list">
-          <div>
+        <p class="eyebrow" data-reveal>Output</p>
+        <h2 id="output-title" class="display-2" data-words>It writes every pass Karma writes, under the same names</h2>
+        <p class="lede" data-reveal>The components sum to the beauty per sample, and every component is unbiased</p>
+        <dl class="output__list" data-stagger data-focus>
+          <div data-pass-row="directdiffuse indirectdiffuse directglossy indirectglossy visiblelights">
             <dt>Light path expressions</dt>
-            <dd>Karma’s dialect, with tags on lights, objects and materials, and the <span class="mono">unoccluded;</span> and <span class="mono">shadow;</span> prefixes</dd>
+            <dd>Karma’s dialect, with tags on lights, objects and materials</dd>
           </div>
-          <div>
+          <div data-pass-row="normals">
             <dt>Utility AOVs</dt>
-            <dd>Position, normals, depth, motion vectors, ids, any primvar, material AOVs and ambient occlusion</dd>
+            <dd>Position, normals, depth, motion vectors, ids and any primvar</dd>
           </div>
-          <div>
+          <div data-pass-row="ids">
             <dt>Cryptomatte</dt>
-            <dd>For objects, materials and any string or int primvar. The manifests match Karma’s entry for entry.</dd>
+            <dd>The manifests match Karma’s entry for entry</dd>
           </div>
-          <div>
+          <div data-pass-row="beauty">
             <dt>EXR</dt>
-            <dd>Multi-part and deep EXR, per-var sample filters, checkpoints with resume</dd>
+            <dd>Multi-part and deep, with checkpoints and resume</dd>
           </div>
         </dl>
         <p class="caption output__cost">
@@ -55,7 +52,7 @@ const layers = [
           <div class="stack__scene" data-stack-scene>
             {
               layers.map((l, i) => (
-                <div class="stack__layer" style={`--i:${i}`} data-stack-layer>
+                <div class="stack__layer" style={`--i:${i}`} data-stack-layer={l.pass}>
                   <canvas data-aov={l.pass} width="448" height="252" />
                   <p class="stack__label caption">
                     <span>{l.name}</span>
@@ -66,9 +63,7 @@ const layers = [
             }
           </div>
         </div>
-        <p class="caption output__live">
-          Passes of the hero’s scene, path traced in your browser. The five light components sum to the beauty. Not Nova.
-        </p>
+        <p class="caption output__live">Passes of the hero’s scene, path traced in your browser. Not Nova.</p>
       </div>
     </div>
   </div>
@@ -173,6 +168,24 @@ const layers = [
   }
   .stack__lpe {
     color: var(--text-3);
+  }
+  /* A row under the pointer picks its passes out of the stack (motion/home.ts). */
+  .stack__layer {
+    transition: box-shadow 240ms var(--ease);
+  }
+  .stack[data-pick] .stack__layer:not([data-on]) canvas[data-ready] {
+    opacity: 0.1;
+  }
+  .stack[data-pick] .stack__layer:not([data-on]) .stack__label {
+    color: var(--text-3);
+  }
+  .stack[data-pick] .stack__layer[data-on] {
+    box-shadow: inset 0 0 0 1px var(--text-2);
+  }
+  @media (hover: hover) {
+    .output__list > div[data-pass-row] {
+      cursor: default;
+    }
   }
   .output__live {
     display: none;

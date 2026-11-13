@@ -89,6 +89,15 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
     flex: none;
     padding-block: 8px;
   }
+  /* The dot of the mark swells under the pointer. */
+  .nav__brand :global(.wm-dot) {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    transition: transform 300ms var(--ease);
+  }
+  .nav__brand:hover :global(.wm-dot) {
+    transform: scale(1.35);
+  }
 
   .nav__links {
     display: flex;
@@ -98,9 +107,27 @@ const isCurrent = (p: string) => (p === '/' ? rel === '/' : rel.startsWith(p));
     font-size: var(--t-14);
   }
   .nav__links a {
+    position: relative;
     padding-block: 8px;
     color: var(--text-2);
     transition: color 160ms var(--ease);
+  }
+  /* A hairline draws in under a link; it stays under the page you are on. */
+  .nav__links a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 4px;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: 0 50%;
+    transition: transform 300ms var(--ease);
+  }
+  .nav__links a:hover::after,
+  .nav__links a[aria-current='page']::after {
+    transform: scaleX(1);
   }
   .nav__links a:hover,
   .nav__links a[aria-current='page'] {

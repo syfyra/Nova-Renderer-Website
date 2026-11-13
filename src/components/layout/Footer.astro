@@ -37,7 +37,7 @@ const columns = [
 
 <footer class="footer">
   <div class="wrap">
-    <a class="footer__sign" href={href('/')} aria-label="Nova, home">
+    <a class="footer__sign" href={href('/')} aria-label="Nova, home" data-sign>
       <Wordmark id="footer-wm" glow={false} />
     </a>
     <div class="footer__top">
@@ -89,6 +89,10 @@ const columns = [
     display: block;
     color: var(--raised);
     margin-bottom: 64px;
+    transition: color 400ms var(--ease);
+  }
+  .footer__sign:hover {
+    color: var(--hover);
   }
   .footer__top {
     display: grid;
@@ -116,13 +120,17 @@ const columns = [
     gap: 8px;
   }
   .footer__col a {
+    display: inline-block;
     font-size: var(--t-14);
     line-height: 20px;
     color: var(--text-2);
-    transition: color 160ms var(--ease);
+    transition:
+      color 160ms var(--ease),
+      transform 300ms var(--ease);
   }
   .footer__col a:hover {
     color: var(--text);
+    transform: translateX(4px);
   }
   .footer__legal {
     margin-top: 64px;

@@ -9,10 +9,10 @@ const gh = await getGitHub();
 
 <section class="section start" id="get-started" aria-labelledby="start-title">
   <div class="wrap">
-    <div class="start__panel card">
+    <div class="start__panel card" data-reveal>
       <div class="start__lead">
         <p class="eyebrow">Get started</p>
-        <h2 id="start-title" class="display-2">Install Nova for Houdini 22.0</h2>
+        <h2 id="start-title" class="display-2" data-words>Install Nova for Houdini 22.0</h2>
         <p class="lede">Free and open source. One installer, per user, without administrator rights.</p>
         <div class="start__cta">
           <a class="btn btn--primary" href={gh.installerUrl ?? gh.releaseUrl} rel="noopener">
@@ -28,19 +28,19 @@ const gh = await getGitHub();
         <Requirements />
       </div>
 
-      <ol class="start__steps">
+      <ol class="start__steps" data-focus>
         <li>
           <span class="caption num">1</span>
           <div>
             <h3>Install</h3>
-            <p>Close Houdini and run the installer. It registers Nova with Houdini 22.0 and adds an uninstaller to Apps &amp; features.</p>
+            <p>Close Houdini and run the installer</p>
           </div>
         </li>
         <li>
           <span class="caption num">2</span>
           <div>
             <h3>Choose the renderer</h3>
-            <p>In Solaris, pick <strong>Nova CPU</strong> or <strong>Nova XPU</strong> in the viewport’s renderer menu</p>
+            <p>Pick <strong>Nova CPU</strong> or <strong>Nova XPU</strong> in the viewport’s renderer menu</p>
           </div>
         </li>
         <li>
@@ -48,8 +48,8 @@ const gh = await getGitHub();
           <div>
             <h3>Set up a render</h3>
             <p>
-              Press <kbd>Tab</kbd> and choose Rendering, then <strong>Nova (Setup)</strong>. It builds render settings, a
-              render pass and a USD Render ROP, as Karma (Setup) does. Existing Karma setups render as they are.
+              Press <kbd>Tab</kbd> and choose Rendering, then <strong>Nova (Setup)</strong>. Existing Karma setups render
+              as they are.
             </p>
           </div>
         </li>

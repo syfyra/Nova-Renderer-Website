@@ -12,16 +12,16 @@ const max = 100; // the budget for an edit, in milliseconds
 <section class="section interactive" id="interactive" aria-labelledby="interactive-title">
   <div class="wrap">
     <header class="head">
-      <p class="eyebrow">Look-dev and IPR</p>
-      <h2 id="interactive-title" class="display-2">An edit shows in milliseconds</h2>
-      <p class="lede">
-        After an edit the viewport renders one pixel per 4×4 block, then per 2×2, then every pixel. Those samples count
-        towards the image. Move the light below to see the idea.
+      <p class="eyebrow" data-reveal>In the viewport</p>
+      <h2 id="interactive-title" class="display-2" data-words>Change something, and it shows in milliseconds</h2>
+      <p class="lede" data-reveal>
+        After an edit the viewport renders one pixel per 4×4 block, then per 2×2, then every pixel. Move the light to
+        see it.
       </p>
     </header>
 
     <div class="interactive__grid">
-      <figure class="viewport card" data-proxy>
+      <figure class="viewport card" data-proxy data-reveal>
         <div class="viewport__bar">
           <span class="caption">Viewport, live illustration</span>
           <span class="caption num viewport__stage" data-proxy-stage aria-live="off">256 spp</span>
@@ -39,14 +39,14 @@ const max = 100; // the budget for an edit, in milliseconds
         </div>
         <figcaption class="viewport__foot">
           <button type="button" class="btn btn--small" data-proxy-edit>Move the light</button>
-          <span class="caption viewport__note viewport__note--live">Path traced in your browser. The proxy passes are held longer so you can see them. Not Nova.</span>
+          <span class="caption viewport__note viewport__note--live">Path traced in your browser, with the proxy passes held longer. Not Nova.</span>
           <span class="caption viewport__note viewport__note--flat">Drawn in your browser and slowed down. Not a Nova render.</span>
         </figcaption>
       </figure>
 
-      <div class="latency">
+      <div class="latency" data-reveal>
         <p class="eyebrow">Edit to first image, CPU<Fn id="ipr" /></p>
-        <ul>
+        <ul data-bars data-focus>
           {
             rows.map((r) => (
               <li>
@@ -58,34 +58,24 @@ const max = 100; // the budget for an edit, in milliseconds
           }
         </ul>
         <p class="caption latency__scale"><span>0</span><span>100 ms</span></p>
-        <p class="latency__note">
-          Measured at 1280×720 on a scene of 980 000 triangles with 20 000 instances. Every measured edit stays below
-          100&nbsp;ms.
-        </p>
+        <p class="caption latency__note">Measured at 1280×720 on 980 000 triangles with 20 000 instances</p>
       </div>
     </div>
 
     <div class:list={['interactive__more', { 'interactive__more--plain': !compare }]}>
       {compare && <CompareSlider a="denoise-noisy" b="denoise-clean" labelA="16 samples" labelB="Denoised" ratio="16 / 10" name="Noisy and denoised comparison" />}
-      <dl class="interactive__rows">
+      <dl class="interactive__rows" data-stagger data-focus>
         <div>
           <dt>OptiX denoiser</dt>
-          <dd>
-            For final frames and in the viewport, guided by the first-hit albedo and normal. Alpha stays exact. One
-            denoise takes 8&nbsp;ms at 1080p and 31&nbsp;ms at 4K on an RTX 5080.<Fn id="denoise" />
-          </dd>
+          <dd>8&nbsp;ms at 1080p and 31&nbsp;ms at 4K on an RTX 5080<Fn id="denoise" /></dd>
         </div>
         <div>
           <dt>Adaptive sampling</dt>
-          <dd>
-            Each pixel stops once its noise estimate is low enough, decided at power-of-two checkpoints so renders stay
-            deterministic. About 3× faster at equal error on a glass scene, and about even on uniformly noisy
-            ones.<Fn id="adaptive" />
-          </dd>
+          <dd>About 3× faster at equal error on a glass scene, about even on uniformly noisy ones<Fn id="adaptive" /></dd>
         </div>
         <div>
           <dt>Look-dev tools</dt>
-          <dd>Contour, depth and crease outlines, headlight and dome overrides, simplified shading, and path guiding on the CPU and on the GPU</dd>
+          <dd>Outlines, headlight and dome overrides, simplified shading and path guiding</dd>
         </div>
       </dl>
     </div>
@@ -202,7 +192,7 @@ const max = 100; // the budget for an edit, in milliseconds
     border-radius: 2px;
     background: var(--text-2);
     transform-origin: 0 50%;
-    transform: scaleX(var(--w));
+    transform: scaleX(calc(var(--w) * var(--g, 1)));
   }
   .latency__scale {
     display: flex;
@@ -212,9 +202,6 @@ const max = 100; // the budget for an edit, in milliseconds
   }
   .latency__note {
     margin-top: 16px;
-    font-size: var(--t-14);
-    line-height: 20px;
-    color: var(--text-2);
   }
 
   .interactive__more {

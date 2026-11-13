@@ -14,7 +14,7 @@ import { REPO_URL, VERSION, href } from '../../lib/site';
 
 const withRender = hasRender('hero');
 const statement =
-  'Nova is a physically based path tracer that plugs into Houdini’s Solaris as a Hydra render delegate. Scenes, materials, lights, render settings and AOVs set up for Karma render in Nova with the same look.';
+  'Nova is a path tracer for Houdini’s Solaris. What you set up for Karma renders in Nova with the same look.';
 ---
 
 <section class="hero" data-hero aria-labelledby="hero-title">
@@ -42,10 +42,7 @@ const statement =
         <div class="hero__rule" data-hero-rule aria-hidden="true"></div>
         <div class="hero__copy" data-hero-copy>
           <p class="hero__tagline" data-hero-line>Production path tracing for Houdini Solaris</p>
-          <p class="hero__sub" data-hero-line>
-            A Hydra render delegate for the CPU and for NVIDIA GPUs.<br class="hero__br" /> It renders Karma scenes the way
-            Karma does.
-          </p>
+          <p class="hero__sub" data-hero-line>Karma scenes, rendered the way Karma renders them, on the CPU and on NVIDIA GPUs</p>
           <div class="hero__cta" data-hero-line>
             <a class="btn btn--primary" href={href('/download')}>
               <span class="btn__dot" aria-hidden="true"></span>
@@ -255,12 +252,12 @@ const statement =
     visibility: hidden;
   }
   .hero__statement-text {
-    max-width: 24em;
+    max-width: 16em;
     margin-inline: auto;
-    font-size: var(--h2);
+    font-size: var(--h1);
     font-weight: 500;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
     text-align: center;
     text-wrap: balance;
     color: var(--text);
@@ -336,9 +333,6 @@ const statement =
   }
 
   @media (max-width: 760px) {
-    .hero__br {
-      display: none;
-    }
     .hero__meta {
       grid-template-columns: minmax(0, 1fr);
       justify-items: center;

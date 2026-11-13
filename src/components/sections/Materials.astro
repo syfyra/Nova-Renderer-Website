@@ -1,4 +1,5 @@
 ---
+// Chapter five: materials. Five cards, one line each.
 import RenderFrame from '../media/RenderFrame.astro';
 import Fn from '../primitives/Fn.astro';
 ---
@@ -6,21 +7,17 @@ import Fn from '../primitives/Fn.astro';
 <section class="section materials" id="materials" aria-labelledby="materials-title">
   <div class="wrap">
     <header class="head">
-      <p class="eyebrow">Materials</p>
-      <h2 id="materials-title" class="display-2">Materials render as authored</h2>
+      <p class="eyebrow" data-reveal>Materials</p>
+      <h2 id="materials-title" class="display-2" data-words>Your materials render as authored</h2>
     </header>
 
-    <ul class="materials__grid">
+    <ul class="materials__grid" data-stagger>
       <li class="mat mat--wide card">
         <RenderFrame id="mat-materialx" ratio="16 / 9" sizes="(min-width: 900px) 46vw, 92vw" />
         <div class="mat__body">
           <p class="eyebrow">MaterialX 1.39</p>
           <h3 class="mat__title">Standard Surface, OpenPBR, any pbrlib graph</h3>
-          <p class="mat__text">
-            740 of the 746 MaterialX 1.39 node definitions run through Nova’s shading compiler, with Karma’s
-            semantics.<Fn id="materialx" /> Layering is exact per MaterialX and OpenPBR, with energy compensation.
-          </p>
-          <p class="caption">OpenPBR 1.1 · Standard Surface · UsdPreviewSurface · glTF PBR</p>
+          <p class="mat__text">740 of 746 node definitions, with Karma’s semantics<Fn id="materialx" /></p>
         </div>
       </li>
       <li class="mat mat--wide card">
@@ -28,11 +25,7 @@ import Fn from '../primitives/Fn.astro';
         <div class="mat__body">
           <p class="eyebrow">Karma Material Builder</p>
           <h3 class="mat__title">Karma’s own shading nodes</h3>
-          <p class="mat__text">
-            35 of Karma’s 55 <span class="mono">kma_*</span> nodes: ray switches and ray imports, ramps, hex tiling,
-            Voronoi, curvature, ambient occlusion, rounded edges<Fn id="kma" />
-          </p>
-          <p class="caption">kma_* · ray switch · hex tiling · rounded edges</p>
+          <p class="mat__text">35 of Karma’s 55 <span class="mono">kma_*</span> nodes<Fn id="kma" /></p>
         </div>
       </li>
       <li class="mat card">
@@ -40,11 +33,7 @@ import Fn from '../primitives/Fn.astro';
         <div class="mat__body">
           <p class="eyebrow">Principled Shader</p>
           <h3 class="mat__title">Houdini’s Principled Shader, natively</h3>
-          <p class="mat__text">
-            Parameters, textures, bump and normal maps, emission, opacity and displacement follow the Principled
-            Shader’s own rules: Disney sheen and clearcoat, Schlick metal, reflectivity as an effective IOR
-          </p>
-          <p class="caption">principledshader::2.0 · sheen · clearcoat</p>
+          <p class="mat__text">Sheen, clearcoat, metal and reflectivity by its own rules</p>
         </div>
       </li>
       <li class="mat card">
@@ -52,11 +41,7 @@ import Fn from '../primitives/Fn.astro';
         <div class="mat__body">
           <p class="eyebrow">VEX</p>
           <h3 class="mat__title">VEX Material Builders through a CVEX bridge</h3>
-          <p class="mat__text">
-            The surface function is compiled once and run in batches of 256 shading points. Its BSDF stays in VEX and is
-            evaluated and sampled there. On the GPU, VEX materials render as grey stand-ins.
-          </p>
-          <p class="caption">CVEX · 256 points per batch · CPU</p>
+          <p class="mat__text">On the CPU. On the GPU they render as grey stand-ins.</p>
         </div>
       </li>
       <li class="mat card">
@@ -64,11 +49,7 @@ import Fn from '../primitives/Fn.astro';
         <div class="mat__body">
           <p class="eyebrow">Displacement and textures</p>
           <h3 class="mat__title">Diced from the camera, UDIMs through OpenImageIO</h3>
-          <p class="mat__text">
-            Float and vector displacement at Karma’s dicing quality, watertight and motion-blurred. Textures with UDIMs,
-            ray-cone footprints and colour spaces decided as Karma decides them.
-          </p>
-          <p class="caption">vector displacement · UDIM · ray cones</p>
+          <p class="mat__text">Float and vector displacement at Karma’s dicing quality</p>
         </div>
       </li>
     </ul>
@@ -87,6 +68,15 @@ import Fn from '../primitives/Fn.astro';
   }
   .mat--wide {
     grid-column: span 6;
+  }
+  /* A card rises a little under the pointer. */
+  @media (hover: hover) {
+    .mat:hover {
+      transform: translateY(-4px);
+    }
+    .mat:hover .mat__title {
+      color: var(--text);
+    }
   }
   /* A picture sits flush in the card; the card's corners are its corners. */
   .mat :global(.frame) {
@@ -112,9 +102,6 @@ import Fn from '../primitives/Fn.astro';
   }
   .mat__text .mono {
     color: var(--text);
-  }
-  .mat__body .caption {
-    margin-top: 8px;
   }
   @media (max-width: 900px) {
     .mat,

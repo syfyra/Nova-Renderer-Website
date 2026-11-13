@@ -92,7 +92,7 @@ src/
   assets/renders/     showcase images, one per slot
   components/
     brand/            the wordmark, redrawn as paths from the logo
-    layout/           navigation, footer, footnotes
+    layout/           navigation, footer, footnotes, chapter rail
     media/            render frames, comparison slider
     data/             benchmark bars, requirements
     primitives/       code block, footnote marker, icon
@@ -146,7 +146,7 @@ The page is a dark stage with one light. Everything in `src/styles/global.css` f
   for the three text roles, hairlines as the text colour at 8 % and 14 %. Depth comes from the surface steps, not
   from shadows.
 - **The accent.** `--accent` is the orange of the logo's dot. It appears as a flat dot on the one action that
-  matters in a view, as the Nova XPU series in a chart, and in the wordmark. Nothing else is orange, and there are
+  matters in a view, on the chapter in view in the rail, as the Nova XPU series in a chart, and in the wordmark. Nothing else is orange, and there are
   no gradients between hues, glows, coloured shadows or glass. The glow inside the logo itself is part of the mark.
 - **Type.** Inter in weights 400 and 500, JetBrains Mono for values, names and captions. Sentence case throughout,
   no uppercase labels, negative tracking on display sizes only. Headlines, labels and buttons end without a
@@ -156,16 +156,47 @@ The page is a dark stage with one light. Everything in `src/styles/global.css` f
 - **Icons.** One set, [Lucide](https://lucide.dev) (ISC), as inline paths in `components/primitives/Icon.astro`:
   16 px, stroke 1.5.
 
+## Story
+
+The home page reads as one story, told by its headlines: start with the scene you built for Karma, render it on the
+CPU or the GPU into the same image, at this speed, with these materials and lights, into these passes, while you
+watch, and here is how it was measured and what is missing. Each chapter is a headline, one line and something to
+look at. The detail lives behind the links, in the collapsed lists and in the footnotes.
+
+- The chapters and their order are in `src/pages/index.astro`.
+- `components/layout/ChapterRail.astro` is the thread at the edge of wide screens: one mark per chapter, the logo's
+  dot on the one in view.
+- The limitations open one group at a time. The footnotes are closed until a footnote marker is used.
+
 ## Motion
 
-Motion explains something or it is absent. There are no scroll reveals: content is simply there.
+Content is lit and arrives while scrolling, and answers the pointer. Markup opts in with attributes; the behaviour is
+in `src/motion/core.ts`, the opening states in `src/styles/global.css`.
 
-- The hero is the only pinned sequence: the wordmark resolves, and scrolling flies the camera through the O into
-  the opening statement.
-- The layer stack of "Output" opens with the scroll position, to show that the passes are parts of one image.
-- Comparison sliders make one short sweep on first sight. Hover and press states take 160 ms.
-- One easing curve everywhere: `--ease` in CSS, `power4.out` in GSAP. Nothing loops.
-- `prefers-reduced-motion` turns all of it off: no pin, no flight. The live hero appears once it is calm.
+| Attribute | Effect |
+|---|---|
+| `data-words` | A headline that scrolling lights word by word, like the statement in the hero |
+| `data-reveal` | An element that arrives once, with one short move |
+| `data-stagger` | A container whose children arrive one after another |
+| `data-count` | A figure that counts up to the value in the markup |
+| `data-bars` | A chart whose bars grow from zero |
+| `data-drift` | A large figure that drifts a little against the page |
+| `data-focus` | A list whose rows step back while another row is under the pointer (CSS only) |
+
+Chapter-specific motion is in `src/motion/home.ts`: the hero flight (the only pinned sequence), the Karma nodes that
+come on one after another, the two renderers that meet at an equals sign, the layer stack that opens, and the output
+rows that pick their passes out of it.
+
+Under the pointer: buttons lift and the primary one leans towards it while its dot sends out one ring, arrows move
+the way they point, links draw a hairline, cards are lit where the pointer is.
+
+Rules that hold everywhere:
+
+- One easing curve: `--ease` in CSS, `power4.out` in GSAP. Nothing loops.
+- `html.motion` is set before first paint only when motion is allowed. Without JavaScript, with
+  `prefers-reduced-motion`, or if the script fails to start, the class is absent and everything is simply there:
+  no hidden content, final numbers, full bars, no pin, no flight.
+- Numbers on the page are in the markup at their true value. A count-up only animates towards it.
 
 ## Licence
 

@@ -1,4 +1,6 @@
 ---
+// Chapter two: the device. The two renderers slide towards each other until
+// an equals sign stands between them (motion/home.ts).
 import CompareSlider from '../media/CompareSlider.astro';
 import Fn from '../primitives/Fn.astro';
 import { slotVisible } from '../../content/renders';
@@ -9,84 +11,81 @@ const compare = slotVisible('same-cpu', 'same-xpu');
 <section class="section devices" id="devices" aria-labelledby="devices-title">
   <div class="wrap">
     <header class="head">
-      <p class="eyebrow">Two renderers</p>
-      <h2 id="devices-title" class="display-2">The same image on the CPU and on the GPU</h2>
-      <p class="lede">
-        Houdini sees Nova as two renderers. Both run the same code with the same random numbers, so a GPU render matches
-        the CPU’s image up to floating-point rounding.
+      <p class="eyebrow" data-reveal>Two renderers</p>
+      <h2 id="devices-title" class="display-2" data-words>Render it on the CPU or the GPU, into the same image</h2>
+      <p class="lede" data-reveal>
+        Both run the same code with the same random numbers. On the reference scenes, every pixel agrees within
+        1&nbsp;%.<Fn id="same-image" />
       </p>
     </header>
 
     {compare && <CompareSlider a="same-cpu" b="same-xpu" labelA="Nova, CPU" labelB="Nova XPU, GPU" ratio="2 / 1" name="CPU and GPU comparison" />}
-    <p class="devices__note">On the reference scenes, every pixel agrees within 1&nbsp;%<Fn id="same-image" /></p>
 
-    <div class="devices__pair">
-      <article class="device">
+    <div class="devices__pair" data-devices>
+      <article class="device card" data-device="cpu">
         <p class="eyebrow">CPU</p>
         <h3 class="display-3">Nova</h3>
-        <ul class="device__list">
-          <li>Embree 4</li>
-          <li>A wavefront path tracer</li>
-          <li>A SIMD shading VM</li>
-        </ul>
-        <p class="device__req">Runs on any x64 CPU with AVX2</p>
+        <p class="device__parts">Embree 4, a wavefront path tracer and a SIMD shading VM</p>
+        <p class="caption">Runs on any x64 CPU with AVX2</p>
       </article>
-      <article class="device">
+      <p class="devices__equals" data-device="equals" aria-hidden="true">=</p>
+      <article class="device card" data-device="gpu">
         <p class="eyebrow">NVIDIA GPU</p>
         <h3 class="display-3">Nova XPU</h3>
-        <ul class="device__list">
-          <li>CUDA wavefront kernels</li>
-          <li>OptiX 9 ray tracing</li>
-          <li>The same bytecode VM, closures and light tree</li>
-        </ul>
-        <p class="device__req">Needs an RTX 50 series card. Without a usable GPU it renders on the CPU and says so.</p>
+        <p class="device__parts">CUDA wavefront kernels and OptiX 9, with the same shading VM and light tree</p>
+        <p class="caption">Needs an RTX 50 series card. Without a usable GPU it renders on the CPU and says so.</p>
       </article>
     </div>
   </div>
 </section>
 
 <style>
-  .devices__note {
-    margin-top: 16px;
-    color: var(--text-2);
-    font-size: var(--t-14);
-    line-height: 20px;
-  }
   .devices__pair {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 40px var(--gap-m);
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
     margin-top: var(--gap-l);
   }
   .device {
-    border-top: 1px solid var(--line-2);
-    padding-top: 24px;
+    display: grid;
+    gap: 8px;
+    align-content: start;
+    height: 100%;
+    padding: 32px;
+    /* The scroll position moves these cards; only the outline eases. */
+    transition: box-shadow 240ms var(--ease);
   }
-  .device .display-3 {
-    margin-top: 4px;
-  }
-  .device__list {
-    margin-top: 24px;
-  }
-  .device__list li {
-    padding-block: 12px;
-    border-top: 1px solid var(--line);
-    line-height: 24px;
-    color: var(--text);
-  }
-  .device__list li:last-child {
-    border-bottom: 1px solid var(--line);
-  }
-  .device__req {
-    padding-top: 12px;
+  .device__parts {
+    margin-top: 8px;
     color: var(--text-2);
-    font-size: var(--t-14);
-    line-height: 20px;
-    max-width: 30em;
+    max-width: 28em;
+  }
+  .device .caption {
+    margin-top: 16px;
+    max-width: 44em;
+  }
+  .devices__equals {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--raised);
+    box-shadow: inset 0 0 0 1px var(--line-2);
+    font-family: var(--font-mono);
+    font-size: var(--t-18);
+    line-height: 1;
+    color: var(--text);
   }
   @media (max-width: 760px) {
     .devices__pair {
       grid-template-columns: minmax(0, 1fr);
+      justify-items: center;
+    }
+    .device {
+      width: 100%;
+      padding: 24px;
     }
   }
 </style>

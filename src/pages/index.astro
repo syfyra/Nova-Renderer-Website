@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import ChapterRail from '../components/layout/ChapterRail.astro';
 import Footnotes from '../components/layout/Footnotes.astro';
 import Hero from '../components/sections/Hero.astro';
 import Devices from '../components/sections/Devices.astro';
@@ -18,10 +19,11 @@ import OpenSource from '../components/sections/OpenSource.astro';
 
 <Base overlayNav>
   <Hero />
+  <ChapterRail />
+  <Karma />
   <Devices />
   <Xpu />
   <Cpu />
-  <Karma />
   <Materials />
   <Worlds />
   <Output />

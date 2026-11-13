@@ -1,4 +1,7 @@
 ---
+// The conditions behind every number on the page. Closed until asked for:
+// a footnote marker opens the list and goes to its note (motion/core.ts).
+import Icon from '../primitives/Icon.astro';
 import { claims } from '../../content/claims';
 import { homeNotes } from '../../content/notes';
 import { SOURCE_TAG } from '../../lib/site';
@@ -6,30 +9,66 @@ import { SOURCE_TAG } from '../../lib/site';
 
 <section class="notes" aria-labelledby="notes-title">
   <div class="wrap">
-    <h2 id="notes-title" class="eyebrow">Footnotes, measured on Nova {SOURCE_TAG}</h2>
-    <ol>
-      {
-        homeNotes.map((id, i) => (
-          <li id={`fn-${i + 1}`}>
-            <span class="caption num">{i + 1}</span>
-            <p>
-              {claims[id].note}{' '}
-              <a href={claims[id].src.url} rel="noopener" class="link mono">{claims[id].src.label}</a>
-            </p>
-          </li>
-        ))
-      }
-    </ol>
+    <details data-notes>
+      <summary>
+        <h2 id="notes-title">Footnotes</h2>
+        <span class="caption">{homeNotes.length} notes · measured on Nova {SOURCE_TAG}</span>
+        <Icon name="chevron-down" />
+      </summary>
+      <ol>
+        {
+          homeNotes.map((id, i) => (
+            <li id={`fn-${i + 1}`}>
+              <span class="caption num">{i + 1}</span>
+              <p>
+                {claims[id].note}{' '}
+                <a href={claims[id].src.url} rel="noopener" class="link mono">{claims[id].src.label}</a>
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+    </details>
   </div>
 </section>
 
 <style>
   .notes {
-    padding-block: 64px;
     border-top: 1px solid var(--line);
   }
+  summary {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-block: 24px;
+    cursor: pointer;
+    list-style: none;
+    color: var(--text-2);
+    transition: color 160ms var(--ease);
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+  summary:hover,
+  details[open] summary {
+    color: var(--text);
+  }
+  h2 {
+    font-size: var(--t-14);
+    line-height: 20px;
+    font-weight: 500;
+  }
+  summary .caption {
+    margin-right: auto;
+  }
+  summary :global(.icon) {
+    color: var(--text-3);
+  }
+  details[open] summary :global(.icon) {
+    transform: rotate(180deg);
+  }
   ol {
-    margin-top: 24px;
+    padding-bottom: 40px;
     columns: 2;
     column-gap: var(--gap-l);
     font-size: var(--t-12);
@@ -46,7 +85,11 @@ import { SOURCE_TAG } from '../../lib/site';
   li .caption {
     line-height: 20px;
   }
-  li:target p {
+  li p {
+    transition: color 400ms var(--ease);
+  }
+  li:target p,
+  li[data-current] p {
     color: var(--text);
   }
   @media (max-width: 760px) {

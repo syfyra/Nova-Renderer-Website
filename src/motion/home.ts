@@ -396,14 +396,109 @@ function initProxy() {
   if (!reduced) ScrollTrigger.create({ trigger: root, start: 'top 65%', once: true, onEnter: run });
 }
 
+// ----------------------------------------------------------------------- karma
+// The twelve Karma LOPs come on one after another while the list scrolls
+// through the view, and the count above them follows.
+function initKarma() {
+  const root = document.querySelector<HTMLElement>('[data-karma]');
+  if (!root || reduced) return;
+  const items = [...root.querySelectorAll<HTMLElement>('[data-karma-item]')];
+  const count = root.querySelector<HTMLElement>('[data-karma-n]');
+  let lit = -1;
+  const set = (n: number) => {
+    if (n === lit) return;
+    lit = n;
+    items.forEach((el, i) => el.toggleAttribute('data-lit', i < n));
+    if (count) count.textContent = String(n);
+  };
+  set(0);
+  ScrollTrigger.create({
+    trigger: root,
+    start: 'clamp(top 80%)',
+    end: 'clamp(bottom 64%)',
+    onUpdate: (self) => set(Math.round(self.progress * items.length)),
+    onRefresh: (self) => set(Math.round(self.progress * items.length)),
+  });
+}
+
+// --------------------------------------------------------------------- devices
+// The two renderers move towards each other until the equals sign stands
+// between them: two devices, one image.
+function initDevices() {
+  const pair = document.querySelector<HTMLElement>('[data-devices]');
+  if (!pair || reduced) return;
+  const part = (name: string) => pair.querySelector<HTMLElement>(`[data-device="${name}"]`);
+  const stacked = window.matchMedia('(max-width: 760px)').matches;
+  const from = stacked ? { cpu: { y: -24 }, gpu: { y: 24 } } : { cpu: { xPercent: -10 }, gpu: { xPercent: 10 } };
+  gsap
+    .timeline({
+      defaults: { ease: 'power2.out', duration: 1 },
+      scrollTrigger: { trigger: pair, start: 'clamp(top 92%)', end: 'clamp(top 48%)', scrub: 0.6 },
+    })
+    .from(part('cpu'), { ...from.cpu, opacity: 0 }, 0)
+    .from(part('gpu'), { ...from.gpu, opacity: 0 }, 0)
+    .from(part('equals'), { scale: 0, opacity: 0, duration: 0.4 }, 0.7);
+}
+
+// ---------------------------------------------------------------------- passes
+// A row of the output list under the pointer picks its passes out of the stack.
+function initPassRows() {
+  const stack = document.querySelector<HTMLElement>('[data-stack]');
+  if (!stack) return;
+  const layers = [...stack.querySelectorAll<HTMLElement>('[data-stack-layer]')];
+  document.querySelectorAll<HTMLElement>('[data-pass-row]').forEach((row) => {
+    const names = (row.dataset.passRow ?? '').split(' ');
+    const pick = (on: boolean) => {
+      stack.toggleAttribute('data-pick', on);
+      layers.forEach((l) => l.toggleAttribute('data-on', on && names.includes(l.dataset.stackLayer ?? '')));
+    };
+    row.addEventListener('pointerenter', () => pick(true));
+    row.addEventListener('pointerleave', () => pick(false));
+  });
+}
+
+// ------------------------------------------------------------------------ rail
+// The chapter rail appears after the hero and leaves before the footer; the
+// dot sits on the chapter that holds the middle of the view.
+function initRail() {
+  const rail = document.querySelector<HTMLElement>('[data-rail]');
+  if (!rail) return;
+  const links = [...rail.querySelectorAll<HTMLAnchorElement>('[data-rail-link]')];
+  const sections = links
+    .map((a) => document.getElementById(a.dataset.railLink ?? ''))
+    .filter((s): s is HTMLElement => Boolean(s));
+  if (!sections.length) return;
+  const current = (id: string) =>
+    links.forEach((a) => (a.dataset.railLink === id ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
+  sections.forEach((section) => {
+    ScrollTrigger.create({
+      trigger: section,
+      start: 'top 50%',
+      end: 'bottom 50%',
+      onToggle: (self) => self.isActive && current(section.id),
+    });
+  });
+  ScrollTrigger.create({
+    trigger: sections[0],
+    start: 'top 60%',
+    endTrigger: sections[sections.length - 1],
+    end: 'bottom 40%',
+    onToggle: (self) => rail.toggleAttribute('data-on', self.isActive),
+  });
+}
+
 // ------------------------------------------------------------------------ boot
 function boot() {
   // The hero is path traced live where WebGL 2 allows it, and 2D otherwise.
   if (!initHeroStage()) initHero();
+  initKarma();
+  initDevices();
   initStack();
+  initPassRows();
   initAov();
   // The viewport is live where WebGL 2 allows it; otherwise the 2D illustration runs.
   if (!initViewport()) initProxy();
+  initRail();
   ScrollTrigger.sort();
   ScrollTrigger.refresh();
 }

@@ -22,7 +22,7 @@ const toc = [
 
 <Base title="Benchmarks" description="Every performance measurement of Nova, with the machine, the command and the method. CPU and GPU, interactivity, sampling, denoising, and Nova against Karma CPU.">
   <div class="wrap">
-    <header class="page-head">
+    <header class="page-head" data-stagger>
       <p class="eyebrow">Benchmarks, Nova {SOURCE_TAG}</p>
       <h1 class="display-1">Every measurement, with its method</h1>
       <p class="lede">
@@ -72,7 +72,7 @@ const toc = [
             The XPU time includes the GPU’s setup (driver context, OptiX pipelines, the scene’s upload), not the process
             start. The faster of two runs.
           </p>
-          <div class="table-wrap">
+          <div class="table-wrap" data-reveal>
             <table class="table">
               <thead>
                 <tr><th>Scene</th><th class="n">CPU</th><th class="n">Mrays/s</th><th class="n">XPU</th><th class="n">Mrays/s</th><th class="n">XPU setup</th><th class="n">Speed-up</th></tr>
@@ -105,7 +105,7 @@ const toc = [
             Time from the USD edit to the first new image on the CPU, the median of six edits, at 1280×720 on a scene of
             980 000 triangles with 20 000 instances. Before proxy passes and BVH refits every edit took 183–256&nbsp;ms.
           </p>
-          <div class="table-wrap">
+          <div class="table-wrap" data-reveal>
             <table class="table">
               <thead>
                 <tr><th>Edit</th><th class="n">Total</th><th class="n">Sync</th><th class="n">Restart</th><th class="n">First proxy pass</th></tr>
@@ -134,7 +134,7 @@ const toc = [
             The variance oracle against uniform sampling at equal error. The error is the relMSE against Nova’s own
             converged image, the mean of two 4096-sample renders with their noise subtracted.
           </p>
-          <div class="table-wrap">
+          <div class="table-wrap" data-reveal>
             <table class="table">
               <thead>
                 <tr><th>Scene</th><th class="n">Uniform, equal error</th><th class="n">Oracle</th><th class="n">relMSE</th><th class="n">Speed-up</th><th>Gate</th></tr>
@@ -150,7 +150,7 @@ const toc = [
 
           <h3 class="bm__h3">OptiX denoiser</h3>
           <p class="body">Error at 16 samples per pixel before and after denoising, against the same converged images. Alpha stays exact.</p>
-          <div class="table-wrap">
+          <div class="table-wrap" data-reveal>
             <table class="table">
               <thead>
                 <tr><th>Scene</th><th class="n">Noisy, 16 spp</th><th class="n">Denoised</th><th class="n">Error</th></tr>
@@ -162,7 +162,7 @@ const toc = [
               </tbody>
             </table>
           </div>
-          <div class="facts bm__facts">
+          <div class="facts bm__facts" data-stagger>
             {denoiseTime.map((d) => (
               <div class="fact">
                 <p class="fact__value">{d.ms}<small>ms</small></p>
@@ -193,7 +193,7 @@ const toc = [
           </ul>
 
           <h3 class="bm__h3">Hair, subsurface and many lights</h3>
-          <div class="facts bm__facts">
+          <div class="facts bm__facts" data-stagger>
             <div class="fact"><p class="fact__value">21.9<small>s</small></p><p class="fact__label">Nova</p></div>
             <div class="fact"><p class="fact__value">102.0<small>s</small></p><p class="fact__label">Karma CPU</p></div>
             <div class="fact"><p class="fact__value">4.7<small>×</small></p><p class="fact__label">on this scene</p></div>
@@ -211,7 +211,7 @@ const toc = [
             own settings. Twenty is Karma’s standard set: the beauty and 19 render vars. With the beauty only, no
             light-path-expression code runs.
           </p>
-          <div class="table-wrap">
+          <div class="table-wrap" data-reveal>
             <table class="table">
               <thead>
                 <tr><th>Scene</th><th class="n">Beauty only</th><th class="n">1</th><th class="n">20, Karma’s set</th><th class="n">74</th></tr>

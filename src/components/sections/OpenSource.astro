@@ -5,20 +5,20 @@ import { REPO, REPO_URL, source } from '../../lib/site';
 
 const gh = await getGitHub();
 const links = [
-  { label: 'Reference', note: 'Every setting, every feature, every measured difference to Karma', url: source('docs/reference.md') },
-  { label: 'Design notes', note: 'One note per milestone, M3 to M11', url: source('docs/design/') },
-  { label: 'Benchmarks', note: 'The raw measurements, milestone by milestone', url: source('docs/benchmarks.md') },
-  { label: 'Bug audit', note: 'Findings, fixes and the limitations that remain', url: source('docs/bug-audit-2026-11.md') },
+  { label: 'Reference', note: 'Every setting and every measured difference to Karma', url: source('docs/reference.md') },
+  { label: 'Design notes', note: 'One per milestone, M3 to M11', url: source('docs/design/') },
+  { label: 'Benchmarks', note: 'The raw measurements', url: source('docs/benchmarks.md') },
+  { label: 'Bug audit', note: 'Findings, fixes and what remains', url: source('docs/bug-audit-2026-11.md') },
 ];
 ---
 
 <section class="section oss" id="source" aria-labelledby="oss-title">
   <div class="wrap oss__grid">
     <header class="oss__lead">
-      <p class="eyebrow">Open source</p>
-      <h2 id="oss-title" class="display-2">The source and every design note are on GitHub</h2>
-      <p class="lede">Nova is released under the MIT License. It was built milestone by milestone, with a design note for each one.</p>
-      <a class="oss__repo" href={REPO_URL} rel="noopener">
+      <p class="eyebrow" data-reveal>Open source</p>
+      <h2 id="oss-title" class="display-2" data-words>The source and every design note are on GitHub</h2>
+      <p class="lede" data-reveal>Released under the MIT License, with a design note for every milestone</p>
+      <a class="oss__repo" href={REPO_URL} rel="noopener" data-reveal>
         <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path></svg>
         <span class="mono">{REPO}</span>
         <span class="caption">
@@ -27,7 +27,7 @@ const links = [
       </a>
     </header>
 
-    <ul class="oss__links">
+    <ul class="oss__links" data-stagger data-focus>
       {
         links.map((l) => (
           <li>
@@ -67,10 +67,15 @@ const links = [
     box-shadow: inset 0 0 0 1px var(--line-2);
     font-size: var(--t-14);
     max-width: 100%;
-    transition: background-color 160ms var(--ease);
+    transition:
+      background-color 160ms var(--ease),
+      box-shadow 160ms var(--ease),
+      transform 240ms var(--ease);
   }
   .oss__repo:hover {
     background: var(--hover);
+    box-shadow: inset 0 0 0 1px var(--line-3);
+    transform: translateY(-1px);
   }
   .oss__links a {
     display: grid;
@@ -87,6 +92,10 @@ const links = [
   .oss__label {
     font-weight: 500;
     line-height: 24px;
+    transition: transform 300ms var(--ease);
+  }
+  .oss__links a:hover .oss__label {
+    transform: translateX(4px);
   }
   .oss__note {
     font-size: var(--t-14);

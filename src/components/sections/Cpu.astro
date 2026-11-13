@@ -1,39 +1,31 @@
 ---
+// Chapter four: speed on the CPU, with the same shape as the GPU chapter.
 import Fn from '../primitives/Fn.astro';
 ---
 
 <section class="section cpu" id="cpu" aria-labelledby="cpu-title">
   <div class="wrap cpu__grid">
-    <header class="head cpu__head">
-      <p class="eyebrow">Nova on the CPU</p>
-      <h2 id="cpu-title" class="display-2">A wavefront path tracer on every core</h2>
+    <header class="cpu__lead">
+      <p class="eyebrow" data-reveal>On the CPU</p>
+      <h2 id="cpu-title" class="figure" data-drift="20">
+        <span class="sr-only">21 to 38 million rays per second on the CPU</span>
+        <span aria-hidden="true" data-count>21–38</span>
+      </h2>
+      <p class="figure-claim" data-reveal>million rays per second on the reference scenes, on eight cores<Fn id="cpu-rays" /></p>
     </header>
 
-    <dl class="cpu__rows">
+    <dl class="cpu__rows" data-stagger data-focus>
       <div>
         <dt>Embree 4</dt>
-        <dd>
-          Rays are traced through Embree 4 with AVX2. Instances are Embree instance arrays with one transform each, and
-          deforming meshes refit their BVH instead of rebuilding it.
-        </dd>
+        <dd>AVX2, instance arrays, and a BVH that refits for deforming meshes</dd>
       </div>
       <div>
         <dt>Wavefront integrator</dt>
-        <dd>
-          Rays move through queues: generate, intersect, shade, shadow. Owen-scrambled Sobol sequences, multiple
-          importance sampling of lights and BSDFs, and a light tree for scenes with many lights.
-        </dd>
+        <dd>Owen-scrambled Sobol sequences, multiple importance sampling and a light tree</dd>
       </div>
       <div>
         <dt>SIMD shading VM</dt>
-        <dd>
-          Materials compile to bytecode for a SIMD shading VM. A value edit never recompiles; a structural edit
-          recompiles one material in about 0.1&nbsp;ms.<Fn id="shading-edit" />
-        </dd>
-      </div>
-      <div class="cpu__rate">
-        <dt class="num">21–38</dt>
-        <dd>million rays per second on the reference scenes, on eight cores<Fn id="cpu-rays" /></dd>
+        <dd>A value edit never recompiles, a structural edit recompiles one material in about 0.1&nbsp;ms<Fn id="shading-edit" /></dd>
       </div>
     </dl>
   </div>
@@ -44,13 +36,16 @@ import Fn from '../primitives/Fn.astro';
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
     gap: 40px var(--gap-xl);
-    align-items: start;
+    align-items: end;
   }
-  .cpu__head {
-    margin-bottom: 0;
+  .cpu__lead {
+    display: grid;
+    gap: 16px;
+    justify-items: start;
   }
   .cpu__rows {
     margin: 0;
+    border-bottom: 1px solid var(--line);
   }
   .cpu__rows > div {
     display: grid;
@@ -68,15 +63,7 @@ import Fn from '../primitives/Fn.astro';
     color: var(--text-2);
     font-size: var(--t-14);
     line-height: 20px;
-  }
-  .cpu__rate {
-    align-items: baseline;
-    border-bottom: 1px solid var(--line);
-  }
-  .cpu__rate dt {
-    font-size: var(--h3);
-    line-height: 1;
-    letter-spacing: -0.01em;
+    align-self: center;
   }
   @media (max-width: 900px) {
     .cpu__grid {

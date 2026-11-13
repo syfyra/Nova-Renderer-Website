@@ -1,6 +1,6 @@
 ---
-// Light and matter: five subjects, one row each. A subject with a render
-// shows it above its row.
+// Chapter six: light and matter. Five subjects, one row each: a name, a line
+// and a measured figure. A subject with a render shows it above its row.
 import RenderFrame from '../media/RenderFrame.astro';
 import Fn from '../primitives/Fn.astro';
 ---
@@ -8,71 +8,56 @@ import Fn from '../primitives/Fn.astro';
 <section class="section worlds" id="light" aria-labelledby="worlds-title">
   <div class="wrap">
     <header class="head">
-      <p class="eyebrow">Light and matter</p>
-      <h2 id="worlds-title" class="display-2">Lights, volumes, hair, subsurface scattering and sky</h2>
+      <p class="eyebrow" data-reveal>Light and matter</p>
+      <h2 id="worlds-title" class="display-2" data-words>So do lights, volumes, hair, subsurface and sky</h2>
     </header>
 
-    <ol class="worlds__rows">
+    <ol class="worlds__rows" data-stagger data-focus>
       <li class="world">
         <RenderFrame id="world-lights" ratio="21 / 9" class="world__frame" />
         <h3 class="display-3">Many lights</h3>
-        <p class="world__text">
-          A light tree over every bounded light, with lights at infinity chosen by importance. Every UsdLux light with
-          Karma’s conventions, light and shadow linking, portals, and emissive meshes as lights.
-        </p>
+        <p class="world__text">A light tree over every bounded light, with linking, portals and emissive meshes</p>
         <p class="world__fact">
-          <span class="fact__value">100<small>×</small></span>
+          <span class="fact__value"><span data-count>100</span><small>×</small></span>
           <span class="fact__label">less variance than selection by power on a street of 2000 lights<Fn id="light-tree" /></span>
         </p>
       </li>
       <li class="world">
         <RenderFrame id="world-volumes" ratio="21 / 9" class="world__frame" />
         <h3 class="display-3">Volumes</h3>
-        <p class="world__text">
-          VDB and native Houdini volumes through NanoVDB, with the Karma Pyro Material. Unbiased spectral tracking on
-          majorants derived from the volume shader. There is no step rate to tune.
-        </p>
+        <p class="world__text">VDB and native Houdini volumes with the Karma Pyro Material. There is no step rate to tune.</p>
         <p class="world__fact">
-          <span class="fact__value">2.3–4.2<small>×</small></span>
+          <span class="fact__value"><span data-count>2.3–4.2</span><small>×</small></span>
           <span class="fact__label">
-            faster than Karma CPU on one pyro simulation at equal accuracy,<Fn id="pyro" /> and within 0.1–1.8&nbsp;% of
-            its image<Fn id="volumes-match" />
+            faster than Karma CPU on one pyro simulation at equal accuracy,<Fn id="pyro" /> within 0.1–1.8&nbsp;% of its
+            image<Fn id="volumes-match" />
           </span>
         </p>
       </li>
       <li class="world">
         <RenderFrame id="world-hair" ratio="21 / 9" class="world__frame" />
         <h3 class="display-3">Hair</h3>
-        <p class="world__text">
-          Karma Hair, Karma Fur and MaterialX <span class="mono">chiang_hair_bsdf</span> on the Chiang fibre model,
-          with Karma’s conventions for melanin, absorption, tilt and roughness
-        </p>
+        <p class="world__text">Karma Hair, Karma Fur and <span class="mono">chiang_hair_bsdf</span> on the Chiang fibre model</p>
         <p class="world__fact">
-          <span class="fact__value">4</span>
-          <span class="fact__label">curve bases, linear to Catmull-Rom, as ribbons or round tubes, with motion blur and instancing</span>
+          <span class="fact__value"><span data-count>4</span></span>
+          <span class="fact__label">curve bases, as ribbons or round tubes</span>
         </p>
       </li>
       <li class="world">
         <RenderFrame id="world-sss" ratio="21 / 9" class="world__frame" />
         <h3 class="display-3">Subsurface</h3>
-        <p class="world__text">
-          Random-walk subsurface scattering for Standard Surface, OpenPBR and the Principled Shader, with Karma’s
-          parameterization
-        </p>
+        <p class="world__text">A random walk, for Standard Surface, OpenPBR and the Principled Shader</p>
         <p class="world__fact">
-          <span class="fact__value">0.7<small>%</small></span>
+          <span class="fact__value"><span data-count>0.7</span><small>%</small></span>
           <span class="fact__label">the most it differs from Karma across Karma’s 47 calibration scenes<Fn id="sss" /></span>
         </p>
       </li>
       <li class="world">
         <RenderFrame id="world-sky" ratio="21 / 9" class="world__frame" />
         <h3 class="display-3">Sky</h3>
-        <p class="world__text">
-          Karma’s sky model as a textured dome, the sun, and a planetary atmosphere with Rayleigh, Mie and ozone
-          scattering as a medium in the path tracer
-        </p>
+        <p class="world__text">Karma’s sky as a dome, the sun, and an atmosphere with Rayleigh, Mie and ozone scattering</p>
         <p class="world__fact">
-          <span class="fact__value">3</span>
+          <span class="fact__value"><span data-count>3</span></span>
           <span class="fact__label">Karma nodes behind it: Sky Dome Light, Physical Sky and Sky Atmosphere</span>
         </p>
       </li>
@@ -95,6 +80,12 @@ import Fn from '../primitives/Fn.astro';
   .world :global(.world__frame) {
     grid-column: 1 / -1;
     margin-bottom: 16px;
+  }
+  .world .display-3 {
+    transition: transform 300ms var(--ease);
+  }
+  .world:hover .display-3 {
+    transform: translateX(4px);
   }
   .world__text {
     color: var(--text-2);
